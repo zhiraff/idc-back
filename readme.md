@@ -4,7 +4,7 @@
 
 ### 1. Запустить базу данных
 
-`$ docker run -d --name pg -p 5432:5432 -e POSTGERS_PASSWORD=idc postgres:13`
+`$ docker run -d --name pg -p 5432:5432 -e POSTGRES_PASSWORD=idc postgres:13`
 
 ### 2. Внесение изменений в файл .env
 
@@ -12,7 +12,9 @@
 
 ### 3. Установка и запуск backend
 
-`$ npm i`
-`$ npm run start`
+```
+$ npm i
+$ npm run start
+```
 
 ### Вуа-ля!

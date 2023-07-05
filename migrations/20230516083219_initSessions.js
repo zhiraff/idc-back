@@ -1,16 +1,48 @@
+// миграция создаёт табилцу пользователей, потому что
+//таблица сессии не нужна, она создаётся автоматически с passport.js
+const crypto = require("crypto");
+const alg = "sha256";
+const enc = "hex";
+
+const hash = (d) => {
+    let myhash = crypto.createHash(alg);
+    myhash.update(d);
+    return myhash.digest(enc);
+}
 
 exports.up = function(knex) {
-    return knex.schema
-    .createTable("sessions", (table) => {
-      table.increments("id");
-      table.integer("userId", 255).notNullable()
-      table.foreign("userId").references("users.id");
-      table.string("sessionId", 255);
- 
-    });
+     return knex.schema
+    .createTable("users", (table) => {
+    table.increments("id");
+    //table.primary("id");
+    table.string("username", 255).notNullable().unique();
+    table.string("password", 255).notNullable();
+    table.string("firstName", 255);
+    table.string("secondName", 255);
+    table.string("thirdName", 255);
+    table.integer("role").notNullable();
+    table.foreign("role").references("roles.id").onDelete("cascade");
+    table.timestamps(true, true, true);
+    table.string("createdBy").notNullable();
+    table.string("updatedBy").notNullable();
+
+  })
+  .then(() => {
+    return knex("users").insert([{
+        username: "admin", 
+        password: hash("1"), 
+        firstName: "Тимофей", 
+        secondName: "Пиголев", 
+        thirdName: "Валерьевич", 
+        role: 1,
+        createdBy: "migrations",
+        updatedBy: "migrations"
+     }])
+  });
+  
 };
 
 
 exports.down = function(knex) {
-    return knex.schema.dropTable("sessions");
+   return knex.schema.dropTable("users");
 };

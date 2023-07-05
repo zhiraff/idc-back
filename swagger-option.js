@@ -2,24 +2,23 @@ const options = {
   definition: {
     openapi: "3.1.0",
     info: {
-      title: "Swagger для АС ИДК. ФЯО ФГУП ГХК, ДИТ 2023 г.",
+      title: "Swagger для АС ИДК.",
       version: "0.1.0",
       description:
-        "Базовый адрес: host:port/api/v1/ ",
+        " ФЯО ФГУП ГХК, ДИТ 2023 г.  ",
       license: {
         name: "MIT",
         url: "https://spdx.org/licenses/MIT.html",
       },
       contact: {
-        name: "Тимофей Валерьевич П",
-        url: "https://yandex.ru",
-        email: "tvpigolev@sibghk.ru",
+        name: "Ссылка на гит",
+        url: "https://github.com/zhiraff/idc-back",
       },
     },
     servers: [
       {
         url: "http://localhost:3000",
-        description: "Основной сервер для работы",
+        description: "/api/v1/",
         basePath: "/api/v1/"
       },
     ],

@@ -1,22 +1,37 @@
 require("dotenv").config();
-const knex = require("knex") ({
-    client: "pg",
-    connection: {
-        host: process.env.DB_HOST,
-        port: process.env.DB_PORT,
-        database: process.env.DB_NAME,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASSWORD
-    },
-    pool: {min: 0, max: 5}
-});
+const knex = require("./knex_init");
 
 const express = require("express");
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
-
+const passport = require('passport');
+const session = require('express-session');
+const KnexSessionStore = require('connect-session-knex')(session);
 const app = express();
 const port = process.env.PORT || 3000;
+const cookieParser = require('cookie-parser');
+
+const authRouter = require("./routes/auth.js");
+
+const sessionStore = new KnexSessionStore({
+  knex,
+  tablename: 'sessions', // optional. Defaults to 'sessions'
+});
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: false,
+  store: sessionStore
+}));
+
+app.use(passport.authenticate('session'));
+
+app.use("/auth", authRouter);
 
 app.get("/", async (req, res) => {
     const users = await knex.select().table("users");
@@ -40,5 +55,5 @@ app.use(
 );
 
 app.listen(port, () => {
-    console.log(`Server listening on http://192.168.145.224:${port}`)
+    console.log(`Server listening on http://localhost:${port}`)
 })

@@ -1,45 +1,43 @@
-const crypto = require("crypto");
-const alg = "sha256";
-const enc = "hex";
-
-const hash = (d) => {
-    let myhash = crypto.createHash(alg);
-    myhash.update(d);
-    return myhash.digest(enc);
-}
-
+//миграция создаёт таблицу ролей
 exports.up = function(knex) {
   return knex.schema
-  .createTable("users", (table) => {
+  .createTable("roles", (table) => {
     table.increments("id");
-    table.string("username", 255).notNullable().unique();
-    table.string("password", 255).notNullable();
-    table.string("firstName", 255);
-    table.string("secondName", 255);
-    table.string("thirdName", 255);
-    table.string("role", 255).notNullable();
-    table.bigInteger("created_at").notNullable();
-    table.string("created_by").notNullable();
-    table.bigInteger("updated_at").notNullable();
-    table.string("updated_by").notNullable();
-
-  })
+   // table.primary("id");
+    table.string("name", 255);
+    table.string("name_plural", 255);
+    table.string("name_short", 100);
+    table.timestamps(true, true, true);
+    })
   .then(() => {
-    return knex("users").insert([{
-        username: "admin", 
-        password: hash("1"), 
-        firstName: "Timofey", 
-        secondName: "Pigolev", 
-        thirdName: "Valerevich", 
-        role: "admin",
-        created_at: Date.now(),
-        created_by: "migrations",
-        updated_at: Date.now(),
-        updated_by: "migrations"
-     }])
+    return knex("roles").insert([{
+        name: "Администратор АС", 
+        name_plural: "Администраторы АС",
+        name_short: "administrator"
+     },
+     {
+        name: "Администратор безопасности", 
+        name_plural: "Администраторы безопасности",
+        name_short: "security"
+     },
+     {
+        name: "Ответственный от ОРБ", 
+        name_plural: "Ответственные от ОРБ",
+        name_short: "orb_response"
+     },
+     {
+        name: "Оператор", 
+        name_plural: "Операторы",
+        name_short: "operator"
+     },
+    ])
   });
+/*
+ 
+  */
 };
 
 exports.down = function(knex) {
-  return knex.schema.dropTable("users");
+  //
+  return knex.schema.dropTable("roles");
 };

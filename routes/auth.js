@@ -8,13 +8,33 @@
   *           type: string
   *         sessionId:
   *           type: string
+  *     auth_signup:
+  *       properties:
+  *         status:
+  *           type: string
+  *         user:
+  *           username: string
+  *           password: string
+  *           role: integer
+  *           firstName: string
+  *           secondName: string
+  *           thirdName: string
+  *           createdBy: string
+  *           updatedBy: string
+  *     auth_whoami:
+  *       properties:
+  *         username:
+  *           type: string
+  *         role:
+  *           type: string
+
   */
   /**
    * @swagger
    * tags:
    *   name: Auth
    *   description: API для авторизации
-   * /auth/login:
+   * /api/v1/auth/login:
    *   post:
    *     summary: Авторизация
    *     tags: [Auth]
@@ -52,18 +72,79 @@
    *             example:
    *               status: error
    *               sessionId: 
-   * /auth/logout:
+   * /api/v1/auth/logout:
    *   post:
    *     summary: Выход
    *     tags: [Auth]
-   * /auth/signup:
+   * /api/v1/auth/signup:
    *   post:
    *     summary: Регистрация нового пользователя (временно)
    *     tags: [Auth]
-   * /auth/whoami:
+   *     requestBody:
+   *       description: Регистрация пользователя (временно)
+   *       required: true
+   *       content:
+   *         application/x-www-form-urlencoded:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               username:
+   *                 type: string
+   *               password:
+   *                 type: string
+   *               role:
+   *                 type: integer
+   *               name:
+   *                 type: string
+   *               surname:
+   *                 type: string
+   *               patronym:
+   *                 type: string
+   *             required:
+   *               - username
+   *               - password
+   *     responses:
+   *       '200':
+   *         description: Пользователь создан
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/auth_signup'
+   *             example:
+   *               status: success
+   *               user:
+   *                 username: username
+   *                 password: password
+   *                 role: rl
+   *                 firstName: nm
+   *                 secondName: srn
+   *                 thirdName: ptr
+   *                 createdBy: usr
+   *                 updatedBy: usr
+   *                 
+   *       '400':
+   *         description: Ошибка введённых данных
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/auth_signup'
+   *             example:
+   *               status: error
+   *               user: 
+   * /api/v1/auth/whoami:
    *   get:
    *     summary: Проверка атворизован ли пользователь
    *     tags: [Auth]
+   *     responses:
+   *       '200':
+   *         description: Выполнено успешно
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/auth_whoami'
+   *             example:
+   *               username: admin
+   *               role: Администратор АС
    */
 require("dotenv").config();
 const knex = require("../knex_init");
@@ -122,23 +203,24 @@ const findRoleById = async (RoleId) => {
 
 //ф-я созадния пользователя
 const createUser = async (username, password, role, name, surname, patronym, user) => {
-  const usr = typeof user !== 'undefined' ? user : 'anonymous'
-  const nm = typeof  name !== 'undefined' ? name : 'anonymous'
-  const srn = typeof  surname !== 'undefined' ? surname : 'anonymous'
-  const ptr = typeof  patronym !== 'undefined' ? patronym : 'anonymous'
-  const rl = typeof  role !== 'undefined' ? role : '3'
+  const usr = typeof user !== 'undefined' && user !== '' ? user : 'anonymous'
+  const nm = typeof  name !== 'undefined' && name !== '' ? name : 'anonymous'
+  const srn = typeof  surname !== 'undefined' && surname !== '' ? surname : 'anonymous'
+  const ptr = typeof  patronym !== 'undefined' && patronym !== '' ? patronym : 'anonymous'
+  const rl = typeof  role !== 'undefined' && role !== '' ? role : '3'
   const newUser = {
     username: username,
     password: hash(password),
     role: rl,
-    createdBy: usr,
-    updatedBy: usr,
     firstName: nm,
     secondName: srn,
-    thirdName: ptr
+    thirdName: ptr,
+    createdBy: usr,
+    updatedBy: usr,
   };
   try {
     await knex("users").insert(newUser);
+    newUser['password'] = password
     return newUser;
   } catch (err) {
     return 'err';
@@ -205,7 +287,9 @@ router.post('/logout', function(req, res, next) {
   res.clearCookie("sessionId")
   req.logout(function(err) {
     if (err) { return next(err); }
-    res.redirect('/');
+    res.status(200).json({
+      'status': 'ok'
+    })
   });
 });
 
@@ -213,13 +297,16 @@ router.post('/logout', function(req, res, next) {
 router.post("/signup", async (req, res) => {
   const { username, password, role, name, surname, patronym } = req.body;
     result = await createUser(username, password, role, name, surname, patronym, req.user);
-
   if (result === 'err') {
     res.status(400).json({
-      "message": "Some error"
+      "status": "error",
+      "user": ''
     });
   }else {
-    res.status(202).redirect("/");
+    res.status(202).json({
+      "status": "success",
+      "user": result
+    })
   }
 });
 
@@ -227,25 +314,32 @@ router.post("/signup", async (req, res) => {
 router.get("/whoami", async (req, res) => {
   let username = ''
   let role = ''
-  if (typeof req.cookies.sessionId === 'undefined'){
-    //в куках нет, ищем взаголовках
+  //console.log(req.isAuthenticated())
+  if (req.isAuthenticated()){
+    //ищем свой токен в куках
+    if (typeof req.cookies.sessionId === 'undefined'){
+    //в куках нет, ищем в заголовках
     if (typeof req.headers.sessionid !== 'undefined'){
+      //в заголовках есть
       username = await findUserBySessionId(req.headers.sessionid)
     }else{
+      //нигде нет
       username = await findUserBySessionId('')
     }
   }else{
     //в куках есть
     username = await findUserBySessionId(req.cookies.sessionId)
   }
-
-  if (username === 'Anonymous') {
+      if (username === 'Anonymous') {
+        role = "Anonymous"
+      }else{
+        const roleid = await findUserByUsername(username)
+        role = await findRoleById(roleid.role)
+      }
+  } else {
+    username = 'Anonymous'
     role = "Anonymous"
-  }else{
-    const roleid = await findUserByUsername(username)
-    role = await findRoleById(roleid.role)
   }
-
  res.status(200).json({
   "username": username,
   "role": role

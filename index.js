@@ -26,12 +26,16 @@ app.use(session({
   secret: 'keyboard cat',
   resave: false,
   saveUninitialized: false,
-  store: sessionStore
+  store: sessionStore,
+  cookie: {
+    httpOnly: false,
+    secure: false
+  }
 }));
 
 app.use(passport.authenticate('session'));
 
-app.use("/auth", authRouter);
+app.use("/api/v1/auth", authRouter);
 
 app.get("/", async (req, res) => {
     const users = await knex.select().table("users");

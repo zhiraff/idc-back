@@ -1,8 +1,9 @@
+// миграция создаёт справочник "перечень радионуклидов"
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-// миграция создаёт справочник "перечень радионуклидов"
+
 
 exports.up = function(knex) {
     return knex.schema

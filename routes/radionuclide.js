@@ -27,106 +27,6 @@
 *           htmlcode: U<sup>238</sup>
 *  */
 
-/*  
-    @swagger
-    tags:
-      name: Radionuclides
-      description: API для работы со справочником перечень радионуклидов
-    /Radionuclides:
-      get:
-        summary: Просмотр всех радионуклидов
-        tags: [Radionuclides]
-     responses:
-        200:
-          description: Просмотр всех радионуклидов
-            content:
-              application/json:
-                schema:
-                  type: array
-                items:
-                  $ref: '#/components/schemas/Radionuclide'
-     post:
-       summary: Создание нового радионуклида
-       tags: [Radionuclides]
-       requestBody:
-         required: true
-         content:
-           application/json:
-             schema:
-               $ref: '#/components/schemas/Radionuclides'
-       responses:
-         200:
-           description: Радионуклид добавлен.
-           content:
-             application/json:
-               schema:
-                 $ref: '#/components/schemas/Radionuclides'
-         500:
-           description: Ошибка сервера
-   /Radionuclides/{id}:
-     get:
-       summary: Просмотр радионуклида по id
-       tags: [Radionuclides]
-       parameters:
-         - in: path
-           name: id
-           schema:
-             type: string
-           required: true
-           description: id радионуклида
-       responses:
-         200:
-           description: радионуклид найденный по id
-           contens:
-             application/json:
-               schema:
-                 $ref: '#/components/schemas/Radionuclides'
-         404:
-           description: радионуклид не найден
-     put:
-       summary: Обновление радионуклида по id
-       tags: [Radionuclides]
-       parameters:
-         - in: path
-           name: id
-           schema:
-             type: string
-           required: true
-           description: id радионуклида
-       requestBody:
-         required: true
-         content:
-           application/json:
-             schema:
-               $ref: '#/components/schemas/Radionuclides'
-       responses:
-         200:
-           description: радионуклид обновлён
-           content:
-             application/json:
-               schema:
-                 $ref: '#/components/schemas/Radionuclides'
-         404:
-           description: радионуклид не найден
-         500:
-           description: Ошибка сервера
-      delete:
-        summary: Удаление радионуклида по id
-        tags: [Radionuclides]
-        parameters:
-          - in: path
-            name: id
-            schema:
-              type: string
-            required: true
-            description: id радионуклида
-  
-        responses:
-          200:
-            description: радионуклид удалён
-          404:
-            description: радионуклид не найден
-  */
 require("dotenv").config();
 const knex = require("../knex_init");
 const express = require("express");
@@ -137,13 +37,15 @@ const LocalStrategy = require('passport-local');
 //const LocalApiKeyStrategy = require('passport-localapikey');
 const alg = "sha256"; // алгоритм хеширования
 const enc = "hex"; // кодировка вычесленного хеша
+//const secure = require('rbac/controllers/express'); //middleware для rbac
+//const rbac = require('../rbac_init')  //сам rbac
 
 //Методы работы с радионуклидами
 //Получить список радионуклидов, с постраничной пагинацией
 const getRadionuclide = async (page, perpage) => {
   const pg = typeof page !== 'undefined' && page !== '' ? page : 1
   const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
-  return knex("radionuclide").select().limit(prpg).offset((pg-1)*25)
+  return knex("radionuclide").select().limit(prpg).offset((pg-1)*prpg)
 }
 //Показать радионуклид подробно
 const getOneRadionuclide = async(radionuclideId) => {
@@ -230,7 +132,7 @@ router.post("/", (req, res) => {
 if (typeof symbol === 'undefined' && typeof name === 'undefined' && typeof htmlcode === 'undefined'){
     return res.status(400).json({
     status: "error",
-    data: "nothing to create"
+    data: "Нечего создавать"
   })
 }
   creatRadionuclide(symbol, name, htmlcode, req.user)
@@ -257,7 +159,7 @@ router.patch("/:id", (req, res) => {
  if (typeof symbol === 'undefined' && typeof name === 'undefined' && typeof htmlcode === 'undefined'){
   return res.status(400).json({
     status: "error",
-    data: "nothing to update"
+    data: "Нечего обновлять"
   })
  }
  updateRadionuclide(radionuclideId, symbol, name, htmlcode, req.user)

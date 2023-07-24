@@ -10,9 +10,12 @@ const KnexSessionStore = require('connect-session-knex')(session);
 const app = express();
 const port = process.env.PORT || 3000;
 const cookieParser = require('cookie-parser');
+const auth = require('express-rbac');
+
 
 const authRouter = require("./routes/auth.js");
 const radionuclideRouter = require("./routes/radionuclide.js");
+const professionRouter = require("./routes/profession.js");
 
 const sessionStore = new KnexSessionStore({
   knex,
@@ -36,8 +39,19 @@ app.use(session({
 
 app.use(passport.authenticate('session'));
 
+app.use(auth.authorize({
+  bindToProperty: 'user'
+}, function(req, done) {
+      var auth = {
+        roles: ['Super Admin', 'User'],
+        permissions: ['CanAddContent', 'CanRemoveContent']
+    };
+    done(auth);
+}))
+
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/references/radionuclide", radionuclideRouter);
+app.use("/api/v1/references/profession", professionRouter);
 
 app.get("/", async (req, res) => {
     const users = await knex.select().table("users");

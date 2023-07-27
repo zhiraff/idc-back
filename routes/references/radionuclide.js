@@ -28,29 +28,62 @@
 *  */
 
 require("dotenv").config();
-const knex = require("../knex_init");
+const knex = require("../../knex_init");
 const express = require("express");
 const router = express.Router();
-const crypto = require("crypto");
-const passport = require('passport');
-const LocalStrategy = require('passport-local');
-//const LocalApiKeyStrategy = require('passport-localapikey');
-const alg = "sha256"; // алгоритм хеширования
-const enc = "hex"; // кодировка вычесленного хеша
-//const secure = require('rbac/controllers/express'); //middleware для rbac
-//const rbac = require('../rbac_init')  //сам rbac
 
 //Методы работы с радионуклидами
 //Получить список радионуклидов, с постраничной пагинацией
-const getRadionuclide = async (page, perpage) => {
+const getRadionuclide = async (page, perpage, sort) => {
   const pg = typeof page !== 'undefined' && page !== '' ? page : 1
   const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
-  return knex("radionuclide").select().limit(prpg).offset((pg-1)*prpg)
+      let sortField = 'id'
+  let sortDirect = 'asc'
+  if (typeof sort !== 'undefined'){
+    if (sort.startsWith('-')){
+      sortField = sort.slice(1)
+      sortDirect = 'desc'
+    }else{
+      sortField = sort
+    }
+  }
+  return knex("radionuclide").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+}
+
+//Получить список радионуклидов, с по различным параметрам
+const getRadionuclideParam = async (symbol, name, htmlcode, page, perpage, sort) => {
+  const pg = typeof page !== 'undefined' && page !== '' ? page : 1
+  const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
+      let sortField = 'id'
+  let sortDirect = 'asc'
+  if (typeof sort !== 'undefined'){
+    if (sort.startsWith('-')){
+      sortField = sort.slice(1)
+      sortDirect = 'desc'
+    }else{
+      sortField = sort
+    }
+  }
+  queryObject = {}
+  if (typeof symbol !== 'undefined'){
+    queryObject['symbol'] = symbol
+  }
+  if (typeof name !== 'undefined'){
+    queryObject['name'] = name
+  }
+    if (typeof htmlcode !== 'undefined'){
+    queryObject['htmlcode'] = htmlcode
+  }
+
+  return knex("radionuclide").select()
+  .orderBy(sortField, sortDirect)
+  .where(queryObject).limit(prpg)
+  .offset((pg-1)*prpg)
 }
 //Показать радионуклид подробно
 const getOneRadionuclide = async(radionuclideId) => {
   //knex("sessions").first("id", "userId", "sessionId").where({ sessionId: sessionId });
-  return knex("radionuclide").first("id", "name", "symbol").where({ id: radionuclideId })
+  return knex("radionuclide").first().where({ id: radionuclideId })
 }
 
 //Создать радионуклид
@@ -59,23 +92,39 @@ const creatRadionuclide = async(symbol, name, htmlcode, user) => {
     symbol: symbol,
     name: name,
     htmlcode: typeof htmlcode !== 'undefined' ? htmlcode : "",
-    createdBy: typeof user !== 'undefined' ? user : "",
-    updatedBy: typeof user !== 'undefined' ? user : "",
+    createdBy: typeof user !== 'undefined' ? user : "unknown",
+    updatedBy: typeof user !== 'undefined' ? user : "unknown",
   };
   await knex("radionuclide").insert([newRadionuclide]);
   return newRadionuclide;
 }
 // обновление радионуклида
  const updateRadionuclide = async (radionuclideId, symbol, name, htmlcode, user) => {
-  const usr = typeof user !== 'undefined' ? user : ""
+  const usr = typeof user !== 'undefined' ? user : "unknown"
+  let updateObject = {}
+  if (typeof symbol !== 'undefined'){
+    updateObject['symbol'] = symbol
+  }
+
+  if (typeof name !== 'undefined'){
+    updateObject['name'] = name
+  }
+
+  if (typeof htmlcode !== 'undefined'){
+    updateObject['htmlcode'] = htmlcode
+  }
+  updateObject['updateBy'] = usr
    return knex("radionuclide")
     .where({ id: radionuclideId })
+    .update(updateObject);
+/*
     .update({
       symbol: symbol,
       name: name,
       htmlcode: htmlcode,
       updatedBy: usr
     });
+    */
  }
 
  //удаление радионуклида
@@ -88,8 +137,35 @@ const creatRadionuclide = async(symbol, name, htmlcode, user) => {
 router.get("/", (req, res) => {
   const page = req.query.page;
   const perpage = req.query.perpage;
-  console.log(req.user)
-    getRadionuclide(page, perpage).then((data) => {
+  const sort = req.query.sort;
+  //console.log(req.user)
+    getRadionuclide(page, perpage, sort).then((data) => {
+      res.status(200).json({
+        status: "success",
+        data: data
+        }
+        );
+    })
+    .catch((err)=>{
+      console.log(err)
+      res.status(400).json({
+        status: "error",
+        data: ""
+      })
+    })
+});
+
+//поиск радионуклидов
+router.get("/search", (req, res) => {
+  const page = req.query.page;
+  const perpage = req.query.perpage;
+  const symbol = req.query.symbol;
+  const name = req.query.name;
+  const htmlcode = req.query.htmlcode;
+  const sort = req.query.sort;
+  //console.log(req.user)
+    //getRadionuclide(page, perpage).then((data) => {
+      getRadionuclideParam(symbol, name, htmlcode, page, perpage, sort).then((data) => {
       res.status(200).json({
         status: "success",
         data: data
@@ -155,7 +231,7 @@ if (typeof symbol === 'undefined' && typeof name === 'undefined' && typeof htmlc
 router.patch("/:id", (req, res) => {
  const radionuclideId = req.params.id
  const {symbol, name, htmlcode} = req.body;
- console.log(`symbol, name, htmlcode ${symbol}, ${name}, ${htmlcode}`)
+// console.log(`symbol, name, htmlcode ${symbol}, ${name}, ${htmlcode}`)
  if (typeof symbol === 'undefined' && typeof name === 'undefined' && typeof htmlcode === 'undefined'){
   return res.status(400).json({
     status: "error",

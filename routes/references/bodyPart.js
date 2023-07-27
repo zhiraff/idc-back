@@ -1,5 +1,3 @@
-//require("dotenv").config();
-//const knex = require("../../knex_init");
 const express = require("express");
 const router = express.Router();
 
@@ -51,7 +49,7 @@ router.get("/search", (req, res) => {
 
 });
 
-//Показать части тела подробно
+//Показать часть тела подробно
 router.get("/:id", (req, res) => {
   const bodypartId = req.params.id;
   bodyPartController.getOne(bodypartId)

@@ -52,7 +52,7 @@ const getProfessionParam = async (page, perpage, division, code, name, okz, sort
 }
 
 //Показать профессию подробно
-const getOneprofession = async(professionId) => {
+const getOneProfession = async(professionId) => {
   //knex("sessions").first("id", "userId", "sessionId").where({ sessionId: sessionId });
   return knex("profession").first().where({ id: professionId })
 }

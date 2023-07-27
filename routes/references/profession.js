@@ -39,7 +39,7 @@
 *           okz: 2132
 *  */
 //require("dotenv").config();
-const knex = require("../../knex_init");
+//const knex = require("../../knex_init");
 const express = require("express");
 const router = express.Router();
 

@@ -38,111 +38,21 @@
 *           etks_category: 2
 *           okz: 2132
 *  */
-require("dotenv").config();
-const knex = require("../knex_init");
+//require("dotenv").config();
+const knex = require("../../knex_init");
 const express = require("express");
 const router = express.Router();
 
-//Методы работы с профессиями
-//Получить список профессий, с постраничной пагинацией
-const getProfession = async (page, perpage) => {
-  const pg = typeof page !== 'undefined' && page !== '' ? page : 1
-  const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
-  return knex("profession").select().limit(prpg).offset((pg-1)*prpg)
-}
-
-const getProfessionParam = async (page, perpage, division, code, name, okz) => {
-  const pg = typeof page !== 'undefined' && page !== '' ? page : 1
-  const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
-  let queryObject = {}
-  if (typeof division !== 'undefined' && division !== ''){
-    queryObject['division'] = division
-  }
-    if (typeof code !== 'undefined' && code !== ''){
-    queryObject['code'] = code
-  }
-    if (typeof name !== 'undefined' && name !== ''){
-    queryObject['name'] = name
-  }
-    if (typeof okz !== 'undefined' && okz !== ''){
-    queryObject['okz'] = okz
-  }
-  //const div = typeof division !== 'undefined' && division !== '' ? division : null
-  //const cd = typeof code !== 'undefined' && code !== '' ? code : null
-  //const nm = typeof name !== 'undefined' && name !== '' ? name : null
-  //const okz = typeof okzz !== 'undefined' && okzz !== '' ? okzz : null
-  //console.log(queryObject)
-  return knex("profession").select()
-  .where(queryObject)
-  .limit(prpg).offset((pg-1)*prpg)
-}
-
-//Показать профессию подробно
-const getOneprofession = async(professionId) => {
-  //knex("sessions").first("id", "userId", "sessionId").where({ sessionId: sessionId });
-  return knex("profession").first("id", "division", "code", "name", "okz").where({ id: professionId })
-}
-
-//Создать профессию
-const creatProfession = async(division, code, name, okz, cn, etks, user) => {
-  const newProfession = {
-    division: division,
-    code: Number(code),
-    name: name,
-    okz: typeof okz !== 'undefined' ? okz : "",
-    controlNumber: typeof cn !== 'undefined' ? Number(cn) : 0,
-    etks_category: typeof etks !== 'undefined' ? etks : "",
-    createdBy: typeof user !== 'undefined' ? user : "",
-    updatedBy: typeof user !== 'undefined' ? user : "",
-  };
-  await knex("profession").insert([newProfession]);
-  return newProfession;
-}
-
-// обновление профессии
- const updateProfession = async (professionId, division, code, name, okz, cn, etks, user) => {
-    let updateObject = {}
-  if (typeof division !== 'undefined' && division !== ''){
-    updateObject['division'] = division
-  }
-    if (typeof code !== 'undefined' && code !== ''){
-    updateObject['code'] = code
-  }
-    if (typeof name !== 'undefined' && name !== ''){
-    updateObject['name'] = name
-  }
-    if (typeof okz !== 'undefined' && okz !== ''){
-    updateObject['okz'] = okz
-  }
-      if (typeof cn !== 'undefined'){
-    updateObject['controlNumber'] = cn
-  }
-      if (typeof etks !== 'undefined' && etks !== ''){
-    updateObject['etks_category'] = etks
-  }
-      if (typeof user !== 'undefined' && user !== ''){
-    updateObject['updatedBy'] = user
-  }else{
-    updateObject['updatedBy'] = 'unknown'
-  }
-   return knex("profession")
-    .where({ id: professionId })
-    .update(updateObject
-);
- }
-
- //удаление профессии
- const deleteProfession = async (professionId) => {
-  return knex("profession").where({ id: professionId }).del()
- }
+const professionController = require("../../controllers/references/profession.js")
 
 //запросы api
 //получение всех профессий
 router.get("/", (req, res) => {
   const page = req.query.page;
   const perpage = req.query.perpage;
+  const sort = req.query.sort;
   //console.log(req.user)
-    getProfession(page, perpage).then((data) => {
+    professionController.get(page, perpage, sort).then((data) => {
       res.status(200).json({
         status: "success",
         data: data
@@ -167,8 +77,9 @@ router.get("/search", (req, res) => {
   const code = req.query.code;
   const name = req.query.name;
   const okz = req.query.okz;
+  const sort = req.query.sort;
   //console.log(req.user)
-        getProfessionParam(page, perpage, division, code, name, okz).then((data) => {
+        professionController.getByParam(page, perpage, division, code, name, okz, sort).then((data) => {
       res.status(200).json({
         status: "success",
         data: data
@@ -187,7 +98,7 @@ router.get("/search", (req, res) => {
 //Показать профессию подробно
 router.get("/:id", (req, res) => {
   const professionId = req.params.id;
-  getOneprofession(professionId)
+  professionController.getOne(professionId)
   .then((data) => {
     res.status(200).json({
       status: "success",
@@ -213,7 +124,7 @@ if (typeof code === 'undefined' || typeof name === 'undefined'){
     data: "Не хватает code или name"
   })
 }
-  creatProfession(division, code, name, okz, cn, etks, req.user)
+  professionController.create(division, code, name, okz, cn, etks, req.user)
   .then((result) => {
     res.status(200).json({
       status: "success",
@@ -245,7 +156,7 @@ router.patch("/:id", (req, res) => {
     data: "Нечего обновлять"
   })
  }
- updateProfession(professionId,  division, code, name, okz, cn, etks, req.user)
+ professionController.update(professionId,  division, code, name, okz, cn, etks, req.user)
  .then((data)=>{
   res.status(200).json({
     status: "success",
@@ -266,7 +177,7 @@ router.patch("/:id", (req, res) => {
 router.delete("/:id", (req, res) => {
  const professionId = req.params.id
 
- deleteProfession(professionId)
+ professionController.delete(professionId)
  .then((data)=>{
   res.status(200).json({
     status: "success",

@@ -22,8 +22,8 @@ exports.up = function(knex) {
 })
 .then(() => {
     try {
-        const prof = require(`../OKDPTR/${profFile}`) //список профессий
-        const dolj = require(`../OKDPTR/${doljFile}`) //список должностей
+        const prof = require(`./OKDPTR/${profFile}`) //список профессий
+        const dolj = require(`./OKDPTR/${doljFile}`) //список должностей
         prof.forEach(element => {
         element['division'] = "Профессии рабочих"
         element['code'] = Number(element.KOD)

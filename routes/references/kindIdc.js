@@ -1,4 +1,4 @@
-//require("dotenv").config();
+
 const knex = require("../../knex_init");
 const express = require("express");
 const router = express.Router();
@@ -8,6 +8,9 @@ const kindIdcController = require("../../controllers/references/kindIdc.js")
 //запросы api
 //получение всех виды ИДК
 router.get("/", (req, res) => {
+      /* #swagger.tags = ['kindIdc']
+       #swagger.description = 'Показ всех видов ИДК'
+  */
   const page = req.query.page;
   const perpage = req.query.perpage;
   const sort = req.query.sort;
@@ -30,6 +33,9 @@ router.get("/", (req, res) => {
 
 //Поиск виды ИДК
 router.get("/search", (req, res) => {
+        /* #swagger.tags = ['kindIdc']
+       #swagger.description = 'Поиск видов ИДК'
+  */
   const page = req.query.page;
   const perpage = req.query.perpage;
   const type = req.query.type;
@@ -55,6 +61,9 @@ router.get("/search", (req, res) => {
 
 //Показать виды ИДК подробно
 router.get("/:id", (req, res) => {
+        /* #swagger.tags = ['kindIdc']
+       #swagger.description = 'Показать запись подробно'
+  */
   const kindidcId = req.params.id;
   kindIdcController.getOne(kindidcId)
   .then((data) => {
@@ -74,6 +83,9 @@ router.get("/:id", (req, res) => {
 
 //создание виды ИДК
 router.post("/", (req, res) => {
+          /* #swagger.tags = ['kindIdc']
+       #swagger.description = Создать новую запись'
+  */
  const { type, kind, kindShort } = req.body;
 //console.log(`symbol, name, htmlcode ${symbol}, ${name}, ${htmlcode}`)
 if (typeof type === 'undefined' || 
@@ -102,6 +114,9 @@ if (typeof type === 'undefined' ||
 
 //обновление виды ИДК
 router.patch("/:id", (req, res) => {
+          /* #swagger.tags = ['kindIdc']
+       #swagger.description = 'Обновить запись'
+  */
  const kindidcId = req.params.id
  const {type, kind, kindShort} = req.body;
 
@@ -132,6 +147,9 @@ router.patch("/:id", (req, res) => {
 
 //удаление виды ИДК
 router.delete("/:id", (req, res) => {
+          /* #swagger.tags = ['kindIdc']
+       #swagger.description = 'Удалить запись'
+  */
  const kindidcId = req.params.id
 
  kindIdcController.delete(kindidcId)

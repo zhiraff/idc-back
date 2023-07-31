@@ -5,6 +5,9 @@ const bodyPartController = require("../../controllers/references/bodyPart.js")
 
 //получение всех части тела
 router.get("/", (req, res) => { 
+  /* #swagger.tags = ['bodyPart']
+       #swagger.description = 'Показ всех частей тела'
+  */
   const page = req.query.page;
   const perpage = req.query.perpage;
   const sort = req.query.sort;
@@ -27,6 +30,9 @@ router.get("/", (req, res) => {
 
 //Поиск части тела
 router.get("/search", (req, res) => {
+    /* #swagger.tags = ['bodyPart']
+       #swagger.description = 'Поиск частей тела'
+  */
   const page = req.query.page;
   const perpage = req.query.perpage;
   const type = req.query.type;
@@ -51,6 +57,9 @@ router.get("/search", (req, res) => {
 
 //Показать часть тела подробно
 router.get("/:id", (req, res) => {
+    /* #swagger.tags = ['bodyPart']
+       #swagger.description = 'Просмотр записи подробно'
+  */
   const bodypartId = req.params.id;
   bodyPartController.getOne(bodypartId)
   .then((data) => {
@@ -71,6 +80,9 @@ router.get("/:id", (req, res) => {
 
 //создание части тела
 router.post("/", (req, res) => {
+    /* #swagger.tags = ['bodyPart']
+       #swagger.description = 'Создание записи'
+  */
  const { type, name } = req.body;
 //console.log(`symbol, name, htmlcode ${symbol}, ${name}, ${htmlcode}`)
 if (typeof type === 'undefined' || 
@@ -99,6 +111,9 @@ bodyPartController.create(type, name, req.user)
 
 //обновление части тела
 router.patch("/:id", (req, res) => {
+    /* #swagger.tags = ['bodyPart']
+       #swagger.description = 'Обновление записи'
+  */
  const bodypartId = req.params.id
  const {type, name} = req.body;
 
@@ -128,6 +143,9 @@ router.patch("/:id", (req, res) => {
 
 //удаление части тела
 router.delete("/:id", (req, res) => {
+    /* #swagger.tags = ['bodyPart']
+       #swagger.description = 'Удаление записи'
+  */
  const bodypartId = req.params.id
  bodyPartController.delete(bodypartId)
  .then((data)=>{

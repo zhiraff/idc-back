@@ -6,6 +6,9 @@ const userController = require("../../controllers/references/user.js")
 //запросы api
 //получение всех пользователей
 router.get("/", (req, res) => {
+  /* #swagger.tags = ['user']
+     #swagger.description = 'Показать всех пользователей'
+  */
   const page = req.query.page;
   const perpage = req.query.perpage;
   const sort = req.query.sort;
@@ -28,6 +31,9 @@ router.get("/", (req, res) => {
 
 //Поиск пользователя
 router.get("/search", (req, res) => {
+  /* #swagger.tags = ['user']
+     #swagger.description = 'Поиск пользователей'
+  */
    // username, firstName, secondName, thirdName, role
   const page = req.query.page;
   const perpage = req.query.perpage;
@@ -56,6 +62,9 @@ router.get("/search", (req, res) => {
 
 //Показать пользователя подробно
 router.get("/:id", (req, res) => {
+  /* #swagger.tags = ['user']
+     #swagger.description = 'Показать пользователя подробно'
+  */
   const userId = req.params.id;
   userController.getOne(userId)
   .then((data) => {
@@ -75,6 +84,9 @@ router.get("/:id", (req, res) => {
 
 //создание пользователя
 router.post("/", (req, res) => {
+  /* #swagger.tags = ['user']
+     #swagger.description = 'Созданпе новой записи'
+  */
 // username, password, firstName, secondName, thirdName, role
  const { username, password, firstName, secondName, thirdName, role } = req.body;
 //console.log(`symbol, name, htmlcode ${symbol}, ${name}, ${htmlcode}`)
@@ -104,6 +116,9 @@ if (typeof username === 'undefined' ||
 
 //обновление пользователя
 router.patch("/:id", (req, res) => {
+  /* #swagger.tags = ['user']
+     #swagger.description = Обновление записи'
+  */
  const userId = req.params.id
  const {username, password, firstName, secondName, thirdName, role } = req.body;
 
@@ -137,6 +152,9 @@ router.patch("/:id", (req, res) => {
 
 //удаление пользователя
 router.delete("/:id", (req, res) => {
+  /* #swagger.tags = ['user']
+     #swagger.description = 'Удаление записи'
+  */
  const userId = req.params.id
  userController.delete(userId)
  .then((data)=>{

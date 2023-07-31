@@ -6,6 +6,9 @@ const departmentController = require("../../controllers/references/department.js
 //запросы api
 //получение всех подразделения
 router.get("/", (req, res) => {
+    /* #swagger.tags = ['department']
+       #swagger.description = 'Показ всех подразделений'
+  */
   const page = req.query.page;
   const perpage = req.query.perpage;
   const sort = req.query.sort;
@@ -28,6 +31,9 @@ router.get("/", (req, res) => {
 
 //Поиск подразделения
 router.get("/search", (req, res) => {
+      /* #swagger.tags = ['department']
+       #swagger.description = 'Поиск подразделений'
+  */
    // parent_id, begin, end, code, name, department_item_id, full_name, address
   const page = req.query.page;
   const perpage = req.query.perpage;
@@ -59,6 +65,9 @@ router.get("/search", (req, res) => {
 
 //Показать подразделения подробно
 router.get("/:id", (req, res) => {
+      /* #swagger.tags = ['department']
+       #swagger.description = 'Показать запись подробно'
+  */
   const departmentId = req.params.id;
   departmentController.getOne(departmentId)
   .then((data) => {
@@ -78,6 +87,9 @@ router.get("/:id", (req, res) => {
 
 //создание подразделения
 router.post("/", (req, res) => {
+      /* #swagger.tags = ['department']
+       #swagger.description = 'Создать запись'
+  */
 // parent_id, begin, end, code, name, department_item_id, full_name, address
  const { parent_id, begin, end, code, name, department_item_id, full_name, address } = req.body;
 //console.log(`symbol, name, htmlcode ${symbol}, ${name}, ${htmlcode}`)
@@ -107,6 +119,9 @@ if (typeof begin === 'undefined' ||
 
 //обновление подразделения
 router.patch("/:id", (req, res) => {
+      /* #swagger.tags = ['department']
+       #swagger.description = 'Обновить запись'
+  */
  const departmentId = req.params.id
  const {parent_id, begin, end, code, name, department_item_id, full_name, address } = req.body;
 
@@ -142,6 +157,9 @@ router.patch("/:id", (req, res) => {
 
 //удаление подразделения
 router.delete("/:id", (req, res) => {
+      /* #swagger.tags = ['department']
+       #swagger.description = 'Удалить запись'
+  */
  const departmentId = req.params.id
 
  departmentController.delete(departmentId)

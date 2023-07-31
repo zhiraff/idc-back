@@ -1,8 +1,8 @@
 require("dotenv").config();
 const knex = require("./knex_init");
-
+const fs = require('fs');
 const express = require("express");
-const swaggerJsdoc = require("swagger-jsdoc");
+//const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 const passport = require('passport');
 const session = require('express-session');
@@ -11,6 +11,15 @@ const app = express();
 const port = process.env.PORT || 3000;
 const cookieParser = require('cookie-parser');
 const auth = require('express-rbac');
+
+//Настройка swagger-autogen
+const swaggerFile = JSON.parse(fs.readFileSync('./swagger/output.json'))
+
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerFile)
+);
 
 //Подключение middleware для работы
 const authRouter = require("./routes/auth.js");
@@ -78,13 +87,9 @@ app.get("/", async (req, res) => {
 
 
 
-const specs = swaggerJsdoc(require("./swagger-option.js"));
+//const specs = swaggerJsdoc(require("./swagger-option.js"));
 
-app.use(
-  "/api-docs",
-  swaggerUi.serve,
-  swaggerUi.setup(specs, { explorer: true })
-);
+
 
 app.listen(port, () => {
     console.log(`Server listening on http://localhost:${port}`)

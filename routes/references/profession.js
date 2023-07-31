@@ -1,45 +1,4 @@
-/**  
-*   @swagger
-*   components:
-*     schemas:
-*       profession:
-*         type: object
-*         required:
-*           - code
-*           - name
-*         properties:
-*           id:
-*             type: integer
-*             description: id Профессии
-*           code:
-*             type: integer
-*             description: Код профессии
-*           name:
-*             type: string
-*             description: Название Профессии
-*           division:
-*             type: string
-*             description: Раздел (Профессии/должности)
-*           controlNumber:
-*               type: integer
-*               description: Контрольное число
-*           etks_category:
-*               type: string
-*               description: Код по ЕТКС либо категория
-*           okz:
-*               type: strin
-*               description: Код по ОКЗ (Общерос. классиф. занятий) (и такое бывает)
-*         example:
-*           id: 6388
-*           code: 22824
-*           name: Инженер-программист
-*           division: Должности служащих
-*           controlNumber: 3
-*           etks_category: 2
-*           okz: 2132
-*  */
-//require("dotenv").config();
-//const knex = require("../../knex_init");
+
 const express = require("express");
 const router = express.Router();
 
@@ -48,6 +7,9 @@ const professionController = require("../../controllers/references/profession.js
 //запросы api
 //получение всех профессий
 router.get("/", (req, res) => {
+    /* #swagger.tags = ['profession']
+       #swagger.description = 'Показать все профессии'
+  */
   const page = req.query.page;
   const perpage = req.query.perpage;
   const sort = req.query.sort;
@@ -71,6 +33,9 @@ router.get("/", (req, res) => {
 
 //Поиск профессии
 router.get("/search", (req, res) => {
+  /* #swagger.tags = ['profession']
+     #swagger.description = 'Поиск профессии'
+  */
   const page = req.query.page;
   const perpage = req.query.perpage;
   const division = req.query.division;
@@ -97,6 +62,9 @@ router.get("/search", (req, res) => {
 
 //Показать профессию подробно
 router.get("/:id", (req, res) => {
+      /* #swagger.tags = ['profession']
+       #swagger.description = 'Показать подробно профессию'
+  */
   const professionId = req.params.id;
   professionController.getOne(professionId)
   .then((data) => {
@@ -116,6 +84,9 @@ router.get("/:id", (req, res) => {
 
 //создание профессии
 router.post("/", (req, res) => {
+  /* #swagger.tags = ['profession']
+     #swagger.description = 'Создать новую запись'
+  */
  const { code, name, division, okz, cn, etks } = req.body;
 //console.log(`symbol, name, htmlcode ${symbol}, ${name}, ${htmlcode}`)
 if (typeof code === 'undefined' || typeof name === 'undefined'){
@@ -142,6 +113,9 @@ if (typeof code === 'undefined' || typeof name === 'undefined'){
 
 //обновление Профессии
 router.patch("/:id", (req, res) => {
+  /* #swagger.tags = ['profession']
+     #swagger.description = 'Обновить запись'
+  */
  const professionId = req.params.id
  const {code, name, division, okz, cn, etks} = req.body;
 
@@ -175,6 +149,9 @@ router.patch("/:id", (req, res) => {
 
 //удаление профессии
 router.delete("/:id", (req, res) => {
+  /* #swagger.tags = ['profession']
+     #swagger.description = 'Удалить запись'
+  */
  const professionId = req.params.id
 
  professionController.delete(professionId)

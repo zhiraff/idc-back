@@ -1,3 +1,4 @@
+const auth = require('express-rbac/lib')
 const { join, dirname } = require('path')
 const { fileURLToPath } = require('url')
 const swaggerAutogen = require('swagger-autogen')(/*options*/)
@@ -25,6 +26,44 @@ const doc = {
     },
 
   },
+  tags: [
+    {
+      name: 'auth',
+      description: 'Контроллер для аутентификации'
+    },
+    {
+      name: 'bodyPart',
+      description: 'Справочник "Части тела и органы человека"'
+    },
+    {
+      name: 'department',
+      description: 'Справочник "Перечень кодов подразделений и их наименование"'
+    },
+    {
+      name: 'kindIdc',
+      description: 'Справочник "Виды ИДК"'
+    },
+    {
+      name: 'limitValue',
+      description: 'Справочник "Контрольные числовые значения поступления/содержания радионуклидов"'
+    },
+    {
+      name: 'profession',
+      description: 'Справочник "Перечень должностей/профессий"'
+    },
+    {
+      name: 'radionuclide',
+      description: 'Справочник "Перечень радионуклидов"'
+    },
+    {
+      name: 'user',
+      description: 'Справочник "Пользователи АС"'
+    },
+    {
+      name: 'personnel',
+      description: 'Контроллируемый персонал"'
+    },
+  ],
   host: 'localhost:3000',
   schemes: ['http']
 }

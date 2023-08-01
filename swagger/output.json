@@ -15,6 +15,44 @@
   },
   "host": "localhost:3000",
   "basePath": "/",
+  "tags": [
+    {
+      "name": "auth",
+      "description": "Контроллер для аутентификации"
+    },
+    {
+      "name": "bodyPart",
+      "description": "Справочник \"Части тела и органы человека\""
+    },
+    {
+      "name": "department",
+      "description": "Справочник \"Перечень кодов подразделений и их наименование\""
+    },
+    {
+      "name": "kindIdc",
+      "description": "Справочник \"Виды ИДК\""
+    },
+    {
+      "name": "limitValue",
+      "description": "Справочник \"Контрольные числовые значения поступления/содержания радионуклидов\""
+    },
+    {
+      "name": "profession",
+      "description": "Справочник \"Перечень должностей/профессий\""
+    },
+    {
+      "name": "radionuclide",
+      "description": "Справочник \"Перечень радионуклидов\""
+    },
+    {
+      "name": "user",
+      "description": "Справочник \"Пользователи АС\""
+    },
+    {
+      "name": "personnel",
+      "description": "Контроллируемый персонал\""
+    }
+  ],
   "schemes": [
     "http"
   ],
@@ -170,6 +208,257 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/personnel/": {
+      "get": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Получить весь персонал (и на контроле и не на контроле)",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/personnel/search": {
+      "get": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Поиск человека (и на контроле и не на контроле)",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/personnel/control": {
+      "get": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Показать весь персонал стоящий на контроле",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/personnel/control/search": {
+      "get": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Поиск человека среди стоящих на контроле",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/personnel/whole": {
+      "post": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Добавить персонал (передавать нужно сразу физ.лицо+адреса+документы+места+рождение)",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/personnel/fl": {
+      "post": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Создать физическое лицо",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/personnel/fio": {
+      "post": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Создать запись в таблице изменений ФИО у физ.лица",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/personnel/born": {
+      "post": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Создать запись в таблице рождение у физ.лица",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/personnel/docs": {
+      "post": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Создать запись в таблице документы у физ.лица",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/personnel/address": {
+      "post": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Создать запись в таблице адреса у физ.лица",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "flKey": {
+                  "example": "any"
+                },
+                "type": {
+                  "example": "any"
+                },
+                "zipCode": {
+                  "example": "any"
+                },
+                "country": {
+                  "example": "any"
+                },
+                "region": {
+                  "example": "any"
+                },
+                "area": {
+                  "example": "any"
+                },
+                "city": {
+                  "example": "any"
+                },
+                "street": {
+                  "example": "any"
+                },
+                "home": {
+                  "example": "any"
+                },
+                "struct": {
+                  "example": "any"
+                },
+                "build": {
+                  "example": "any"
+                },
+                "appart": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
           }
         }
       }

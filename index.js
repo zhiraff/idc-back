@@ -23,6 +23,7 @@ app.use(
 
 //Подключение middleware для работы
 const authRouter = require("./routes/auth.js");
+const personnelRouter = require("./routes/personnel.js");
 //Подключение middleware для работы справочников
 const radionuclideRouter = require("./routes/references/radionuclide.js");
 const professionRouter = require("./routes/references/profession.js");
@@ -31,6 +32,7 @@ const bodyPartRouter = require("./routes/references/bodyPart.js");
 const kindIdcRouter = require("./routes/references/kindIdc.js");
 const departmentRouter = require("./routes/references/department.js");
 const userRouter = require("./routes/references/user.js");
+
 
 const sessionStore = new KnexSessionStore({
   knex,
@@ -66,6 +68,7 @@ app.use(auth.authorize({
 
 //привязка маршрутов справочников к middleware справочников
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/personnel", personnelRouter);
 app.use("/api/v1/references/radionuclide", radionuclideRouter);
 app.use("/api/v1/references/profession", professionRouter);
 app.use("/api/v1/references/limitvalue", limitValueRouter);

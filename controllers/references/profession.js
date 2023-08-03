@@ -69,7 +69,8 @@ const creatProfession = async(division, code, name, okz, cn, etks, user) => {
     createdBy: typeof user !== 'undefined' ? user : "",
     updatedBy: typeof user !== 'undefined' ? user : "",
   };
-  await knex("profession").insert([newProfession]);
+   const result = await knex("profession").insert([newProfession], ["id"]);
+   newProfession['id'] = result[0].id
   return newProfession;
 }
 

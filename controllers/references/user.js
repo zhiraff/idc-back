@@ -97,7 +97,8 @@ const creatUser = async(username, password, firstName, secondName, thirdName, ro
     newUser['thirdName'] = thirdName
   }
  
-  await knex("users").insert([newUser]);
+   const result = await knex("users").insert([newUser], ["id"]);
+   newUser['id'] = result[0].id
   return newUser;
 }
 

@@ -98,7 +98,8 @@ const creatDepartment = async(parent_id, begin, end, code, name, department_item
       if (typeof address !== 'undefined'){
     newDepartment['address'] = address
   }
-  await knex("department").insert([newDepartment]);
+   const result = await knex("department").insert([newDepartment], ["id"]);
+   newDepartment['id'] = result[0].id
   return newDepartment;
 }
 

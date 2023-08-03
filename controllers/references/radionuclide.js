@@ -64,7 +64,8 @@ const creatRadionuclide = async(symbol, name, htmlcode, user) => {
     createdBy: typeof user !== 'undefined' ? user : "unknown",
     updatedBy: typeof user !== 'undefined' ? user : "unknown",
   };
-  await knex("radionuclide").insert([newRadionuclide]);
+   const result = await knex("radionuclide").insert([newRadionuclide], ["id"]);
+   newRadionuclide['id'] = result[0].id
   return newRadionuclide;
 }
 // обновление радионуклида

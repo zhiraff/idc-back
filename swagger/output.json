@@ -354,9 +354,68 @@
           "personnel"
         ],
         "description": "Создать физическое лицо",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "signImport": {
+                  "example": "any"
+                },
+                "firstName": {
+                  "example": "any"
+                },
+                "secondName": {
+                  "example": "any"
+                },
+                "thirdName": {
+                  "example": "any"
+                },
+                "sex": {
+                  "example": "any"
+                },
+                "family": {
+                  "example": "any"
+                },
+                "snils": {
+                  "example": "any"
+                },
+                "inn": {
+                  "example": "any"
+                },
+                "organization": {
+                  "example": "any"
+                },
+                "department": {
+                  "example": "any"
+                },
+                "departmentMCC": {
+                  "example": "any"
+                },
+                "jobCode": {
+                  "example": "any"
+                },
+                "tabNum": {
+                  "example": "any"
+                },
+                "accNum": {
+                  "example": "any"
+                },
+                "id_kadr": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
           }
         }
       }
@@ -367,9 +426,41 @@
           "personnel"
         ],
         "description": "Создать запись в таблице изменений ФИО у физ.лица",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "flKey": {
+                  "example": "any"
+                },
+                "firstName": {
+                  "example": "any"
+                },
+                "secondName": {
+                  "example": "any"
+                },
+                "thirdName": {
+                  "example": "any"
+                },
+                "date": {
+                  "example": "any"
+                },
+                "comment": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
           }
         }
       }
@@ -380,9 +471,41 @@
           "personnel"
         ],
         "description": "Создать запись в таблице рождение у физ.лица",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "flKey": {
+                  "example": "any"
+                },
+                "date": {
+                  "example": "any"
+                },
+                "country": {
+                  "example": "any"
+                },
+                "region": {
+                  "example": "any"
+                },
+                "area": {
+                  "example": "any"
+                },
+                "locality": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
           }
         }
       }
@@ -393,9 +516,47 @@
           "personnel"
         ],
         "description": "Создать запись в таблице документы у физ.лица",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "flKey": {
+                  "example": "any"
+                },
+                "name": {
+                  "example": "any"
+                },
+                "serial": {
+                  "example": "any"
+                },
+                "number": {
+                  "example": "any"
+                },
+                "dateIssue": {
+                  "example": "any"
+                },
+                "whoIssue": {
+                  "example": "any"
+                },
+                "podrIssue": {
+                  "example": "any"
+                },
+                "active": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
           }
         }
       }

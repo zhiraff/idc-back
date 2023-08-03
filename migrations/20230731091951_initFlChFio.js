@@ -11,7 +11,7 @@ exports.up = function(knex) {
     table.string("firstName", 255).comment('Имя');
     table.string("secondName", 255).comment('Фамилия');
     table.string("thirdName", 255).comment('Отчество');
-    table.date("date").comment('Дата изменения');
+    table.date("date").notNullable().comment('Дата изменения');
     table.string("comment", 255).comment('Комментарий');
     table.timestamps(true, true, true);
     table.string("createdBy").notNullable();

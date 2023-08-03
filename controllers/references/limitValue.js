@@ -68,7 +68,8 @@ const creatValue = async(radionuclide_id, indicator, value, gister, user) => {
     createdBy: typeof user !== 'undefined' ? user : "unknown",
     updatedBy: typeof user !== 'undefined' ? user : "unknown",
   };
-  await knex("limitValue").insert([newValue]);
+   const result = await knex("limitValue").insert([newValue], ["id"]);
+   newValue['id'] = result[0].id
   return newValue;
 }
 

@@ -49,9 +49,125 @@ const createAddres = async (flKey, type, zipCode, country, region, area, city, s
     if (typeof build !== 'undefined'){
         createObject['build'] = build
     }
-    await knex("fl_addres").insert([createObject]);
+    const result = await knex("fl_address").insert([createObject], ["id"]);
+    createObject['id'] = result[0].id
     return createObject;
 }
+
+const createDocs = async (flKey, name, serial, number, dateIssue, whoIssue, podrIssue, active, user) => {
+    createObject = {
+        flKey: flKey,
+        name: name,
+        number: number,
+        serial: serial,
+        dateIssue: dateIssue,
+        whoIssue: whoIssue,
+        podrIssue: podrIssue,
+
+        createdBy: typeof user !== 'undefined' ? user : "unknown",
+        updatedBy: typeof user !== 'undefined' ? user : "unknown",
+    }
+    if (typeof active !== 'undefined'){
+        createObject['active'] = active
+    }
+    
+    const result = await knex("fl_docs").insert([createObject], ["id"]);
+    createObject['id'] = result[0].id
+    return createObject;
+}
+
+const createBorn = async (flKey, date, country, region, area, locality, user) => {
+    createObject = {
+        flKey: flKey,
+        date: date,
+        country: country,
+        region: region,
+        locality: locality,
+        createdBy: typeof user !== 'undefined' ? user : "unknown",
+        updatedBy: typeof user !== 'undefined' ? user : "unknown",
+    }
+    if (typeof area !== 'undefined'){
+        createObject['area'] = area
+    }
+    
+    const result = await knex("fl_born").insert([createObject], ["id"]);
+    createObject['id'] = result[0].id
+    return createObject;
+}
+
+const createFio = async (flKey, firstName, secondName, thirdName, date, comment, user) => {
+    createObject = {
+        flKey: flKey,
+        date: date,
+        createdBy: typeof user !== 'undefined' ? user : "unknown",
+        updatedBy: typeof user !== 'undefined' ? user : "unknown",
+    }
+    if (typeof firstName !== 'undefined'){
+        createObject['firstName'] = firstName
+    }
+    if (typeof secondName !== 'undefined'){
+        createObject['secondName'] = secondName
+    }
+    if (typeof thirdName !== 'undefined'){
+        createObject['thirdName'] = thirdName
+    }
+    if (typeof comment !== 'undefined'){
+        createObject['comment'] = comment
+    }
+    
+    const result = await knex("fl_fio").insert([createObject], ["id"]);
+    createObject['id'] = result[0].id
+    return createObject;
+}
+
+const createFl = async ( signImport, firstName, secondName, thirdName, sex,
+                family, snils, inn, organization, department, departmentMCC,
+                jobCode, tabNum, accNum, id_kadr, user) => {
+    createObject = {
+        sex: sex,
+        family: family,
+        organization: organization,
+        jobCode: jobCode,
+        accNum: accNum,
+        createdBy: typeof user !== 'undefined' ? user : "unknown",
+        updatedBy: typeof user !== 'undefined' ? user : "unknown",
+    }
+    if (typeof signImport !== 'undefined'){
+        createObject['signImport'] = signImport
+    }
+    if (typeof firstName !== 'undefined'){
+        createObject['firstName'] = firstName
+    }
+    if (typeof secondName !== 'undefined'){
+        createObject['secondName'] = secondName
+    }
+    if (typeof thirdName !== 'undefined'){
+        createObject['thirdName'] = thirdName
+    }
+    if (typeof snils !== 'undefined'){
+        createObject['snils'] = snils
+    }
+    if (typeof inn !== 'undefined'){
+        createObject['inn'] = inn
+    }
+    if (typeof department !== 'undefined'){
+        createObject['department'] = department
+    }
+    if (typeof departmentMCC !== 'undefined'){
+        createObject['departmentMCC'] = departmentMCC
+    }
+    if (typeof tabNum !== 'undefined'){
+        createObject['tabNum'] = tabNum
+    }
+    if (typeof id_kadr !== 'undefined'){
+        createObject['id_kadr'] = id_kadr
+    }
+    
+    const result = await knex("FL").insert([createObject], ["id"]);
+    createObject['id'] = result[0].id
+    return createObject;
+}
+
 
 //API
 //Получить весь персонал (и контролир и не контролир)
@@ -131,7 +247,37 @@ router.post("/fl", (req, res) => {
     #swagger.tags = ['personnel']
     #swagger.description = 'Создать физическое лицо'
     */
-
+     const { signImport, firstName, secondName, thirdName, sex,
+            family, snils, inn, organization, department, departmentMCC,
+            jobCode, tabNum, accNum, id_kadr } = req.body
+    
+    //проверка на наличие обязательных базовых вещей
+    if (typeof sex === 'undefined' || sex ==='' ||
+        typeof family === 'undefined' || family ==='' ||
+        typeof organization === 'undefined' || organization ==='' ||
+        typeof jobCode === 'undefined' || jobCode ==='' ||
+        typeof accNum === 'undefined' || accNum ==='' ){
+                return res.status(400).json({
+                status: "error",
+                data: "Не хватает одного из обязательных полей (sex, family, organization, jobCode, accNum) "
+                })
+    }
+    createFl( signImport, firstName, secondName, thirdName, sex,
+            family, snils, inn, organization, department, departmentMCC,
+            jobCode, tabNum, accNum, id_kadr, req.user)
+    .then((data) => {
+        res.status(200).json({
+            "status": "success",
+            "data": data
+        })
+    })
+    .catch((err) => {
+        console.log(err)
+        res.status(400).json({
+            "status": "error",
+            "data": ""
+        })
+    })
 })
 
 //Создать новую запись в таблице изменений ФИО
@@ -140,7 +286,29 @@ router.post("/fio", (req, res) => {
     #swagger.tags = ['personnel']
     #swagger.description = 'Создать запись в таблице изменений ФИО у физ.лица'
     */
-
+    const {flKey, firstName, secondName, thirdName, date, comment } = req.body
+    //проверка на наличие обязательных базовых вещей
+    if ( typeof flKey === 'undefined' || flKey ==='' ||
+         typeof date === 'undefined' || date ==='' ){
+                return res.status(400).json({
+                status: "error",
+                data: "Не хватает одного из обязательных полей (flKey, date) "
+                })
+    }
+    createFio(flKey, firstName, secondName, thirdName, date, comment, req.user)
+    .then((data) => {
+        res.status(200).json({
+            "status": "success",
+            "data": data
+        })
+    })
+    .catch((err) => {
+        console.log(err)
+        res.status(400).json({
+            "status": "error",
+            "data": ""
+        })
+    })
 })
 
 //Создать новую запись в таблице данных о рождении
@@ -149,6 +317,32 @@ router.post("/born", (req, res) => {
     #swagger.tags = ['personnel']
     #swagger.description = 'Создать запись в таблице рождение у физ.лица'
     */
+   const {flKey, date, country, region, area, locality } = req.body
+    //проверка на наличие обязательных базовых вещей
+    if ( typeof flKey === 'undefined' || flKey ==='' ||
+         typeof date === 'undefined'  || date ===''  || 
+         typeof country === 'undefined' || country ==='' ||
+         typeof region === 'undefined' || region ==='' || 
+         typeof locality === 'undefined'  || locality ==='' ){
+                return res.status(400).json({
+                status: "error",
+                data: "Не хватает одного из обязательных полей (flKey, date, country, region, locality) "
+                })
+    }
+    createBorn(flKey, date, country, region, area, locality, req.user)
+    .then((data) => {
+        res.status(200).json({
+            "status": "success",
+            "data": data
+        })
+    })
+    .catch((err) => {
+        console.log(err)
+        res.status(400).json({
+            "status": "error",
+            "data": ""
+        })
+    })
 
 })
 
@@ -158,7 +352,34 @@ router.post("/docs", (req, res) => {
     #swagger.tags = ['personnel']
     #swagger.description = 'Создать запись в таблице документы у физ.лица'
     */
-
+    const {flKey, name, serial, number, dateIssue, whoIssue, podrIssue, active } = req.body
+    //проверка на наличие обязательных базовых вещей
+    if ( typeof flKey === 'undefined' || flKey ==='' ||
+         typeof name === 'undefined'  || name ===''  || 
+         typeof serial === 'undefined' || serial ==='' ||
+         typeof number === 'undefined' || number ==='' || 
+         typeof dateIssue === 'undefined' || dateIssue ==='' ||
+         typeof whoIssue === 'undefined'  || whoIssue ===''  || 
+         typeof podrIssue === 'undefined' || podrIssue ==='' ){
+                return res.status(400).json({
+                status: "error",
+                data: "Не хватает одного из обязательных полей (flKey, name, serial, number, dateIssue, whoIssue, podrIssue) "
+                })
+    }
+    createDocs(flKey, name, serial, number, dateIssue, whoIssue, podrIssue, active, req.user)
+    .then((data) => {
+        res.status(200).json({
+            "status": "success",
+            "data": data
+        })
+    })
+    .catch((err) => {
+        console.log(err)
+        res.status(400).json({
+            "status": "error",
+            "data": ""
+        })
+    })
 })
 
 //Создать новую запись в таблице адресов
@@ -189,6 +410,7 @@ router.post("/address", (req, res) => {
         })
     })
     .catch((err) => {
+        console.log(err)
         res.status(400).json({
             "status": "error",
             "data": ""

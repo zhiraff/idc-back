@@ -64,7 +64,8 @@ const creatKindidc = async(type, kind, kindShort) => {
     createdBy: typeof user !== 'undefined' ? user : "unknown",
     updatedBy: typeof user !== 'undefined' ? user : "unknown",
   };
-  await knex("kindIdc").insert([newKindidc]);
+   const result = await knex("kindIdc").insert([newKindidc], ["id"]);
+   newKindidc['id'] = result[0].id
   return newKindidc;
 }
 

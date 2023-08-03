@@ -59,8 +59,9 @@ const creatBodypart = async(type, name, user) => {
     createdBy: typeof user !== 'undefined' ? user : "unknown",
     updatedBy: typeof user !== 'undefined' ? user : "unknown",
   };
-  await knex("bodyPart").insert([newBodypart]);
-  return newBodypart;
+   const result = await knex("bodyPart").insert([newBodypart], ["id"]);
+   newBodypart['id'] = result[0].id
+   return newBodypart;
 }
 
 // обновление части тела

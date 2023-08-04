@@ -78,6 +78,7 @@ app.use("/api/v1/references/department", departmentRouter);
 app.use("/api/v1/references/user", userRouter);
 
 app.get("/", async (req, res) => {
+  //#swagger.ignore = true
     const users = await knex.select().table("users");
     let usrs_print = "";
     users.forEach(element => {

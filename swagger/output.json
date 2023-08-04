@@ -57,16 +57,6 @@
     "http"
   ],
   "paths": {
-    "/": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/api/v1/auth/login": {
       "post": {
         "tags": [
@@ -114,19 +104,6 @@
                 "name": "main"
               }
             }
-          }
-        }
-      }
-    },
-    "/api/v1/auth/errorlogin": {
-      "get": {
-        "tags": [
-          "auth"
-        ],
-        "description": "",
-        "responses": {
-          "400": {
-            "description": "Bad Request"
           }
         }
       }
@@ -263,74 +240,92 @@
             "type": "string"
           },
           {
+            "name": "signImport",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "firstName",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "secondName",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "thirdName",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sex",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "family",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "snils",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "inn",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "organization",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "department",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "departmentMCC",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "jobCode",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "tabNum",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "accNum",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "id_kadr",
+            "in": "query",
+            "type": "string"
+          },
+          {
             "name": "sort",
             "in": "query",
             "type": "string"
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/v1/personnel/control": {
-      "get": {
-        "tags": [
-          "personnel"
-        ],
-        "description": "Показать весь персонал стоящий на контроле",
-        "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "type": "string"
+          "200": {
+            "description": "OK"
           },
-          {
-            "name": "perpage",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "sort",
-            "in": "query",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/v1/personnel/control/search": {
-      "get": {
-        "tags": [
-          "personnel"
-        ],
-        "description": "Поиск человека среди стоящих на контроле",
-        "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "perpage",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "sort",
-            "in": "query",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
+          "400": {
+            "description": "Bad Request"
           }
         }
       }
@@ -340,10 +335,81 @@
         "tags": [
           "personnel"
         ],
-        "description": "Добавить персонал (передавать нужно сразу физ.лицо+адреса+документы+места+рождение)",
+        "description": "Добавить персонал (передавать можно сразу физ.лицо+адреса+документы+места+рождение)",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "signImport": {
+                  "example": "any"
+                },
+                "firstName": {
+                  "example": "any"
+                },
+                "secondName": {
+                  "example": "any"
+                },
+                "thirdName": {
+                  "example": "any"
+                },
+                "sex": {
+                  "example": "any"
+                },
+                "family": {
+                  "example": "any"
+                },
+                "snils": {
+                  "example": "any"
+                },
+                "inn": {
+                  "example": "any"
+                },
+                "organization": {
+                  "example": "any"
+                },
+                "department": {
+                  "example": "any"
+                },
+                "departmentMCC": {
+                  "example": "any"
+                },
+                "jobCode": {
+                  "example": "any"
+                },
+                "tabNum": {
+                  "example": "any"
+                },
+                "accNum": {
+                  "example": "any"
+                },
+                "id_kadr": {
+                  "example": "any"
+                },
+                "fio": {
+                  "example": "any"
+                },
+                "born": {
+                  "example": "any"
+                },
+                "docs": {
+                  "example": "any"
+                },
+                "address": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
           }
         }
       }
@@ -612,6 +678,106 @@
                 }
               }
             }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/personnel/fl/{id}": {
+      "patch": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Обновить запись в таблице физ.лица",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "signImport": {
+                  "example": "any"
+                },
+                "firstName": {
+                  "example": "any"
+                },
+                "secondName": {
+                  "example": "any"
+                },
+                "thirdName": {
+                  "example": "any"
+                },
+                "sex": {
+                  "example": "any"
+                },
+                "family": {
+                  "example": "any"
+                },
+                "snils": {
+                  "example": "any"
+                },
+                "inn": {
+                  "example": "any"
+                },
+                "organization": {
+                  "example": "any"
+                },
+                "department": {
+                  "example": "any"
+                },
+                "departmentMCC": {
+                  "example": "any"
+                },
+                "jobCode": {
+                  "example": "any"
+                },
+                "tabNum": {
+                  "example": "any"
+                },
+                "accNum": {
+                  "example": "any"
+                },
+                "id_kadr": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Удалить запись в таблице у физ.лица",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
           }
         ],
         "responses": {

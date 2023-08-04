@@ -237,8 +237,8 @@ const getPersonnelParam = async (page, perpage, signImport, firstName, secondNam
   .limit(prpg).offset((pg-1)*prpg)
 }
 
-// обновление записи о персонале
- const updatePersonnel = async (personnelId, signImport, firstName, secondName, thirdName, sex,
+// обновление записи о физ.лице
+ const updateFl = async (personnelId, signImport, firstName, secondName, thirdName, sex,
             family, snils, inn, organization, department, departmentMCC,
             jobCode, tabNum, accNum, id_kadr, user) => {
     let updateObject = {}
@@ -298,9 +298,177 @@ const getPersonnelParam = async (page, perpage, signImport, firstName, secondNam
     .update(updateObject);
  }
 
- //удаление части тела
- const deletePersonnel = async (PersonnelId) => {
+ //удаление части физ.лица
+ const deleteFl = async (PersonnelId) => {
   return knex("FL").where({ id: PersonnelId }).del()
+ }
+
+
+// обновление записи о физ.лице
+ const updateFio = async (fioId, firstName, secondName, thirdName, date, comment, user) => {
+    let updateObject = {}
+    if (typeof firstName !== 'undefined'){
+    updateObject['firstName'] = firstName
+  }
+  if (typeof secondName !== 'undefined'){
+    updateObject['secondName'] = secondName
+  }
+  if (typeof thirdName !== 'undefined'){
+    updateObject['thirdName'] = thirdName
+  }
+  if (typeof date !== 'undefined'){
+    updateObject['date'] = date
+  }
+  if (typeof comment !== 'undefined'){
+    updateObject['comment'] = comment
+  }
+   
+      if (typeof user !== 'undefined'){
+    updateObject['updatedBy'] = user
+  }else{
+    updateObject['updatedBy'] = 'unknown'
+  }
+   return knex("fl_ch_fio")
+    .where({ id: fioId })
+    .update(updateObject);
+ }
+
+ //удаление записи 
+ const deleteFio = async (fioId) => {
+  return knex("fl_ch_fio").where({ id: fioId }).del()
+ }
+
+ // обновление записи 
+ const updateBorn = async (bornId, date, country, region, area, locality, user) => {
+    let updateObject = {}
+    if (typeof date !== 'undefined'){
+    updateObject['date'] = date
+  }
+  if (typeof country !== 'undefined'){
+    updateObject['country'] = country
+  }
+  if (typeof region !== 'undefined'){
+    updateObject['region'] = region
+  }
+  if (typeof area !== 'undefined'){
+    updateObject['area'] = area
+  }
+  if (typeof locality !== 'undefined'){
+    updateObject['locality'] = locality
+  }
+   
+      if (typeof user !== 'undefined'){
+    updateObject['updatedBy'] = user
+  }else{
+    updateObject['updatedBy'] = 'unknown'
+  }
+   return knex("fl_born")
+    .where({ id: bornId })
+    .update(updateObject);
+ }
+
+ //удаление записи физ.лица
+ const deleteBorn = async (bornId) => {
+  return knex("fl_born").where({ id: bornId }).del()
+ }
+
+
+ // обновление записи адресов у физ.лица
+ const updateAddress = async (addressId, type, zipCode, country, region, area, city, street, home, struct, build, appart, user) => {
+    let updateObject = {}
+    if (typeof addressId !== 'undefined'){
+    updateObject['addressId'] = addressId
+  }
+  if (typeof type !== 'undefined'){
+    updateObject['type'] = type
+  }
+  if (typeof zipCode !== 'undefined'){
+    updateObject['zipCode'] = zipCode
+  }
+  if (typeof country !== 'undefined'){
+    updateObject['country'] = country
+  }
+  if (typeof region !== 'undefined'){
+    updateObject['region'] = region
+  }
+    if (typeof region !== 'undefined'){
+    updateObject['region'] = region
+  }
+    if (typeof area !== 'undefined'){
+    updateObject['area'] = area
+  }
+    if (typeof city !== 'undefined'){
+    updateObject['city'] = city
+  }
+    if (typeof street !== 'undefined'){
+    updateObject['street'] = street
+  }
+    if (typeof home !== 'undefined'){
+    updateObject['home'] = home
+  }
+    if (typeof struct !== 'undefined'){
+    updateObject['struct'] = struct
+  }
+    if (typeof build !== 'undefined'){
+    updateObject['build'] = build
+  }
+      if (typeof appart !== 'undefined'){
+    updateObject['appart'] = appart
+  }
+   
+      if (typeof user !== 'undefined'){
+    updateObject['updatedBy'] = user
+  }else{
+    updateObject['updatedBy'] = 'unknown'
+  }
+   return knex("fl_address")
+    .where({ id: bornId })
+    .update(updateObject);
+ }
+
+ //удаление записи адресов у физ.лица
+ const deleteAddress = async (bornId) => {
+  return knex("fl_address").where({ id: bornId }).del()
+ }
+
+  // обновление записи документы у физ.лица
+ const updateDocs = async (docsId, name, serial, number, dateIssue, whoIssue, podrIssue, active, user) => {
+    let updateObject = {}
+    if (typeof name !== 'undefined'){
+    updateObject['name'] = name
+  }
+  if (typeof serial !== 'undefined'){
+    updateObject['serial'] = serial
+  }
+  if (typeof number !== 'undefined'){
+    updateObject['number'] = number
+  }
+  if (typeof dateIssue !== 'undefined'){
+    updateObject['dateIssue'] = dateIssue
+  }
+  if (typeof whoIssue !== 'undefined'){
+    updateObject['whoIssue'] = whoIssue
+  }
+    if (typeof podrIssue !== 'undefined'){
+    updateObject['podrIssue'] = podrIssue
+  }
+    if (typeof active !== 'undefined'){
+    updateObject['active'] = active
+  }
+   
+      if (typeof user !== 'undefined'){
+    updateObject['updatedBy'] = user
+  }else{
+    updateObject['updatedBy'] = 'unknown'
+  }
+   return knex("fl_docs")
+    .where({ id: docsId })
+    .update(updateObject);
+ }
+
+ //удаление записи документы у физ.лица
+ const deleteDocs = async (bornId) => {
+  return knex("fl_docs").where({ id: docsId }).del()
  }
 
 //API
@@ -736,7 +904,7 @@ router.post("/address", (req, res) => {
 
 })
 
-//обновление записи
+//обновление записи в FL
 router.patch("/fl/:id", (req, res) => {
    /*
     #swagger.tags = ['personnel']
@@ -747,7 +915,7 @@ router.patch("/fl/:id", (req, res) => {
             family, snils, inn, organization, department, departmentMCC,
             jobCode, tabNum, accNum, id_kadr} = req.body;
 
- updatePersonnel(personneltId, signImport, firstName, secondName, thirdName, sex,
+ updateFl(personneltId, signImport, firstName, secondName, thirdName, sex,
             family, snils, inn, organization, department, departmentMCC,
             jobCode, tabNum, accNum, id_kadr, req.user)
  .then((data)=>{
@@ -766,14 +934,267 @@ router.patch("/fl/:id", (req, res) => {
 
 });
 
-//удаление Записи о персонале
+//удаление Записи о персонале в FL
 router.delete("/fl/:id", (req, res) => {
    /*
     #swagger.tags = ['personnel']
     #swagger.description = 'Удалить запись в таблице у физ.лица'
     */
  const personneltId = req.params.id
- deletePersonnel(personneltId)
+ deleteFl(personneltId)
+ .then((data)=>{
+  res.status(200).json({
+    status: "success",
+    data: data
+  })
+ })
+ .catch((err) => {
+  console.log(err)
+  res.status(400).json({
+    status: "error",
+    data: ""
+  })
+ })
+
+});
+
+//обновление записи в fl_ch_fio
+router.patch("/fio/:id", (req, res) => {
+   /*
+    #swagger.tags = ['personnel']
+    #swagger.description = 'Обновить запись в таблице изменения фамилии физ.лица'
+    */
+ const fioId = req.params.id
+const {firstName, secondName, thirdName, date, comment } = req.body
+    //проверка на наличие обязательных базовых вещей
+    if ( typeof firstName === 'undefined' &&
+         typeof secondName === 'undefined' &&
+         typeof thirdName === 'undefined' &&
+         typeof date === 'undefined' &&
+         typeof comment === 'undefined'){
+                return res.status(400).json({
+                status: "error",
+                data: "Нечего обновлять"
+                })
+    }
+
+ updateFio(fioId, firstName, secondName, thirdName, date, comment, req.user)
+ .then((data)=>{
+  res.status(200).json({
+    status: "success",
+    data: data
+  })
+ })
+ .catch((err) => {
+  console.log(err)
+  res.status(400).json({
+    status: "error",
+    data: ""
+  })
+ })
+
+});
+
+//удаление Записи о персонале в fl_ch_fio
+router.delete("/fio/:id", (req, res) => {
+   /*
+    #swagger.tags = ['personnel']
+    #swagger.description = 'Удалить запись в таблице смен ФИО у физ.лица'
+    */
+ const fioId = req.params.id
+ deleteFio(fioId)
+ .then((data)=>{
+  res.status(200).json({
+    status: "success",
+    data: data
+  })
+ })
+ .catch((err) => {
+  console.log(err)
+  res.status(400).json({
+    status: "error",
+    data: ""
+  })
+ })
+
+});
+
+//обновление записи в fl_born
+router.patch("/born/:id", (req, res) => {
+   /*
+    #swagger.tags = ['personnel']
+    #swagger.description = 'Обновить запись в таблице дней рождений физ.лица'
+    */
+ const bornId = req.params.id
+   const {date, country, region, area, locality } = req.body
+    //проверка на наличие обязательных базовых вещей
+    if ( typeof date === 'undefined'  &&
+         typeof country === 'undefined' &&
+         typeof region === 'undefined' &&
+         typeof locality === 'undefined'  &&
+         typeof area === 'undefined' ){
+                return res.status(400).json({
+                status: "error",
+                data: "Нечего обновлять"
+                })
+    }
+
+ updateBorn(bornId, date, country, region, area, locality, req.user)
+ .then((data)=>{
+  res.status(200).json({
+    status: "success",
+    data: data
+  })
+ })
+ .catch((err) => {
+  console.log(err)
+  res.status(400).json({
+    status: "error",
+    data: ""
+  })
+ })
+
+});
+
+//удаление Записи о персонале в fl_born
+router.delete("/born/:id", (req, res) => {
+   /*
+    #swagger.tags = ['personnel']
+    #swagger.description = 'Удалить запись в таблице дней рождений у физ.лица'
+    */
+ const bornId = req.params.id
+ deleteBorn(bornId)
+ .then((data)=>{
+  res.status(200).json({
+    status: "success",
+    data: data
+  })
+ })
+ .catch((err) => {
+  console.log(err)
+  res.status(400).json({
+    status: "error",
+    data: ""
+  })
+ })
+
+});
+
+//обновление записи в fl_docs
+router.patch("/docs/:id", (req, res) => {
+   /*
+    #swagger.tags = ['personnel']
+    #swagger.description = 'Обновить запись в таблице документов физ.лица'
+    */
+ const docsId = req.params.id
+   const { name, serial, number, dateIssue, whoIssue, podrIssue, active } = req.body
+    //проверка на наличие обязательных базовых вещей
+    if ( typeof name === 'undefined'  &&
+         typeof serial === 'undefined' &&
+         typeof number === 'undefined' &&
+         typeof dateIssue === 'undefined' &&
+         typeof whoIssue === 'undefined' &&
+         typeof podrIssue === 'undefined' &&
+         typeof active === 'undefined' ){
+                return res.status(400).json({
+                status: "error",
+                data: "Нечего обновлять "
+                })
+    }
+
+ updateDocs(docsId, name, serial, number, dateIssue, whoIssue, podrIssue, active, req.user)
+ .then((data)=>{
+  res.status(200).json({
+    status: "success",
+    data: data
+  })
+ })
+ .catch((err) => {
+  console.log(err)
+  res.status(400).json({
+    status: "error",
+    data: ""
+  })
+ })
+
+});
+
+//удаление Записи о персонале в fl_docs
+router.delete("/docs/:id", (req, res) => {
+   /*
+    #swagger.tags = ['personnel']
+    #swagger.description = 'Удалить запись в таблице документов у физ.лица'
+    */
+ const docsId = req.params.id
+ deleteDocs(docsId)
+ .then((data)=>{
+  res.status(200).json({
+    status: "success",
+    data: data
+  })
+ })
+ .catch((err) => {
+  console.log(err)
+  res.status(400).json({
+    status: "error",
+    data: ""
+  })
+ })
+
+});
+
+//обновление записи в fl_address
+router.patch("/address/:id", (req, res) => {
+   /*
+    #swagger.tags = ['personnel']
+    #swagger.description = 'Обновить запись в таблице документов физ.лица'
+    */
+ const addressId = req.params.id
+const { type, zipCode, country, region, area, city, street, home, struct, build, appart} = req.body
+    //проверка на наличие полей
+    if ( typeof type === 'undefined' &&
+         typeof zipCode === 'undefined' &&
+         typeof country === 'undefined' &&
+         typeof region === 'undefined' &&
+          typeof area === 'undefined' && 
+         typeof city === 'undefined' &&
+         typeof street === 'undefined' &&
+         typeof home === 'undefined' &&
+         typeof struct === 'undefined' &&
+         typeof build === 'undefined' &&
+         typeof appart === 'undefined'
+          ){
+                return res.status(400).json({
+                status: "error",
+                data: "Нечего обновлять"
+                })
+    }
+
+ updateAddress(addressId, type, zipCode, country, region, area, city, street, home, struct, build, appart, req.user)
+ .then((data)=>{
+  res.status(200).json({
+    status: "success",
+    data: data
+  })
+ })
+ .catch((err) => {
+  console.log(err)
+  res.status(400).json({
+    status: "error",
+    data: ""
+  })
+ })
+
+});
+
+//удаление Записи о персонале в fl_address
+router.delete("/address/:id", (req, res) => {
+   /*
+    #swagger.tags = ['personnel']
+    #swagger.description = 'Удалить запись в таблице адресов у физ.лица'
+    */
+ const addressId = req.params.id
+ deleteAddress(addressId)
  .then((data)=>{
   res.status(200).json({
     status: "success",

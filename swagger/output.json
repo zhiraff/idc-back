@@ -220,6 +220,88 @@
             "description": "Bad Request"
           }
         }
+      },
+      "post": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Добавить персонал (передавать можно сразу физ.лицо+адреса+документы+места+рождение)",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "signImport": {
+                  "example": "any"
+                },
+                "firstName": {
+                  "example": "any"
+                },
+                "secondName": {
+                  "example": "any"
+                },
+                "thirdName": {
+                  "example": "any"
+                },
+                "sex": {
+                  "example": "any"
+                },
+                "family": {
+                  "example": "any"
+                },
+                "snils": {
+                  "example": "any"
+                },
+                "inn": {
+                  "example": "any"
+                },
+                "organization": {
+                  "example": "any"
+                },
+                "department": {
+                  "example": "any"
+                },
+                "departmentMCC": {
+                  "example": "any"
+                },
+                "jobCode": {
+                  "example": "any"
+                },
+                "tabNum": {
+                  "example": "any"
+                },
+                "accNum": {
+                  "example": "any"
+                },
+                "id_kadr": {
+                  "example": "any"
+                },
+                "fio": {
+                  "example": "any"
+                },
+                "born": {
+                  "example": "any"
+                },
+                "docs": {
+                  "example": "any"
+                },
+                "address": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
       }
     },
     "/api/v1/personnel/search": {
@@ -318,90 +400,6 @@
             "name": "sort",
             "in": "query",
             "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/api/v1/personnel/whole": {
-      "post": {
-        "tags": [
-          "personnel"
-        ],
-        "description": "Добавить персонал (передавать можно сразу физ.лицо+адреса+документы+места+рождение)",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "signImport": {
-                  "example": "any"
-                },
-                "firstName": {
-                  "example": "any"
-                },
-                "secondName": {
-                  "example": "any"
-                },
-                "thirdName": {
-                  "example": "any"
-                },
-                "sex": {
-                  "example": "any"
-                },
-                "family": {
-                  "example": "any"
-                },
-                "snils": {
-                  "example": "any"
-                },
-                "inn": {
-                  "example": "any"
-                },
-                "organization": {
-                  "example": "any"
-                },
-                "department": {
-                  "example": "any"
-                },
-                "departmentMCC": {
-                  "example": "any"
-                },
-                "jobCode": {
-                  "example": "any"
-                },
-                "tabNum": {
-                  "example": "any"
-                },
-                "accNum": {
-                  "example": "any"
-                },
-                "id_kadr": {
-                  "example": "any"
-                },
-                "fio": {
-                  "example": "any"
-                },
-                "born": {
-                  "example": "any"
-                },
-                "docs": {
-                  "example": "any"
-                },
-                "address": {
-                  "example": "any"
-                }
-              }
-            }
           }
         ],
         "responses": {
@@ -1076,6 +1074,128 @@
           "personnel"
         ],
         "description": "Удалить запись в таблице адресов у физ.лица",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/personnel/{id}": {
+      "patch": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Обновить запись о физ.лице",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "signImport": {
+                  "example": "any"
+                },
+                "firstName": {
+                  "example": "any"
+                },
+                "secondName": {
+                  "example": "any"
+                },
+                "thirdName": {
+                  "example": "any"
+                },
+                "sex": {
+                  "example": "any"
+                },
+                "family": {
+                  "example": "any"
+                },
+                "snils": {
+                  "example": "any"
+                },
+                "inn": {
+                  "example": "any"
+                },
+                "organization": {
+                  "example": "any"
+                },
+                "department": {
+                  "example": "any"
+                },
+                "departmentMCC": {
+                  "example": "any"
+                },
+                "jobCode": {
+                  "example": "any"
+                },
+                "tabNum": {
+                  "example": "any"
+                },
+                "accNum": {
+                  "example": "any"
+                },
+                "id_kadr": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Удалить запись в таблице физ.лиц",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Просмотр персонала подробно",
         "parameters": [
           {
             "name": "id",

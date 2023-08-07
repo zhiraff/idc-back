@@ -44,6 +44,7 @@ router.post('/login', authController.passport.authenticate('local', {
 
 router.get('/errorlogin', async(req, res) => {
   // #swagger.tags = ['auth']
+  //#swagger.ignore = true
     res.status(400).json({
       'status': 'error',
       'sessionid': ''

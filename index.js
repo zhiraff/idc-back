@@ -11,6 +11,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 const cookieParser = require('cookie-parser');
 const auth = require('express-rbac');
+const cors = require('cors');
 
 //Настройка swagger-autogen
 const swaggerFile = JSON.parse(fs.readFileSync('./swagger/output.json'))
@@ -42,6 +43,7 @@ const sessionStore = new KnexSessionStore({
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(cors());
 
 app.use(session({
   secret: 'keyboard cat',

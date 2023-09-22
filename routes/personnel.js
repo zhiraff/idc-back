@@ -3,21 +3,33 @@ const express = require("express")
 const router = express.Router()
 
 const personnelController = require("../controllers/personnel/personnel")
+const addressController = require("../controllers/personnel/address")
 
 //API
 //Получить весь персонал (и контролир и не контролир)
+/
 router.get("/", (req, res) => {
     /*
     #swagger.tags = ['personnel']
     #swagger.description = 'Получить весь персонал (и на контроле и не на контроле)'
     */
+   
   const page = req.query.page;
   const perpage = req.query.perpage;
   const sort = req.query.sort;
   //console.log(`page, perpage, sort = ${page}, ${perpage}, ${sort}`)
   //getPersonnel(page, perpage, sort)
   personnelController.getPersonnel(page, perpage, sort)
-  .then((data) => {
+  .then(async (data) => {
+
+    for (let i=0; i< data.length; i++){
+     data[i].address = await personnelController.getAddressByParam(1, 25, data[i].id)
+     data[i].born = await personnelController.getBornByParam(1, 25, data[i].id)
+     data[i].ch_fio = await personnelController.getFioByParam(1, 25, data[i].id)
+     data[i].docs = await personnelController.getDocsByParam(1, 25, data[i].id)
+    }
+
+
     res.status(200).json({
         "status": "success",
         "data": data
@@ -46,9 +58,15 @@ router.get("/search", (req, res) => {
             family, snils, inn, organization, department, departmentMCC,
             jobCode, tabNum, accNum, id_kadr, sort  } = req.query
 
-         personnelController.getPersonnelParam(page, perpage, signImport, firstName, secondName, thirdName, sex,
+  personnelController.getPersonnelByParam(page, perpage, signImport, firstName, secondName, thirdName, sex,
             family, snils, inn, organization, department, departmentMCC,
-            jobCode, tabNum, accNum, id_kadr, sort).then((data) => {
+            jobCode, tabNum, accNum, id_kadr, sort).then( async (data) => {
+              for (let i=0; i< data.length; i++){
+                data[i].address = await personnelController.getAddressByParam(1, 25, data[i].id)
+                data[i].born = await personnelController.getBornByParam(1, 25, data[i].id)
+                data[i].ch_fio = await personnelController.getFioByParam(1, 25, data[i].id)
+                data[i].docs = await personnelController.getDocsByParam(1, 25, data[i].id)
+               }
             res.status(200).json({
                 status: "success",
                 data: data

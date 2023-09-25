@@ -61,8 +61,8 @@ const creatRadionuclide = async(symbol, name, htmlcode, user) => {
     symbol: symbol,
     name: name,
     htmlcode: typeof htmlcode !== 'undefined' ? htmlcode : "",
-    createdBy: typeof user !== 'undefined' ? user : "unknown",
-    updatedBy: typeof user !== 'undefined' ? user : "unknown",
+    createdBy: typeof user.username !== 'undefined' ? user.username: "unknown",
+    updatedBy: typeof user.username !== 'undefined' ? user.username : "unknown",
   };
    const result = await knex("radionuclide").insert([newRadionuclide], ["id"]);
    newRadionuclide['id'] = result[0].id
@@ -70,7 +70,7 @@ const creatRadionuclide = async(symbol, name, htmlcode, user) => {
 }
 // обновление радионуклида
  const updateRadionuclide = async (radionuclideId, symbol, name, htmlcode, user) => {
-  const usr = typeof user !== 'undefined' ? user : "unknown"
+  const usr = typeof user.username !== 'undefined' ? user.username : "unknown"
   let updateObject = {}
   if (typeof symbol !== 'undefined'){
     updateObject['symbol'] = symbol
@@ -83,6 +83,7 @@ const creatRadionuclide = async(symbol, name, htmlcode, user) => {
   if (typeof htmlcode !== 'undefined'){
     updateObject['htmlcode'] = htmlcode
   }
+  updateObject['updatedAt'] = Date.now()
   updateObject['updatedBy'] = usr
    return knex("radionuclide")
     .where({ id: radionuclideId })

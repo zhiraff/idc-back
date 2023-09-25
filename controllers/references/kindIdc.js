@@ -61,8 +61,8 @@ const creatKindidc = async(type, kind, kindShort) => {
     type: type,
     kind: kind,
     kindShort: kindShort,
-    createdBy: typeof user !== 'undefined' ? user : "unknown",
-    updatedBy: typeof user !== 'undefined' ? user : "unknown",
+    createdBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+    updatedBy: typeof user.username !== 'undefined' ? user.username : "unknown",
   };
    const result = await knex("kindIdc").insert([newKindidc], ["id"]);
    newKindidc['id'] = result[0].id
@@ -81,9 +81,9 @@ const creatKindidc = async(type, kind, kindShort) => {
     if (typeof kindShort !== 'undefined'){
     updateObject['kindShort'] = kindShort
   }
-   
-      if (typeof user !== 'undefined'){
-    updateObject['updatedBy'] = user
+  updateObject['updatedAt'] = Date.now()
+      if (typeof user.username !== 'undefined'){
+    updateObject['updatedBy'] = user.username
   }else{
     updateObject['updatedBy'] = 'unknown'
   }

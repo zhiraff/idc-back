@@ -84,8 +84,8 @@ const creatUser = async(username, password, firstName, secondName, thirdName, ro
     username: username,
     password: hash(password),
     role: role,
-    createdBy: typeof user !== 'undefined' ? user : "unknown",
-    updatedBy: typeof user !== 'undefined' ? user : "unknown",
+    createdBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+    updatedBy: typeof user.username !== 'undefined' ? user.username : "unknown",
   };
     if (typeof firstName !== 'undefined'){
     newUser['firstName'] = firstName
@@ -123,9 +123,9 @@ const creatUser = async(username, password, firstName, secondName, thirdName, ro
       if (typeof role !== 'undefined'){
     updateObject['role'] = role
   }
-    
-      if (typeof user !== 'undefined'){
-    updateObject['updatedBy'] = user
+  updateObject['updatedAt'] = Date.now()
+      if (typeof user.username !== 'undefined'){
+    updateObject['updatedBy'] = user.username
   }else{
     updateObject['updatedBy'] = 'unknown'
   }

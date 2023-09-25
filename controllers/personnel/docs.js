@@ -78,8 +78,8 @@ const createDocs = async (flKey, name, serial, number, dateIssue, whoIssue, podr
         whoIssue: whoIssue,
         podrIssue: podrIssue,
 
-        createdBy: typeof user !== 'undefined' ? user : "unknown",
-        updatedBy: typeof user !== 'undefined' ? user : "unknown",
+        createdBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+        updatedBy: typeof user.username !== 'undefined' ? user.username : "unknown",
     }
     if (typeof active !== 'undefined'){
         createObject['active'] = active
@@ -114,9 +114,9 @@ const createDocs = async (flKey, name, serial, number, dateIssue, whoIssue, podr
     if (typeof active !== 'undefined'){
     updateObject['active'] = active
   }
-   
-      if (typeof user !== 'undefined'){
-    updateObject['updatedBy'] = user
+  updateObject['updatedAt'] = Date.now()
+      if (typeof user.username !== 'undefined'){
+    updateObject['updatedBy'] = user.username
   }else{
     updateObject['updatedBy'] = 'unknown'
   }

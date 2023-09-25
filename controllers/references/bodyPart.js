@@ -56,8 +56,8 @@ const creatBodypart = async(type, name, user) => {
   const newBodypart = {
     type: type,
     name: name,
-    createdBy: typeof user !== 'undefined' ? user : "unknown",
-    updatedBy: typeof user !== 'undefined' ? user : "unknown",
+    createdBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+    updatedBy: typeof user.username !== 'undefined' ? user.username : "unknown",
   };
    const result = await knex("bodyPart").insert([newBodypart], ["id"]);
    newBodypart['id'] = result[0].id
@@ -73,9 +73,10 @@ const creatBodypart = async(type, name, user) => {
   if (typeof name !== 'undefined'){
     updateObject['name'] = name
   }
+  updateObject['updatedAt'] = Date.now()
    
-      if (typeof user !== 'undefined'){
-    updateObject['updatedBy'] = user
+      if (typeof user.username !== 'undefined'){
+    updateObject['updatedBy'] = user.username
   }else{
     updateObject['updatedBy'] = 'unknown'
   }

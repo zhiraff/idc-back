@@ -120,9 +120,9 @@ const getOneAddress = async(addressId) => {
       if (typeof appart !== 'undefined'){
     updateObject['appart'] = appart
   }
-   
-      if (typeof user !== 'undefined'){
-    updateObject['updatedBy'] = user
+  updateObject['updatedAt'] = Date.now()
+      if (typeof user.username !== 'undefined'){
+    updateObject['updatedBy'] = user.username
   }else{
     updateObject['updatedBy'] = 'unknown'
   }
@@ -145,8 +145,8 @@ const getOneAddress = async(addressId) => {
         street: street,
         home: home,
         appart: appart,
-        createdBy: typeof user !== 'undefined' ? user : "unknown",
-        updatedBy: typeof user !== 'undefined' ? user : "unknown",
+        createdBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+        updatedBy: typeof user.username !== 'undefined' ? user.username : "unknown",
     }
     if (typeof type !== 'undefined'){
         createObject['type'] = type

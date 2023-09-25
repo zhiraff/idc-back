@@ -66,8 +66,8 @@ const creatProfession = async(division, code, name, okz, cn, etks, user) => {
     okz: typeof okz !== 'undefined' ? okz : "",
     controlNumber: typeof cn !== 'undefined' ? Number(cn) : 0,
     etks_category: typeof etks !== 'undefined' ? etks : "",
-    createdBy: typeof user !== 'undefined' ? user : "",
-    updatedBy: typeof user !== 'undefined' ? user : "",
+    createdBy: typeof user.username !== 'undefined' ? user.username : "",
+    updatedBy: typeof user.username !== 'undefined' ? user.username : "",
   };
    const result = await knex("profession").insert([newProfession], ["id"]);
    newProfession['id'] = result[0].id
@@ -95,8 +95,9 @@ const creatProfession = async(division, code, name, okz, cn, etks, user) => {
       if (typeof etks !== 'undefined'){
     updateObject['etks_category'] = etks
   }
-      if (typeof user !== 'undefined'){
-    updateObject['updatedBy'] = user
+  updateObject['updatedAt'] = Date.now()
+      if (typeof user.username !== 'undefined'){
+    updateObject['updatedBy'] = user.username
   }else{
     updateObject['updatedBy'] = 'unknown'
   }

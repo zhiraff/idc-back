@@ -1,5 +1,6 @@
 //require("dotenv").config();
 const knex = require("../../knex_init");
+const options = { year: 'numeric', month: 'numeric', day: 'numeric' }
 
 //Методы работы с подразделениями
 //Получить подразделения, с постраничной пагинацией
@@ -16,7 +17,16 @@ const getDepartment = async (page, perpage, sort) => {
       sortField = sort
     }
   }
-  return knex("department").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+  let result = await knex("department").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+  
+  for (let i = 0;i < result.length; i++){
+    result[i].begin = result[i].begin.toLocaleDateString('ru-RU', options);
+    if (result[i].end !== null){
+      result[i].end = result[i].end.toLocaleDateString('ru-RU', options);
+    }
+  }
+  
+  return result
 }
 
 //Получить подразделения, с постраничной пагинацией и параметрами
@@ -80,8 +90,8 @@ const creatDepartment = async(parent_id, begin, end, code, name, department_item
     begin: begin,
     code: code,
     name: name,
-    createdBy: typeof user !== 'undefined' ? user : "unknown",
-    updatedBy: typeof user !== 'undefined' ? user : "unknown",
+    createdBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+    updatedBy: typeof user.username !== 'undefined' ? user.username : "unknown",
   };
     if (typeof parent_id !== 'undefined'){
     newDepartment['parent_id'] = parent_id
@@ -130,9 +140,9 @@ const creatDepartment = async(parent_id, begin, end, code, name, department_item
       if (typeof address !== 'undefined'){
     updateObject['address'] = address
   }
-   
-      if (typeof user !== 'undefined'){
-    updateObject['updatedBy'] = user
+  updateObject['updatedAt'] = Date.now()
+      if (typeof user.username !== 'undefined'){
+    updateObject['updatedBy'] = user.username
   }else{
     updateObject['updatedBy'] = 'unknown'
   }

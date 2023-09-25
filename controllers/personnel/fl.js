@@ -27,8 +27,8 @@ const createFl = async ( signImport, firstName, secondName, thirdName, sex,
         organization: organization,
         jobCode: jobCode,
         accNum: accNum,
-        createdBy: typeof user !== 'undefined' ? user : "unknown",
-        updatedBy: typeof user !== 'undefined' ? user : "unknown",
+        createdBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+        updatedBy: typeof user.username !== 'undefined' ? user.username : "unknown",
     }
     if (typeof signImport !== 'undefined'){
         createObject['signImport'] = signImport
@@ -185,9 +185,9 @@ const getFlParam = async (page, perpage, signImport, firstName, secondName, thir
   if (typeof id_kadr !== 'undefined'){
     updateObject['id_kadr'] = id_kadr
   }
-   
-      if (typeof user !== 'undefined'){
-    updateObject['updatedBy'] = user
+  updateObject['updatedAt'] = Date.now()
+      if (typeof user.username !== 'undefined'){
+    updateObject['updatedBy'] = user.username
   }else{
     updateObject['updatedBy'] = 'unknown'
   }

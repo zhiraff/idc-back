@@ -65,8 +65,8 @@ const creatValue = async(radionuclide_id, indicator, value, gister, user) => {
     value: Number(value),
     indicator: typeof indicator !== 'undefined' ? indicator : "",
     gister: typeof gister !== 'undefined' ? Number(gister) : 0,
-    createdBy: typeof user !== 'undefined' ? user : "unknown",
-    updatedBy: typeof user !== 'undefined' ? user : "unknown",
+    createdBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+    updatedBy: typeof user.username !== 'undefined' ? user.username : "unknown",
   };
    const result = await knex("limitValue").insert([newValue], ["id"]);
    newValue['id'] = result[0].id
@@ -88,8 +88,9 @@ const creatValue = async(radionuclide_id, indicator, value, gister, user) => {
     if (typeof gister !== 'undefined'){
     updateObject['gister'] = gister
   }
-      if (typeof user !== 'undefined'){
-    updateObject['updatedBy'] = user
+  updateObject['updatedAt'] = Date.now()
+      if (typeof user.username !== 'undefined'){
+    updateObject['updatedBy'] = user.username
   }else{
     updateObject['updatedBy'] = 'unknown'
   }

@@ -12,7 +12,7 @@ exports.up = function(knex) {
     table.integer("historical_id").comment('ID полученный при импорте из исторической системы')
     table.integer("parent_id").comment('Родительский id');
     table.date("begin").notNullable().comment("Дата начала деятельности")
-    table.date("end").comment("Дата начала деятельности")
+    table.date("end").comment("Дата окончания деятельности")
     table.string("code", 255).notNullable().comment('Код подразделения');
     table.string("name", 255).notNullable().comment('Название подразделения');
     table.string("department_item_id", 255);

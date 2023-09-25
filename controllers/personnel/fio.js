@@ -67,8 +67,8 @@ const createFio = async (flKey, firstName, secondName, thirdName, date, comment,
     createObject = {
         flKey: flKey,
         date: date,
-        createdBy: typeof user !== 'undefined' ? user : "unknown",
-        updatedBy: typeof user !== 'undefined' ? user : "unknown",
+        createdBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+        updatedBy: typeof user.username !== 'undefined' ? user.username : "unknown",
     }
     if (typeof firstName !== 'undefined'){
         createObject['firstName'] = firstName
@@ -107,9 +107,9 @@ const createFio = async (flKey, firstName, secondName, thirdName, date, comment,
   if (typeof comment !== 'undefined'){
     updateObject['comment'] = comment
   }
-   
-      if (typeof user !== 'undefined'){
-    updateObject['updatedBy'] = user
+  updateObject['updatedAt'] = Date.now()
+      if (typeof user.username !== 'undefined'){
+    updateObject['updatedBy'] = user.username
   }else{
     updateObject['updatedBy'] = 'unknown'
   }

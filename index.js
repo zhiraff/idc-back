@@ -33,6 +33,7 @@ const bodyPartRouter = require("./routes/references/bodyPart.js");
 const kindIdcRouter = require("./routes/references/kindIdc.js");
 const departmentRouter = require("./routes/references/department.js");
 const userRouter = require("./routes/references/user.js");
+const roleRouter = require("./routes/references/role.js");
 
 
 const sessionStore = new KnexSessionStore({
@@ -78,6 +79,7 @@ app.use("/api/v1/references/bodypart", bodyPartRouter);
 app.use("/api/v1/references/kindidc", kindIdcRouter);
 app.use("/api/v1/references/department", departmentRouter);
 app.use("/api/v1/references/user", userRouter);
+app.use("/api/v1/references/role", roleRouter);
 
 app.get("/", async (req, res) => {
   //#swagger.ignore = true

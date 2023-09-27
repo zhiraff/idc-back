@@ -133,7 +133,7 @@ const createBorn = async (flKey, date, country, region, area, locality, user) =>
   if (typeof locality !== 'undefined'){
     updateObject['locality'] = locality
   }
-  updateObject['updatedAt'] = Date.now()
+  updateObject['updatedAt'] = new Date()
       if (typeof user.username !== 'undefined'){
     updateObject['updatedBy'] = user.username
   }else{

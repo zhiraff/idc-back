@@ -75,6 +75,7 @@ countData['currentPage'] = pg
  //.where(queryObject)
  .limit(prpg).offset((pg-1)*prpg)
   resultData.push(countData)
+  console.log(resultData)
   return resultData
 }
 
@@ -106,7 +107,9 @@ const creatBodypart = async(type, name, user) => {
   if (typeof name !== 'undefined'){
     updateObject['name'] = name
   }
-  updateObject['updatedAt'] = Date.now()
+
+  updateObject['updatedAt'] = new Date()
+  
    
       if (typeof user.username !== 'undefined'){
     updateObject['updatedBy'] = user.username

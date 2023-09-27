@@ -19,7 +19,6 @@ const getFl = async (page, perpage, sort) => {
   .leftJoin('profession', 'FL.jobCode', 'profession.id')
   .leftJoin('department', 'FL.departmentMCC', 'department.id')
   .select('profession.name as jobName', 'department.name as departmentMCCname', 'FL.*')
-  
   .orderBy(sortField, sortDirect)
   .limit(prpg)
   .offset((pg-1)*prpg)
@@ -267,7 +266,7 @@ const getFlParam = async (page, perpage, signImport, firstName, secondName, thir
   if (typeof id_kadr !== 'undefined'){
     updateObject['id_kadr'] = id_kadr
   }
-  updateObject['updatedAt'] = Date.now()
+  updateObject['updatedAt'] = new Date()
       if (typeof user.username !== 'undefined'){
     updateObject['updatedBy'] = user.username
   }else{

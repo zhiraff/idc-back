@@ -116,7 +116,7 @@ const creatRadionuclide = async(symbol, name, htmlcode, user) => {
   if (typeof htmlcode !== 'undefined'){
     updateObject['htmlcode'] = htmlcode
   }
-  updateObject['updatedAt'] = Date.now()
+  updateObject['updatedAt'] = new Date()
   updateObject['updatedBy'] = usr
    return knex("radionuclide")
     .where({ id: radionuclideId })

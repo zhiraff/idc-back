@@ -140,7 +140,7 @@ const createFio = async (flKey, firstName, secondName, thirdName, date, comment,
   if (typeof comment !== 'undefined'){
     updateObject['comment'] = comment
   }
-  updateObject['updatedAt'] = Date.now()
+  updateObject['updatedAt'] = new Date()
       if (typeof user.username !== 'undefined'){
     updateObject['updatedBy'] = user.username
   }else{

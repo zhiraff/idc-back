@@ -117,7 +117,7 @@ const creatKindidc = async(type, kind, kindShort) => {
     if (typeof kindShort !== 'undefined'){
     updateObject['kindShort'] = kindShort
   }
-  updateObject['updatedAt'] = Date.now()
+  updateObject['updatedAt'] = new Date()
       if (typeof user.username !== 'undefined'){
     updateObject['updatedBy'] = user.username
   }else{

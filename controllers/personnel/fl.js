@@ -1,7 +1,7 @@
 const knex = require("../../knex_init");
 
 //Поулчить весь персонал (и на контр и не на контр)
-const getFl = (page, perpage, sort) => {
+const getFl = async (page, perpage, sort) => {
   const pg = typeof page !== 'undefined' && page !== '' ? page : 1
   const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
   let sortField = 'id'
@@ -14,7 +14,23 @@ const getFl = (page, perpage, sort) => {
       sortField = sort
     }
   }
-  return knex("FL").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+
+  let resultData = await knex("FL")
+  .leftJoin('profession', 'FL.jobCode', 'profession.id')
+  .leftJoin('department', 'FL.departmentMCC', 'department.id')
+  .select('profession.name as jobName', 'department.name as departmentMCCname', 'FL.*')
+  
+  .orderBy(sortField, sortDirect)
+  .limit(prpg)
+  .offset((pg-1)*prpg)
+
+  let countData = await knex("FL")
+  .first()
+  .count('id as countRow')
+  countData['pages'] = Math.ceil(countData.countRow/prpg)
+  countData['currentPage'] = pg
+  resultData.push(countData)
+  return resultData
 }
 
 //создать персонал
@@ -83,35 +99,56 @@ const getFlParam = async (page, perpage, signImport, firstName, secondName, thir
     }
   }
   let queryObject = {}
+  let queryObjectString = {}
   if (typeof signImport !== 'undefined'){
-    queryObject['signImport'] = signImport
+    queryObjectString['signImport'] = "%"+signImport+"%"
+  }else{
+    queryObjectString['signImport'] = "%%"
   }
     if (typeof firstName !== 'undefined'){
-    queryObject['firstName'] = firstName
+      queryObjectString['firstName'] = "%"+firstName+"%"
+  }else{
+    queryObjectString['firstName'] = "%%"
   }
       if (typeof secondName !== 'undefined'){
-    queryObject['secondName'] = secondName
+        queryObjectString['secondName'] = "%"+secondName+"%"
+  }else{
+    queryObjectString['secondName'] = "%%"
   }
       if (typeof thirdName !== 'undefined'){
-    queryObject['thirdName'] = thirdName
+        queryObjectString['thirdName'] = "%"+thirdName+"%"
+  }else{
+    queryObjectString['thirdName'] = "%%"
   }
       if (typeof sex !== 'undefined'){
-    queryObject['sex'] = sex
+        queryObjectString['sex'] = "%"+sex+"%"
+  }else{
+    queryObjectString['sex'] = "%%"
   }
       if (typeof family !== 'undefined'){
-    queryObject['family'] = family
+        queryObjectString['family'] = "%"+family+"%"
+  }else{
+    queryObjectString['family'] = "%%"
   }
       if (typeof snils !== 'undefined'){
-    queryObject['snils'] = snils
+        queryObjectString['snils'] = "%"+snils+"%"
+  }else{
+    queryObjectString['snils'] = "%%"
   }
       if (typeof inn !== 'undefined'){
-    queryObject['inn'] = inn
+        queryObjectString['inn'] = "%"+inn+"%"
+  }else{
+    queryObjectString['inn'] = "%%"
   }
       if (typeof organization !== 'undefined'){
-    queryObject['organization'] = organization
+        queryObjectString['organization'] = "%"+organization+"%"
+  }else{
+    queryObjectString['organization'] = "%%"
   }
       if (typeof department !== 'undefined'){
-    queryObject['department'] = department
+        queryObjectString['department'] = "%"+department+"%"
+  }else{
+    queryObjectString['department'] = "%%"
   }
       if (typeof departmentMCC !== 'undefined'){
     queryObject['departmentMCC'] = departmentMCC
@@ -120,19 +157,64 @@ const getFlParam = async (page, perpage, signImport, firstName, secondName, thir
     queryObject['jobCode'] = jobCode
   }
       if (typeof tabNum !== 'undefined'){
-    queryObject['tabNum'] = tabNum
+        queryObjectString['tabNum'] = "%"+tabNum+"%"
+  }else{
+    queryObjectString['tabNum'] = "%%"
   }
       if (typeof accNum !== 'undefined'){
-    queryObject['accNum'] = accNum
+        queryObjectString['accNum'] = "%"+accNum+"%"
+  }else{
+    queryObjectString['accNum'] = "%%"
   }
       if (typeof id_kadr !== 'undefined'){
     queryObject['id_kadr'] = id_kadr
   }
 
-  return knex("FL").select()
+  let resultData = await knex("FL")
+  .leftJoin('profession', 'FL.jobCode', 'profession.id')
+  .leftJoin('department', 'FL.departmentMCC', 'department.id')
+  .select('profession.name as jobName', 'department.name as departmentMCCname', 'FL.*')
   .orderBy(sortField, sortDirect)
   .where(queryObject)
-  .limit(prpg).offset((pg-1)*prpg)
+  .andWhereILike("signImport", queryObjectString.signImport)
+  .andWhereILike("firstName", queryObjectString.firstName)
+  .andWhereILike("secondName", queryObjectString.secondName)
+  .andWhereILike("thirdName", queryObjectString.thirdName)
+  .andWhereILike("sex", queryObjectString.sex)
+  .andWhereILike("family", queryObjectString.family)
+  .andWhereILike("snils", queryObjectString.snils)
+  .andWhereILike("inn", queryObjectString.inn)
+  .andWhereILike("organization", queryObjectString.organization)
+  .andWhereILike("department", queryObjectString.department)
+  .andWhereILike("tabNum", queryObjectString.tabNum)
+  .andWhereILike("accNum", queryObjectString.accNum)
+  .limit(prpg)
+  .offset((pg-1)*prpg)
+
+  let countData = await knex("FL")
+  .where(queryObject)
+  .andWhereILike("signImport", queryObjectString.signImport)
+  .andWhereILike("firstName", queryObjectString.firstName)
+  .andWhereILike("secondName", queryObjectString.secondName)
+  .andWhereILike("thirdName", queryObjectString.thirdName)
+  .andWhereILike("sex", queryObjectString.sex)
+  .andWhereILike("family", queryObjectString.family)
+  .andWhereILike("snils", queryObjectString.snils)
+  .andWhereILike("inn", queryObjectString.inn)
+  .andWhereILike("organization", queryObjectString.organization)
+  .andWhereILike("department", queryObjectString.department)
+  .andWhereILike("tabNum", queryObjectString.tabNum)
+  .andWhereILike("accNum", queryObjectString.accNum)
+  .first()
+  .count('id as countRow')
+
+  countData['pages'] = Math.ceil(countData.countRow/prpg)
+  countData['currentPage'] = pg
+
+  resultData.push(countData)
+
+  return resultData
+
 }
 
 // обновление записи о физ.лице

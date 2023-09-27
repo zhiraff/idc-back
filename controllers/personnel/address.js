@@ -1,6 +1,6 @@
 const knex = require("../../knex_init");
 //Поулчить весь персонал (и на контр и не на контр)
-const getAddress = (page, perpage, sort) => {
+const getAddress = async (page, perpage, sort) => {
   const pg = typeof page !== 'undefined' && page !== '' ? page : 1
   const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
   let sortField = 'id'
@@ -13,7 +13,15 @@ const getAddress = (page, perpage, sort) => {
       sortField = sort
     }
   }
-  return knex("fl_address").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+
+  let resultData = await knex("fl_address").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+  let countData = await knex("fl_address")
+  .first()
+  .count('id as countRow')
+  countData['pages'] = Math.ceil(countData.countRow/prpg)
+  countData['currentPage'] = pg
+  resultData.push(countData)
+  return resultData
 }
 
 //Получить персонал, с постраничной пагинацией и параметрами
@@ -31,47 +39,97 @@ const getAddressParam = async (page, perpage, flKey, type, zipCode, country, reg
     }
   }
   let queryObject = {}
+  let queryObjectString = {}
   if (typeof flKey !== 'undefined'){
     queryObject['flKey'] = flKey
   }
     if (typeof type !== 'undefined'){
-    queryObject['type'] = type
+      queryObjectString['type'] = "%"+type+"%"
+  } else {
+    queryObjectString['type'] = "%%"
   }
       if (typeof zipCode !== 'undefined'){
     queryObject['zipCode'] = zipCode
   }
       if (typeof country !== 'undefined'){
-    queryObject['country'] = country
+        queryObjectString['country'] = "%"+country+"%"
+  } else {
+    queryObjectString['country'] = "%%"
   }
       if (typeof region !== 'undefined'){
-    queryObject['region'] = region
+        queryObjectString['region'] = "%"+region+"%"
+  } else {
+    queryObjectString['region'] = "%%"
   }
       if (typeof area !== 'undefined'){
-    queryObject['area'] = area
+        queryObjectString['area'] = "%"+area+"%"
+  } else {
+    queryObjectString['area'] = "%%"
   }
       if (typeof city !== 'undefined'){
-    queryObject['city'] = city
+        queryObjectString['city'] = "%"+city+"%"
+  } else {
+    queryObjectString['city'] = "%%"
   }
       if (typeof street !== 'undefined'){
-    queryObject['street'] = street
+        queryObjectString['street'] = "%"+street+"%"
+  } else {
+    queryObjectString['street'] = "%%"
   }
       if (typeof home !== 'undefined'){
-    queryObject['home'] = home
+        queryObjectString['home'] = "%"+home+"%"
+  } else {
+    queryObjectString['home'] = "%%"
   }
       if (typeof struct !== 'undefined'){
-    queryObject['struct'] = struct
+        queryObjectString['struct'] = "%"+struct+"%"
+  } else {
+    queryObjectString['struct'] = "%%"
   }
       if (typeof build !== 'undefined'){
-    queryObject['build'] = build
+        queryObjectString['build'] = "%"+build+"%"
+  } else {
+    queryObjectString['build'] = "%%"
   }
       if (typeof appart !== 'undefined'){
-    queryObject['appart'] = appart
+        queryObjectString['appart'] = "%"+appart+"%"
+  } else {
+    queryObjectString['appart'] = "%%"
   }
 
-  return knex("fl_address").select()
+  let resultData = await knex("fl_address").select()
   .orderBy(sortField, sortDirect)
   .where(queryObject)
+  .andWhereILike("type", queryObjectString.type)
+  .andWhereILike("country", queryObjectString.country)
+  .andWhereILike("region", queryObjectString.region)
+  .andWhereILike("area", queryObjectString.area)
+  .andWhereILike("city", queryObjectString.city)
+  .andWhereILike("street", queryObjectString.street)
+  .andWhereILike("home", queryObjectString.home)
+  .andWhereILike("struct", queryObjectString.struct)
+  .andWhereILike("build", queryObjectString.build)
+  .andWhereILike("appart", queryObjectString.appart)
   .limit(prpg).offset((pg-1)*prpg)
+
+  let countData = await knex("fl_address")
+  .where(queryObject)
+  .andWhereILike("type", queryObjectString.type)
+  .andWhereILike("country", queryObjectString.country)
+  .andWhereILike("region", queryObjectString.region)
+  .andWhereILike("area", queryObjectString.area)
+  .andWhereILike("city", queryObjectString.city)
+  .andWhereILike("street", queryObjectString.street)
+  .andWhereILike("home", queryObjectString.home)
+  .andWhereILike("struct", queryObjectString.struct)
+  .andWhereILike("build", queryObjectString.build)
+  .andWhereILike("appart", queryObjectString.appart)
+  .first()
+  .count('id as countRow')
+  countData['pages'] = Math.ceil(countData.countRow/prpg)
+  countData['currentPage'] = pg
+  resultData.push(countData)
+  return resultData
 }
 
 //Показать персонал подробно

@@ -16,14 +16,24 @@ const getRadionuclide = async (page, perpage, sort) => {
       sortField = sort
     }
   }
-  return knex("radionuclide").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+
+  let resultData = await knex("radionuclide").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+  let countData = await knex("radionuclide")
+  .first()
+  .count('id as countRow')
+
+  countData['pages'] = Math.ceil(countData.countRow/prpg)
+  countData['currentPage'] = pg
+  resultData.push(countData)
+
+  return resultData
 }
 
 //Получить список радионуклидов, с по различным параметрам
 const getRadionuclideParam = async (symbol, name, htmlcode, page, perpage, sort) => {
   const pg = typeof page !== 'undefined' && page !== '' ? page : 1
   const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
-      let sortField = 'id'
+  let sortField = 'id'
   let sortDirect = 'asc'
   if (typeof sort !== 'undefined'){
     if (sort.startsWith('-')){
@@ -33,21 +43,44 @@ const getRadionuclideParam = async (symbol, name, htmlcode, page, perpage, sort)
       sortField = sort
     }
   }
-  queryObject = {}
+  queryObjectString = {}
   if (typeof symbol !== 'undefined'){
-    queryObject['symbol'] = symbol
+    queryObjectString['symbol'] = "%"+symbol+"%"
+  }else {
+    queryObjectString['symbol'] = "%%"
   }
   if (typeof name !== 'undefined'){
-    queryObject['name'] = name
+    queryObjectString['name'] = "%"+name+"%"
+  } else {
+    queryObjectString['name'] = "%%"
   }
     if (typeof htmlcode !== 'undefined'){
-    queryObject['htmlcode'] = htmlcode
+      queryObjectString['htmlcode'] = "%"+htmlcode+"%"
+  } else {
+    queryObjectString['htmlcode'] = "%%"
   }
 
-  return knex("radionuclide").select()
+  let resultData = await knex("radionuclide")
+  .select()
   .orderBy(sortField, sortDirect)
-  .where(queryObject).limit(prpg)
+  .whereILike('symbol', queryObjectString.symbol)
+  .andWhereILike('name', queryObjectString.name)
+  .andWhereILike('htmlcode', queryObjectString.htmlcode)
+  .limit(prpg)
   .offset((pg-1)*prpg)
+
+  let countData = await knex("radionuclide")
+  .whereILike('symbol', queryObjectString.symbol)
+  .andWhereILike('name', queryObjectString.name)
+  .andWhereILike('htmlcode', queryObjectString.htmlcode)
+  .first()
+  .count('id as countRow')
+
+  countData['pages'] = Math.ceil(countData.countRow/prpg)
+  countData['currentPage'] = pg
+  resultData.push(countData)
+
+  return resultData
 }
 //Показать радионуклид подробно
 const getOneRadionuclide = async(radionuclideId) => {

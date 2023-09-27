@@ -15,13 +15,23 @@ const getProfession = async (page, perpage, sort) => {
       sortField = sort
     }
   }
-  return knex("profession").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+
+  let resultData = await knex("profession").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+  let countData = await knex("profession")
+  .first()
+  .count('id as countRow')
+
+  countData['pages'] = Math.ceil(countData.countRow/prpg)
+  countData['currentPage'] = pg
+  resultData.push(countData)
+
+  return resultData
 }
 
 const getProfessionParam = async (page, perpage, division, code, name, okz, sort) => {
   const pg = typeof page !== 'undefined' && page !== '' ? page : 1
   const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
-      let sortField = 'id'
+  let sortField = 'id'
   let sortDirect = 'asc'
   if (typeof sort !== 'undefined'){
     if (sort.startsWith('-')){
@@ -32,23 +42,47 @@ const getProfessionParam = async (page, perpage, division, code, name, okz, sort
     }
   }
   let queryObject = {}
+  let queryObjectString = {}
   if (typeof division !== 'undefined'){
-    queryObject['division'] = division
+    queryObjectString['division'] = "%"+division+"%"
+  } else {
+    queryObjectString['division'] = "%%"
   }
     if (typeof code !== 'undefined'){
     queryObject['code'] = code
   }
     if (typeof name !== 'undefined'){
-    queryObject['name'] = name
+      queryObjectString['name'] = "%"+name+"%"
+  }else {
+    queryObjectString['name'] = "%%"
   }
     if (typeof okz !== 'undefined'){
-    queryObject['okz'] = okz
+      queryObjectString['okz'] = "%"+okz+"%"
+  } else {
+    queryObjectString['okz'] = "%%"
   }
 
-  return knex("profession").select()
+  let resultData = await knex("profession").select()
   .orderBy(sortField, sortDirect)
   .where(queryObject)
+  .andWhereILike('division', queryObjectString.division)
+  .andWhereILike('name', queryObjectString.name)
+  .andWhereILike('okz', queryObjectString.okz)
   .limit(prpg).offset((pg-1)*prpg)
+
+  let countData = await knex("profession")
+  .where(queryObject)
+  .andWhereILike('division', queryObjectString.division)
+  .andWhereILike('name', queryObjectString.name)
+  .andWhereILike('okz', queryObjectString.okz)
+  .first()
+  .count('id as countRow')
+
+  countData['pages'] = Math.ceil(countData.countRow/prpg)
+  countData['currentPage'] = pg
+  resultData.push(countData)
+
+  return resultData
 }
 
 //Показать профессию подробно

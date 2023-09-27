@@ -14,7 +14,13 @@ const getBodypart = async (page, perpage, sort) => {
       sortField = sort
     }
   }
-  return knex("bodyPart").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+  let countData = await knex("bodyPart").first().count('id as countRow')
+  let resultData = await knex("bodyPart").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+  //console.log(`count: ${count}`)
+  countData['pages'] = Math.ceil(countData.countRow/prpg)
+  countData['currentPage'] = pg
+  resultData.push(countData)
+  return resultData
 }
 
 //Получить части тела, с постраничной пагинацией и параметрами
@@ -31,6 +37,7 @@ const getBodypartParam = async (page, perpage, type, name, sort) => {
       sortField = sort
     }
   }
+  /*
   let queryObject = {}
   if (typeof type !== 'undefined'){
     queryObject['type'] = type
@@ -38,11 +45,37 @@ const getBodypartParam = async (page, perpage, type, name, sort) => {
     if (typeof name !== 'undefined'){
     queryObject['name'] = name
   }
+*/
+let queryObjectString = {}
+if (typeof type !== 'undefined'){
+  queryObjectString['type'] = '%' + type + '%'
+} else {
+  queryObjectString['type'] = '%%'
+}
+  if (typeof name !== 'undefined'){
+    queryObjectString['name'] = '%' +  name + '%'
+}else {
+  queryObjectString['name'] = '%%'
+}
 
-  return knex("bodyPart").select()
-  .orderBy(sortField, sortDirect)
-  .where(queryObject)
-  .limit(prpg).offset((pg-1)*prpg)
+let countData = await knex("bodyPart")
+.whereILike("name", queryObjectString.name)
+.andWhereILike("type", queryObjectString.type)
+.first()
+.count('id as countRow')
+
+countData['pages'] = Math.ceil(countData.countRow/prpg)
+countData['currentPage'] = pg
+
+ let resultData = await knex("bodyPart")
+ .whereILike("name", queryObjectString.name)
+ .andWhereILike("type", queryObjectString.type)
+ .select()
+ .orderBy(sortField, sortDirect)
+ //.where(queryObject)
+ .limit(prpg).offset((pg-1)*prpg)
+  resultData.push(countData)
+  return resultData
 }
 
 //Показать часть тела подробно

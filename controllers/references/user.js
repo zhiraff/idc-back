@@ -26,7 +26,17 @@ const getUser = async (page, perpage, sort) => {
       sortField = sort
     }
   }
-  return knex("users").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+
+  let resultData = await knex("users").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+  let countData = await knex("users")
+  .first()
+  .count('id as countRow')
+
+  countData['pages'] = countData.countRow/perpage
+  countData['currentPage'] = pg
+  resultData.push(countData)
+
+  return resultData
 }
 
 //Получить пользователи, с постраничной пагинацией и параметрами
@@ -34,25 +44,35 @@ const getUserParam = async (page, perpage, username, firstName, secondName, thir
   const pg = typeof page !== 'undefined' && page !== '' ? page : 1
   const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
   let queryObject = {}
+  let queryObjectString = {}
   if (typeof username !== 'undefined'){
-    queryObject['username'] = username
+    queryObjectString['username'] = "%"+username+"%"
+  } else {
+    queryObjectString['username'] = "%%"
   }
-    if (typeof firstName !== 'undefined'){
-    queryObject['firstName'] = firstName
+  if (typeof firstName !== 'undefined'){
+  queryObjectString['firstName'] = "%"+firstName+"%"
+  } else {
+    queryObjectString['firstName'] = "%%"
   }
-      if (typeof secondName !== 'undefined'){
-    queryObject['secondName'] = secondName
+  if (typeof secondName !== 'undefined'){
+  queryObjectString['secondName'] = "%"+secondName+"%"
+  } else {
+    queryObjectString['secondName'] = "%%"
   }
-        if (typeof thirdName !== 'undefined'){
-    queryObject['thirdName'] = thirdName
+  if (typeof thirdName !== 'undefined'){
+  queryObjectString['thirdName'] = "%"+thirdName+"%"
+  } else {
+    queryObjectString['thirdName'] = "%%"
   }
-        if (typeof role !== 'undefined'){
+  if (typeof role !== 'undefined'){
     queryObject['role'] = role
   }
-        if (typeof department_item_id !== 'undefined'){
+  /*
+  if (typeof department_item_id !== 'undefined'){
     queryObject['department_item_id'] = department_item_id
   }
-
+*/
   let sortField = 'id'
   let sortDirect = 'asc'
   if (typeof sort !== 'undefined'){
@@ -65,11 +85,29 @@ const getUserParam = async (page, perpage, username, firstName, secondName, thir
   }
   //console.log(queryObject)
 
-  return knex("users").select()
+  let resultData = await knex("users").select()
   .orderBy(sortField, sortDirect)
   .where(queryObject)
-  //.andWhereILike('code', '%%')
+  .andWhereILike('username', queryObjectString.username)
+  .andWhereILike('firstName', queryObjectString.firstName)
+  .andWhereILike('secondName', queryObjectString.secondName)
+  .andWhereILike('thirdName', queryObjectString.thirdName)
   .limit(prpg).offset((pg-1)*prpg)
+
+  let countData = await knex("users")
+  .where(queryObject)
+  .andWhereILike('username', queryObjectString.username)
+  .andWhereILike('firstName', queryObjectString.firstName)
+  .andWhereILike('secondName', queryObjectString.secondName)
+  .andWhereILike('thirdName', queryObjectString.thirdName)
+  .first()
+  .count('id as countRow')
+
+  countData['pages'] = countData.countRow/perpage
+  countData['currentPage'] = pg
+  resultData.push(countData)
+
+  return 
 }
 
 //Показать пользователя подробно

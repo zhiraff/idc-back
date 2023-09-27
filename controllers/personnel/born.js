@@ -1,6 +1,6 @@
 const knex = require("../../knex_init");
 //Поулчить весь персонал (и на контр и не на контр)
-const getBorn = (page, perpage, sort) => {
+const getBorn = async (page, perpage, sort) => {
   const pg = typeof page !== 'undefined' && page !== '' ? page : 1
   const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
   let sortField = 'id'
@@ -13,7 +13,15 @@ const getBorn = (page, perpage, sort) => {
       sortField = sort
     }
   }
-  return knex("fl_born").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+  let resultData = await knex("fl_born").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+  let countData = await knex("fl_born")
+  .first()
+  .count('id as countRow')
+  countData['pages'] = Math.ceil(countData.countRow/prpg)
+  countData['currentPage'] = pg
+  resultData.push(countData)
+  return resultData
+
 }
 
 //Получить персонал, с постраничной пагинацией и параметрами
@@ -31,6 +39,7 @@ const getBornParam = async (page, perpage, flKey, date, country, region, area, l
     }
   }
   let queryObject = {}
+  let queryObjectString = {}
   if (typeof flKey !== 'undefined'){
     queryObject['flKey'] = flKey
   }
@@ -38,22 +47,47 @@ const getBornParam = async (page, perpage, flKey, date, country, region, area, l
     queryObject['date'] = date
   }
       if (typeof country !== 'undefined'){
-    queryObject['country'] = country
+        queryObjectString['country'] = "%"+country+"%"
+  }else{
+    queryObjectString['country'] = "%%"
   }
       if (typeof region !== 'undefined'){
-    queryObject['region'] = region
+        queryObjectString['region'] = "%"+region+"%"
+  }else{
+    queryObjectString['region'] = "%%"
   }
       if (typeof area !== 'undefined'){
-    queryObject['area'] = area
+        queryObjectString['area'] = "%"+area+"%"
+  }else{
+    queryObjectString['area'] = "%%"
   }
       if (typeof locality !== 'undefined'){
-    queryObject['locality'] = locality
+        queryObjectString['locality'] = "%"+locality+"%"
+  }else{
+    queryObjectString['locality'] = "%%"
   }
 
-  return knex("fl_born").select()
+  let resultData = await knex("fl_born").select()
   .orderBy(sortField, sortDirect)
   .where(queryObject)
+  .andWhereILike("country", queryObjectString.country)
+  .andWhereILike("region", queryObjectString.region)
+  .andWhereILike("area", queryObjectString.area)
+  .andWhereILike("locality", queryObjectString.locality)
   .limit(prpg).offset((pg-1)*prpg)
+  let countData = await knex("fl_born")
+  .where(queryObject)
+  .andWhereILike("country", queryObjectString.country)
+  .andWhereILike("region", queryObjectString.region)
+  .andWhereILike("area", queryObjectString.area)
+  .andWhereILike("locality", queryObjectString.locality)
+  .first()
+  .count('id as countRow')
+  countData['pages'] = Math.ceil(countData.countRow/prpg)
+  countData['currentPage'] = pg
+  resultData.push(countData)
+  return resultData
+
 }
 
 //Показать персонал подробно

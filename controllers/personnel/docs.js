@@ -1,6 +1,6 @@
 const knex = require("../../knex_init");
 //Поулчить весь персонал (и на контр и не на контр)
-const getDocs = (page, perpage, sort) => {
+const getDocs = async (page, perpage, sort) => {
   const pg = typeof page !== 'undefined' && page !== '' ? page : 1
   const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
   let sortField = 'id'
@@ -13,7 +13,15 @@ const getDocs = (page, perpage, sort) => {
       sortField = sort
     }
   }
-  return knex("fl_docs").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+  let resultData = await knex("fl_docs").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+  let countData = await knex("fl_docs")
+  .first()
+  .count('id as countRow')
+  countData['pages'] = Math.ceil(countData.countRow/prpg)
+  countData['currentPage'] = pg
+  resultData.push(countData)
+  return resultData
+ 
 }
 
 //Получить персонал, с постраничной пагинацией и параметрами
@@ -31,35 +39,65 @@ const getDocsParam = async (page, perpage, flKey, name, serial, number, dateIssu
     }
   }
   let queryObject = {}
+  let queryObjectString = {}
   if (typeof flKey !== 'undefined'){
     queryObject['flKey'] = flKey
   }
     if (typeof name !== 'undefined'){
-    queryObject['name'] = name
+      queryObjectString['name'] = "%"+name+"%"
+  }else{
+    queryObjectString['name'] = "%%"
   }
       if (typeof serial !== 'undefined'){
-    queryObject['serial'] = serial
+        queryObjectString['serial'] = "%"+serial+"%"
+  }else{
+    queryObjectString['serial'] = "%%"
   }
       if (typeof number !== 'undefined'){
-    queryObject['number'] = number
+        queryObjectString['number'] = "%"+number+"%"
+  }else{
+    queryObjectString['number'] = "%%"
   }
       if (typeof dateIssue !== 'undefined'){
     queryObject['dateIssue'] = dateIssue
   }
       if (typeof whoIssue !== 'undefined'){
-    queryObject['whoIssue'] = whoIssue
+        queryObjectString['whoIssue'] = "%"+whoIssue+"%"
+  }else{
+    queryObjectString['whoIssue'] = "%%"
   }
       if (typeof podrIssue !== 'undefined'){
-    queryObject['podrIssue'] = podrIssue
+        queryObjectString['podrIssue'] = "%"+podrIssue+"%"
+  }else{
+    queryObjectString['podrIssue'] = "%%"
   }
       if (typeof active !== 'undefined'){
     queryObject['active'] = active
   }
 
-  return knex("fl_docs").select()
+  let resultData = await knex("fl_docs").select()
   .orderBy(sortField, sortDirect)
   .where(queryObject)
+  .andWhereILike("name", queryObjectString.name)
+  .andWhereILike("serial", queryObjectString.serial)
+  .andWhereILike("number", queryObjectString.number)
+  .andWhereILike("whoIssue", queryObjectString.whoIssue)
+  .andWhereILike("podrIssue", queryObjectString.podrIssue)
   .limit(prpg).offset((pg-1)*prpg)
+
+  let countData = await knex("fl_docs")
+  .where(queryObject)
+  .andWhereILike("name", queryObjectString.name)
+  .andWhereILike("serial", queryObjectString.serial)
+  .andWhereILike("number", queryObjectString.number)
+  .andWhereILike("whoIssue", queryObjectString.whoIssue)
+  .andWhereILike("podrIssue", queryObjectString.podrIssue)
+  .first()
+  .count('id as countRow')
+  countData['pages'] = Math.ceil(countData.countRow/prpg)
+  countData['currentPage'] = pg
+  resultData.push(countData)
+  return resultData
 }
 
 //Показать персонал подробно

@@ -15,14 +15,29 @@ const getValue = async (page, perpage, sort) => {
       sortField = sort
     }
   }
-  return knex("limitValue").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+
+  let resultData = await knex("limitValue")
+  .select()
+  .orderBy(sortField, sortDirect)
+  .limit(prpg)
+  .offset((pg-1)*prpg)
+
+  let countData = await knex("limitValue")
+  .first()
+  .count('id as countRow')
+
+  countData['pages'] = Math.ceil(countData.countRow/prpg)
+  countData['currentPage'] = pg
+  resultData.push(countData)
+
+  return resultData
 }
 
 //Получить контрольные значения, с постраничной пагинацией и параметрами
 const getValueParam = async (page, perpage, radionuclide_id, indicator, value, gister, sort) => {
   const pg = typeof page !== 'undefined' && page !== '' ? page : 1
   const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
-      let sortField = 'id'
+  let sortField = 'id'
   let sortDirect = 'asc'
   if (typeof sort !== 'undefined'){
     if (sort.startsWith('-')){
@@ -33,11 +48,14 @@ const getValueParam = async (page, perpage, radionuclide_id, indicator, value, g
     }
   }
   let queryObject = {}
+  let queryObjectString = {}
   if (typeof radionuclide_id !== 'undefined'){
     queryObject['radionuclide_id'] = radionuclide_id
   }
     if (typeof indicator !== 'undefined'){
-    queryObject['indicator'] = indicator
+      queryObjectString['indicator'] = "%"+indicator+"%"
+  }else{
+    queryObjectString['indicator'] = "%%"
   }
     if (typeof value !== 'undefined'){
     queryObject['value'] = value
@@ -46,10 +64,24 @@ const getValueParam = async (page, perpage, radionuclide_id, indicator, value, g
     queryObject['gister'] = gister
   }
 
-  return knex("limitValue").select()
+  let resultData = await knex("limitValue")
+  .select()
   .orderBy(sortField, sortDirect)
   .where(queryObject)
+  .andWhereILike('indicator', queryObjectString.indicator)
   .limit(prpg).offset((pg-1)*prpg)
+
+  let countData = await knex("limitValue")
+  .where(queryObject)
+  .andWhereILike('indicator', queryObjectString.indicator)
+  .first()
+  .count('id as countRow')
+
+  countData['pages'] = Math.ceil(countData.countRow/prpg)
+  countData['currentPage'] = pg
+  resultData.push(countData)
+  
+  return resultData
 }
 
 //Показать предельное значение подробно

@@ -15,11 +15,25 @@ const getKindidc = async (page, perpage, sort) => {
       sortField = sort
     }
   }
-  return knex("kindIdc").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+  let resultData = await knex("kindIdc")
+  .select()
+  .orderBy(sortField, sortDirect)
+  .limit(prpg)
+  .offset((pg-1)*prpg)
+
+  let countData = await knex("kindIdc")
+  .first()
+  .count('id as countRow')
+
+  countData['pages'] = Math.ceil(countData.countRow/prpg)
+  countData['currentPage'] = pg
+  resultData.push(countData)
+
+  return resultData
 }
 
 //Получить виды ИДК, с постраничной пагинацией и параметрами
-const getKindidcParam = async (type, kind, kindShort, sort) => {
+const getKindidcParam = async (page, perpage, type, kind, kindShort, sort) => {
   const pg = typeof page !== 'undefined' && page !== '' ? page : 1
   const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
    let sortField = 'id'
@@ -32,21 +46,43 @@ const getKindidcParam = async (type, kind, kindShort, sort) => {
       sortField = sort
     }
   }
-  let queryObject = {}
+  let queryObjectString = {}
   if (typeof type !== 'undefined'){
-    queryObject['type'] = type
+    queryObjectString['type'] = '%'+type+'%'
+  } else {
+    queryObjectString['type'] = '%%'
   }
     if (typeof kind !== 'undefined'){
-    queryObject['kind'] = kind
+      queryObjectString['kind'] = '%'+kind+'%'
+  } else {
+    queryObjectString['kind'] = '%%'
   }
       if (typeof kindShort !== 'undefined'){
-    queryObject['kindShort'] = kindShort
-  }
+        queryObjectString['kindShort'] = '%'+kindShort+'%'
+  } else {
+    queryObjectString['kindShort'] = '%%'
 
-  return knex("kindIdc").select()
+  }
+ //console.log(`sotrfield: ${sortField} \n sortdirect: ${sortDirect} \n sort: ${sort}`)
+  let resultData = await knex("kindIdc")
+  .select()
+  .whereILike('type', queryObjectString.type)
+  .andWhereILike('kind', queryObjectString.kind)
+  .andWhereILike('kindShort', queryObjectString.kindShort)
   .orderBy(sortField, sortDirect)
-  .where(queryObject)
   .limit(prpg).offset((pg-1)*prpg)
+
+  let countData = await knex("kindIdc")
+  .whereILike('type', queryObjectString.type)
+  .andWhereILike('kind', queryObjectString.kind)
+  .andWhereILike('kindShort', queryObjectString.kindShort)
+  .first()
+  .count('id as countRow')
+
+  countData['pages'] = Math.ceil(countData.countRow/prpg)
+  countData['currentPage'] = pg
+  resultData.push(countData)
+  return resultData
 }
 
 //Показать виды ИДК подробно

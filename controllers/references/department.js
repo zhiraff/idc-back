@@ -17,16 +17,23 @@ const getDepartment = async (page, perpage, sort) => {
       sortField = sort
     }
   }
-  let result = await knex("department").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+  let resultData = await knex("department").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
   
-  for (let i = 0;i < result.length; i++){
-    result[i].begin = result[i].begin.toLocaleDateString('ru-RU', options);
-    if (result[i].end !== null){
-      result[i].end = result[i].end.toLocaleDateString('ru-RU', options);
+  for (let i = 0;i < resultData.length; i++){
+    resultData[i].begin = resultData[i].begin.toLocaleDateString('ru-RU', options);
+    if (resultData[i].end !== null){
+      resultData[i].end = resultData[i].end.toLocaleDateString('ru-RU', options);
     }
   }
-  
-  return result
+  let countData = await knex("department")
+  .first()
+  .count('id as countRow')
+
+  countData['pages'] = Math.ceil(countData.countRow/prpg)
+  countData['currentPage'] = pg
+  resultData.push(countData)
+
+  return resultData
 }
 
 //Получить подразделения, с постраничной пагинацией и параметрами
@@ -34,6 +41,7 @@ const getDepartmentParam = async (page, perpage, parent_id, begin, end, code, na
   const pg = typeof page !== 'undefined' && page !== '' ? page : 1
   const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
   let queryObject = {}
+  let queryObjectString = {}
   if (typeof parent_id !== 'undefined'){
     queryObject['parent_id'] = parent_id
   }
@@ -44,19 +52,30 @@ const getDepartmentParam = async (page, perpage, parent_id, begin, end, code, na
     queryObject['end'] = end
   }
         if (typeof code !== 'undefined'){
-    queryObject['code'] = code
+          queryObjectString['code'] = '%'+code+'%'
+  } else {
+    queryObjectString['code'] = '%%'
   }
         if (typeof name !== 'undefined'){
-    queryObject['name'] = name
+    queryObjectString['name'] = '%'+name+'%'
+  } else {
+    queryObjectString['name'] = '%%'
   }
         if (typeof department_item_id !== 'undefined'){
-    queryObject['department_item_id'] = department_item_id
+    
+    queryObjectString['department_item_id'] = '%'+department_item_id+'%'
+  } else {
+    queryObjectString['department_item_id'] = '%%'
   }
         if (typeof full_name !== 'undefined'){
-    queryObject['full_name'] = full_name
+    queryObjectString['full_name'] = '%'+full_name+'%'
+  } else {
+    queryObjectString['full_name'] = '%%'
   }
         if (typeof address !== 'undefined'){
-    queryObject['address'] = address
+    queryObjectString['address'] = '%'+address+'%'
+  } else {
+    queryObjectString['address'] = '%%'
   }
 
     let sortField = 'id'
@@ -69,13 +88,39 @@ const getDepartmentParam = async (page, perpage, parent_id, begin, end, code, na
       sortField = sort
     }
   }
-  //console.log(queryObject)
-
-  return knex("department").select()
+  let resultData = await knex("department")
+  .select()
   .orderBy(sortField, sortDirect)
   .where(queryObject)
-  //.andWhereILike('code', '%%')
+  .andWhereILike('code', queryObjectString.code)
+  .andWhereILike('name', queryObjectString.name)
+  .andWhereILike('department_item_id', queryObjectString.department_item_id)
+  .andWhereILike('full_name', queryObjectString.full_name)
+  .andWhereILike('address', queryObjectString.address)
   .limit(prpg).offset((pg-1)*prpg)
+
+  for (let i = 0;i < resultData.length; i++){
+    resultData[i].begin = resultData[i].begin.toLocaleDateString('ru-RU', options);
+    if (resultData[i].end !== null){
+      resultData[i].end = resultData[i].end.toLocaleDateString('ru-RU', options);
+    }
+  }
+
+  let countData = knex("department")
+  .where(queryObject)
+  .andWhereILike('code', queryObjectString.code)
+  .andWhereILike('name', queryObjectString.name)
+  .andWhereILike('department_item_id', queryObjectString.department_item_id)
+  .andWhereILike('full_name', queryObjectString.full_name)
+  .andWhereILike('address', queryObjectString.address)
+  .first()
+  .count('id as countRow')
+
+  countData['pages'] = Math.ceil(countData.countRow/prpg)
+  countData['currentPage'] = pg
+  
+  resultData.push(countData)
+  return resultData
 }
 
 //Показать подразделения подробно

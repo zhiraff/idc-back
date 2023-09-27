@@ -1,7 +1,7 @@
 const knex = require("../../knex_init");
 
 //Поулчить все записи о смене фио
-const getFio = (page, perpage, sort) => {
+const getFio = async (page, perpage, sort) => {
   const pg = typeof page !== 'undefined' && page !== '' ? page : 1
   const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
   let sortField = 'id'
@@ -14,7 +14,14 @@ const getFio = (page, perpage, sort) => {
       sortField = sort
     }
   }
-  return knex("fl_ch_fio").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+  let resultData = await knex("fl_ch_fio").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+  let countData = await knex("fl_ch_fio")
+  .first()
+  .count('id as countRow')
+  countData['pages'] = Math.ceil(countData.countRow/prpg)
+  countData['currentPage'] = pg
+  resultData.push(countData)
+  return resultData
 }
 
 //Получить персонал, с постраничной пагинацией и параметрами
@@ -32,29 +39,55 @@ const getFioParam = async (page, perpage, flKey, firstName, secondName, thirdNam
     }
   }
   let queryObject = {}
+  let queryObjectString = {}
   if (typeof flKey !== 'undefined'){
     queryObject['flKey'] = flKey
   }
     if (typeof firstName !== 'undefined'){
-    queryObject['firstName'] = firstName
+      queryObjectString['firstName'] = "%"+firstName+"%"
+  }else{
+    queryObjectString['firstName'] = "%%"
   }
       if (typeof secondName !== 'undefined'){
-    queryObject['secondName'] = secondName
+        queryObjectString['secondName'] = "%"+secondName+"%"
+  }else{
+    queryObjectString['secondName'] = "%%"
   }
       if (typeof thirdName !== 'undefined'){
-    queryObject['thirdName'] = thirdName
+        queryObjectString['thirdName'] = "%"+thirdName+"%"
+  }else{
+    queryObjectString['thirdName'] = "%%"
   }
       if (typeof date !== 'undefined'){
     queryObject['date'] = date
   }
       if (typeof comment !== 'undefined'){
-    queryObject['comment'] = comment
+        queryObjectString['comment'] = "%"+comment+"%"
+  }else{
+    queryObjectString['comment'] = "%%"
   }
 
-  return knex("fl_ch_fio").select()
+  let resultData = await knex("fl_ch_fio").select()
   .orderBy(sortField, sortDirect)
   .where(queryObject)
+  .andWhereILike("firstName", queryObjectString.firstName)
+  .andWhereILike("secondName", queryObjectString.secondName)
+  .andWhereILike("thirdName", queryObjectString.thirdName)
+  .andWhereILike("comment", queryObjectString.comment)
   .limit(prpg).offset((pg-1)*prpg)
+
+  let countData = await knex("fl_ch_fio")
+  .where(queryObject)
+  .andWhereILike("firstName", queryObjectString.firstName)
+  .andWhereILike("secondName", queryObjectString.secondName)
+  .andWhereILike("thirdName", queryObjectString.thirdName)
+  .andWhereILike("comment", queryObjectString.comment)
+  .first()
+  .count('id as countRow')
+  countData['pages'] = Math.ceil(countData.countRow/prpg)
+  countData['currentPage'] = pg
+  resultData.push(countData)
+  return resultData
 }
 
 //Показать персонал подробно

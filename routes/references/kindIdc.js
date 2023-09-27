@@ -15,9 +15,12 @@ router.get("/", (req, res) => {
   const perpage = req.query.perpage;
   const sort = req.query.sort;
     kindIdcController.get(page, perpage, sort).then((data) => {
+      let metaindex = data.findIndex(x => x.countRow)
+      let metadata = data.splice(metaindex, 1)
       res.status(200).json({
         status: "success",
-        data: data
+        data: data,
+        metadata: metadata[0]
         }
         );
     })
@@ -25,7 +28,8 @@ router.get("/", (req, res) => {
       console.log(err)
       res.status(400).json({
         status: "error",
-        data: ""
+        data: "",
+        metadata: ""
       })
     })
   
@@ -44,9 +48,12 @@ router.get("/search", (req, res) => {
   const sort = req.query.sort;
   //console.log(req.user)
         kindIdcController.getByParam(page, perpage, type, kind, kindShort, sort).then((data) => {
+          let metaindex = data.findIndex(x => x.countRow)
+          let metadata = data.splice(metaindex, 1)
       res.status(200).json({
         status: "success",
-        data: data
+        data: data,
+        metadata: metadata[0]
         }
         );
     })

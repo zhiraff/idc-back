@@ -21,25 +21,40 @@ router.get("/", (req, res) => {
   //getPersonnel(page, perpage, sort)
   personnelController.getPersonnel(page, perpage, sort)
   .then(async (data) => {
-
+    let metaindex = data.findIndex(x => x.countRow)
+    let metadata = data.splice(metaindex, 1)
+    let mtindx
+    let mtdt
     for (let i=0; i< data.length; i++){
      data[i].address = await personnelController.getAddressByParam(1, 25, data[i].id)
-     data[i].born = await personnelController.getBornByParam(1, 25, data[i].id)
-     data[i].ch_fio = await personnelController.getFioByParam(1, 25, data[i].id)
-     data[i].docs = await personnelController.getDocsByParam(1, 25, data[i].id)
-    }
+     mtindx = data[i].address.findIndex(x => x.countRow)
+     mtdt = data[i].address.splice(mtindx, 1)
 
+     data[i].born = await personnelController.getBornByParam(1, 25, data[i].id)
+     mtindx = data[i].born.findIndex(x => x.countRow)
+     mtdt = data[i].born.splice(mtindx, 1)
+
+     data[i].ch_fio = await personnelController.getFioByParam(1, 25, data[i].id)
+     mtindx = data[i].ch_fio.findIndex(x => x.countRow)
+     mtdt = data[i].ch_fio.splice(mtindx, 1)
+
+     data[i].docs = await personnelController.getDocsByParam(1, 25, data[i].id)
+     mtindx = data[i].docs.findIndex(x => x.countRow)
+     mtdt = data[i].docs.splice(mtindx, 1)
+    }
 
     res.status(200).json({
         "status": "success",
-        "data": data
+        "data": data,
+        "metadata": metadata[0]
     })
     })
     .catch((err)=>{
         console.log(err)
         res.status(400).json({
             "status": "error",
-            "data": ""
+            "data": "",
+            "metadata": ""
         })
     })
   })
@@ -61,15 +76,32 @@ router.get("/search", (req, res) => {
   personnelController.getPersonnelByParam(page, perpage, signImport, firstName, secondName, thirdName, sex,
             family, snils, inn, organization, department, departmentMCC,
             jobCode, tabNum, accNum, id_kadr, sort).then( async (data) => {
+              let metaindex = data.findIndex(x => x.countRow)
+              let metadata = data.splice(metaindex, 1)
+              let mtindx
+              let mtdt
               for (let i=0; i< data.length; i++){
                 data[i].address = await personnelController.getAddressByParam(1, 25, data[i].id)
+                mtindx = data[i].address.findIndex(x => x.countRow)
+                mtdt = data[i].address.splice(mtindx, 1)
+
                 data[i].born = await personnelController.getBornByParam(1, 25, data[i].id)
+                mtindx = data[i].address.findIndex(x => x.countRow)
+                mtdt = data[i].address.splice(mtindx, 1)
+
                 data[i].ch_fio = await personnelController.getFioByParam(1, 25, data[i].id)
+                mtindx = data[i].address.findIndex(x => x.countRow)
+                mtdt = data[i].address.splice(mtindx, 1)
+
                 data[i].docs = await personnelController.getDocsByParam(1, 25, data[i].id)
+                mtindx = data[i].address.findIndex(x => x.countRow)
+                mtdt = data[i].address.splice(mtindx, 1)
+                
                }
             res.status(200).json({
                 status: "success",
-                data: data
+                data: data,
+                metadata: metadata[0] 
         }
         );
     })
@@ -77,7 +109,8 @@ router.get("/search", (req, res) => {
       console.log(err)
       res.status(400).json({
         status: "error",
-        data: ""
+        data: "",
+        metadata: ""
       })
     })
 })

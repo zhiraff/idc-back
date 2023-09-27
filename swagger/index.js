@@ -61,7 +61,11 @@ const doc = {
     },
     {
       name: 'personnel',
-      description: 'Контроллируемый персонал"'
+      description: 'Контроллируемый персонал'
+    },
+    {
+      name: 'role',
+      description: 'Справочник ролей'
     },
   ],
   host: 'localhost:3000',

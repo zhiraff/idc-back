@@ -3,7 +3,7 @@ const express = require("express")
 const router = express.Router()
 
 const personnelController = require("../controllers/personnel/personnel")
-const addressController = require("../controllers/personnel/address")
+const addressController = require("../controllers/personnel/address") //без этой строчки всё крашится
 
 //API
 //Получить весь персонал (и контролир и не контролир)
@@ -486,6 +486,104 @@ router.post("/address", (req, res) => {
 
 })
 
+//получение всех части тела
+router.get("/fl", (req, res) => { 
+  /* #swagger.tags = ['personnel']
+       #swagger.description = 'Показ всех физ.лиц'
+  */
+  const page = req.query.page;
+  const perpage = req.query.perpage;
+  const sort = req.query.sort;
+  personnelController.getPersonnel(page, perpage, sort).then((data) => {
+    let metaindex = data.findIndex(x => x.countRow)
+    let metadata = data.splice(metaindex, 1)
+      res.status(200).json({
+        status: "success",
+        data: data,
+        metadata: metadata[0]
+        }
+        );
+    })
+    .catch((err)=>{
+      console.log(err)
+      res.status(400).json({
+        status: "error",
+        data: "",
+        metadata: ""
+      })
+    })
+  
+});
+
+//Поиск физ.лица
+router.get("/fl/search", (req, res) => {
+    /* #swagger.tags = ['personnel']
+       #swagger.description = 'Поиск частей тела'
+  */
+  const page = req.query.page;
+  const perpage = req.query.perpage;
+  const signImport = req.query.signImport;
+  const firstName = req.query.firstName;
+  const secondName = req.query.secondName;
+  const thirdName = req.query.thirdName;
+  const sex = req.query.sex;
+  const family = req.query.family;
+  const snils = req.query.snils;
+  const inn = req.query.inn;
+  const organization = req.query.organization;
+  const department = req.query.department;
+  const departmentMCC = req.query.departmentMCC;
+  const jobCode = req.query.jobCode;
+  const tabNum = req.query.tabNum;
+  const accNum = req.query.accNum;
+  const id_kadr = req.query.id_kadr;
+  const sort = req.query.sort;
+  personnelController.getPersonnelByParam(page, perpage, signImport, firstName, secondName, thirdName, sex,
+    family, snils, inn, organization, department, departmentMCC,
+    jobCode, tabNum, accNum, id_kadr, sort).then((data) => {
+      let metaindex = data.findIndex(x => x.countRow)
+      let metadata = data.splice(metaindex, 1)
+      res.status(200).json({
+        status: "success",
+        data: data,
+        metadata: metadata[0] 
+        }
+        );
+    })
+    .catch((err)=>{
+      console.log(err)
+      res.status(400).json({
+        status: "error",
+        data: "",
+        metadata: ""
+      })
+    })
+
+});
+
+//Показать физлицо подробно
+router.get("/fl/:id", (req, res) => {
+    /* #swagger.tags = ['personnel']
+       #swagger.description = 'Просмотр записи подробно'
+  */
+  const flId = req.params.id;
+  personnelController.getOnePersonnel(flId)
+  .then((data) => {
+    res.status(200).json({
+      status: "success",
+      data: data
+    })
+  })
+  .catch((err)=>{
+    console.log(err)
+    res.status(400).json({
+      status: "error",
+      data: ""
+    })
+  })
+
+});
+
 //обновление записи в FL
 router.patch("/fl/:id", (req, res) => {
    /*
@@ -539,6 +637,94 @@ router.delete("/fl/:id", (req, res) => {
  })
 
 });
+
+//получение всех фио
+router.get("/fio", (req, res) => { 
+  /* #swagger.tags = ['personnel']
+       #swagger.description = 'Показ всех фио'
+  */
+  const page = req.query.page;
+  const perpage = req.query.perpage;
+  const sort = req.query.sort;
+  personnelController.getFio(page, perpage, sort).then((data) => {
+    let metaindex = data.findIndex(x => x.countRow)
+    let metadata = data.splice(metaindex, 1)
+      res.status(200).json({
+        status: "success",
+        data: data,
+        metadata: metadata[0]
+        }
+        );
+    })
+    .catch((err)=>{
+      console.log(err)
+      res.status(400).json({
+        status: "error",
+        data: "",
+        metadata: ""
+      })
+    })
+  
+});
+
+//Поиск фио
+router.get("/fio/search", (req, res) => {
+    /* #swagger.tags = ['personnel']
+       #swagger.description = 'Поиск фио'
+  */
+  const page = req.query.page;
+  const perpage = req.query.perpage;
+  const flKey = req.query.flKey;
+  const firstName = req.query.firstName;
+  const secondName = req.query.secondName;
+  const thirdName = req.query.thirdName;
+  const date = req.query.date;
+  const comment = req.query.comment;
+  const sort = req.query.sort;
+  personnelController.getFioByParam(page, perpage, flKey, firstName, secondName, thirdName, date, comment, sort).then((data) => {
+      let metaindex = data.findIndex(x => x.countRow)
+      let metadata = data.splice(metaindex, 1)
+      res.status(200).json({
+        status: "success",
+        data: data,
+        metadata: metadata[0] 
+        }
+        );
+    })
+    .catch((err)=>{
+      console.log(err)
+      res.status(400).json({
+        status: "error",
+        data: "",
+        metadata: ""
+      })
+    })
+
+});
+
+//Показать фио подробно
+router.get("/fio/:id", (req, res) => {
+    /* #swagger.tags = ['personnel']
+       #swagger.description = 'Просмотр записи фио подробно'
+  */
+  const fioId = req.params.id;
+  personnelController.getOneFio(fioId)
+  .then((data) => {
+    res.status(200).json({
+      status: "success",
+      data: data
+    })
+  })
+  .catch((err)=>{
+    console.log(err)
+    res.status(400).json({
+      status: "error",
+      data: ""
+    })
+  })
+
+});
+
 
 //обновление записи в fl_ch_fio
 router.patch("/fio/:id", (req, res) => {
@@ -601,6 +787,93 @@ router.delete("/fio/:id", (req, res) => {
     data: ""
   })
  })
+
+});
+
+//получение всех мест рождений
+router.get("/born", (req, res) => { 
+  /* #swagger.tags = ['personnel']
+     #swagger.description = 'Показ всех мест рождений'
+  */
+  const page = req.query.page;
+  const perpage = req.query.perpage;
+  const sort = req.query.sort;
+  personnelController.getBorn(page, perpage, sort).then((data) => {
+    let metaindex = data.findIndex(x => x.countRow)
+    let metadata = data.splice(metaindex, 1)
+      res.status(200).json({
+        status: "success",
+        data: data,
+        metadata: metadata[0]
+        }
+        );
+    })
+    .catch((err)=>{
+      console.log(err)
+      res.status(400).json({
+        status: "error",
+        data: "",
+        metadata: ""
+      })
+    })
+  
+});
+
+//Поиск мест рождений
+router.get("/born/search", (req, res) => {
+    /* #swagger.tags = ['personnel']
+       #swagger.description = 'Поиск мест рождений'
+  */
+  const page = req.query.page;
+  const perpage = req.query.perpage;
+  const flKey = req.query.flKey;
+  const date = req.query.date;
+  const country = req.query.country;
+  const region = req.query.region;
+  const area = req.query.area;
+  const locality = req.query.locality;
+  const sort = req.query.sort;
+      personnelController.getBornByParam(page, perpage, flKey, date, country, region, area, locality, sort).then((data) => {
+      let metaindex = data.findIndex(x => x.countRow)
+      let metadata = data.splice(metaindex, 1)
+      res.status(200).json({
+        status: "success",
+        data: data,
+        metadata: metadata[0] 
+        }
+        );
+    })
+    .catch((err)=>{
+      console.log(err)
+      res.status(400).json({
+        status: "error",
+        data: "",
+        metadata: ""
+      })
+    })
+
+});
+
+//Показать место рождения подробно
+router.get("/born/:id", (req, res) => {
+    /* #swagger.tags = ['personnel']
+       #swagger.description = 'Просмотр записи подробно'
+  */
+  const bornId = req.params.id;
+  personnelController.getOneBorn(bornId)
+  .then((data) => {
+    res.status(200).json({
+      status: "success",
+      data: data
+    })
+  })
+  .catch((err)=>{
+    console.log(err)
+    res.status(400).json({
+      status: "error",
+      data: ""
+    })
+  })
 
 });
 
@@ -668,6 +941,97 @@ router.delete("/born/:id", (req, res) => {
 
 });
 
+//====================
+//получение всех документов
+router.get("/docs", (req, res) => { 
+  /* #swagger.tags = ['personnel']
+       #swagger.description = 'Показ всех документов'
+  */
+  const page = req.query.page;
+  const perpage = req.query.perpage;
+  const sort = req.query.sort;
+  personnelController.getDocs(page, perpage, sort).then((data) => {
+    let metaindex = data.findIndex(x => x.countRow)
+    let metadata = data.splice(metaindex, 1)
+      res.status(200).json({
+        status: "success",
+        data: data,
+        metadata: metadata[0]
+        }
+        );
+    })
+    .catch((err)=>{
+      console.log(err)
+      res.status(400).json({
+        status: "error",
+        data: "",
+        metadata: ""
+      })
+    })
+  
+});
+
+//Поиск документов
+router.get("/docs/search", (req, res) => {
+    /* #swagger.tags = ['personnel']
+       #swagger.description = 'Поиск документа'
+  */
+  const page = req.query.page;
+  const perpage = req.query.perpage;
+  const flKey = req.query.flKey;
+  const name = req.query.name;
+  const serial = req.query.serial;
+  const number = req.query.number;
+  const dateIssue = req.query.dateIssue;
+  const whoIssue = req.query.whoIssue;
+  const podrIssue = req.query.podrIssue;
+  const active = req.query.active;
+  const sort = req.query.sort;
+  personnelController.getDocsByParam(page, perpage, flKey, name, serial, number, dateIssue, whoIssue, podrIssue, active, sort).then((data) => {
+      let metaindex = data.findIndex(x => x.countRow)
+      let metadata = data.splice(metaindex, 1)
+      res.status(200).json({
+        status: "success",
+        data: data,
+        metadata: metadata[0] 
+        }
+        );
+    })
+    .catch((err)=>{
+      console.log(err)
+      res.status(400).json({
+        status: "error",
+        data: "",
+        metadata: ""
+      })
+    })
+
+});
+
+//Показать документ подробно
+router.get("/docs/:id", (req, res) => {
+    /* #swagger.tags = ['personnel']
+       #swagger.description = 'Просмотр записи подробно'
+  */
+  const docsId = req.params.id;
+  personnelController.getOneDocs(docsId)
+  .then((data) => {
+    res.status(200).json({
+      status: "success",
+      data: data
+    })
+  })
+  .catch((err)=>{
+    console.log(err)
+    res.status(400).json({
+      status: "error",
+      data: ""
+    })
+  })
+
+});
+//====================
+
 //обновление записи в fl_docs
 router.patch("/docs/:id", (req, res) => {
    /*
@@ -731,6 +1095,99 @@ router.delete("/docs/:id", (req, res) => {
     data: ""
   })
  })
+
+});
+
+//получение всех адресов
+router.get("/address", (req, res) => { 
+  /* #swagger.tags = ['personnel']
+       #swagger.description = 'Показ всех адресов'
+  */
+  const page = req.query.page
+  const perpage = req.query.perpage
+  const sort = req.query.sort
+  personnelController.getAddress(page, perpage, sort).then((data) => {
+    let metaindex = data.findIndex(x => x.countRow)
+    let metadata = data.splice(metaindex, 1)
+      res.status(200).json({
+        status: "success",
+        data: data,
+        metadata: metadata[0]
+        }
+        );
+    })
+    .catch((err)=>{
+      console.log(err)
+      res.status(400).json({
+        status: "error",
+        data: "",
+        metadata: ""
+      })
+    })
+  
+});
+
+//Поиск адресов
+router.get("/address/search", (req, res) => {
+    /* #swagger.tags = ['personnel']
+       #swagger.description = 'Поиск адресов'
+  */
+  const page = req.query.page
+  const perpage = req.query.perpage
+  const flKey = req.query.flKey
+  const type = req.query.type
+  const zipCode = req.query.zipCode
+  const country = req.query.country
+  const region = req.query.region
+  const area = req.query.area
+  const city = req.query.city
+  const street = req.query.street
+  const home = req.query.home
+  const struct = req.query.struct
+  const build = req.query.build
+  const appart = req.query.appart
+  const sort = req.query.sort
+  personnelController.getAddressByParam(page, perpage, flKey, type, zipCode, country, region, area, city, street, home, struct, build, appart, sort).then((data) => {
+      let metaindex = data.findIndex(x => x.countRow)
+      let metadata = data.splice(metaindex, 1)
+      res.status(200).json({
+        status: "success",
+        data: data,
+        metadata: metadata[0] 
+        }
+        );
+    })
+    .catch((err)=>{
+      console.log(err)
+      res.status(400).json({
+        status: "error",
+        data: "",
+        metadata: ""
+      })
+    })
+
+});
+
+//Показать адрес подробно
+router.get("/address/:id", (req, res) => {
+    /* #swagger.tags = ['personnel']
+       #swagger.description = 'Просмотр записи подробно'
+  */
+  const addressId = req.params.id;
+  personnelController.getOneAddress(addressId)
+  .then((data) => {
+    res.status(200).json({
+      status: "success",
+      data: data
+    })
+  })
+  .catch((err)=>{
+    console.log(err)
+    res.status(400).json({
+      status: "error",
+      data: ""
+    })
+  })
 
 });
 

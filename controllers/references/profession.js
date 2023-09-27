@@ -129,7 +129,7 @@ const creatProfession = async(division, code, name, okz, cn, etks, user) => {
       if (typeof etks !== 'undefined'){
     updateObject['etks_category'] = etks
   }
-  updateObject['updatedAt'] = Date.now()
+  updateObject['updatedAt'] = new Date()
       if (typeof user.username !== 'undefined'){
     updateObject['updatedBy'] = user.username
   }else{

@@ -50,7 +50,11 @@
     },
     {
       "name": "personnel",
-      "description": "Контроллируемый персонал\""
+      "description": "Контроллируемый персонал"
+    },
+    {
+      "name": "role",
+      "description": "Справочник ролей"
     }
   ],
   "schemes": [
@@ -482,6 +486,37 @@
             "description": "Bad Request"
           }
         }
+      },
+      "get": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Показ всех физ.лиц",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
       }
     },
     "/api/v1/personnel/fio": {
@@ -517,6 +552,37 @@
                 }
               }
             }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Показ всех фио",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
@@ -572,6 +638,37 @@
             "description": "Bad Request"
           }
         }
+      },
+      "get": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Показ всех мест рождений",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
       }
     },
     "/api/v1/personnel/docs": {
@@ -613,6 +710,37 @@
                 }
               }
             }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Показ всех документов",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
@@ -686,9 +814,170 @@
             "description": "Bad Request"
           }
         }
+      },
+      "get": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Показ всех адресов",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/personnel/fl/search": {
+      "get": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Поиск частей тела",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "signImport",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "firstName",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "secondName",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "thirdName",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sex",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "family",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "snils",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "inn",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "organization",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "department",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "departmentMCC",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "jobCode",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "tabNum",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "accNum",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "id_kadr",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
       }
     },
     "/api/v1/personnel/fl/{id}": {
+      "get": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Просмотр записи подробно",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
       "patch": {
         "tags": [
           "personnel"
@@ -788,7 +1077,92 @@
         }
       }
     },
+    "/api/v1/personnel/fio/search": {
+      "get": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Поиск фио",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "flKey",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "firstName",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "secondName",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "thirdName",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "comment",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
     "/api/v1/personnel/fio/{id}": {
+      "get": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Просмотр записи фио подробно",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
       "patch": {
         "tags": [
           "personnel"
@@ -858,7 +1232,92 @@
         }
       }
     },
+    "/api/v1/personnel/born/search": {
+      "get": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Поиск мест рождений",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "flKey",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "area",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "locality",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
     "/api/v1/personnel/born/{id}": {
+      "get": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Просмотр записи подробно",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
       "patch": {
         "tags": [
           "personnel"
@@ -928,7 +1387,102 @@
         }
       }
     },
+    "/api/v1/personnel/docs/search": {
+      "get": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Поиск документа",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "flKey",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "serial",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "number",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "dateIssue",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "whoIssue",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "podrIssue",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "active",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
     "/api/v1/personnel/docs/{id}": {
+      "get": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Просмотр записи подробно",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
       "patch": {
         "tags": [
           "personnel"
@@ -1004,7 +1558,122 @@
         }
       }
     },
+    "/api/v1/personnel/address/search": {
+      "get": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Поиск адресов",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "flKey",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "zipCode",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "area",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "city",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "street",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "home",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "struct",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "build",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "appart",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
     "/api/v1/personnel/address/{id}": {
+      "get": {
+        "tags": [
+          "personnel"
+        ],
+        "description": "Просмотр записи подробно",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
       "patch": {
         "tags": [
           "personnel"
@@ -2707,6 +3376,207 @@
       "delete": {
         "tags": [
           "user"
+        ],
+        "description": "Удаление записи",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/references/role/": {
+      "get": {
+        "tags": [
+          "role"
+        ],
+        "description": "Показ всех ролей",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "role"
+        ],
+        "description": "Создание роли",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "any"
+                },
+                "name_plural": {
+                  "example": "any"
+                },
+                "name_short": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/references/role/search": {
+      "get": {
+        "tags": [
+          "role"
+        ],
+        "description": "Поиск роли",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "name_plural",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "name_short",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/references/role/{id}": {
+      "get": {
+        "tags": [
+          "role"
+        ],
+        "description": "Просмотр записи подробно",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "role"
+        ],
+        "description": "Обновление записи",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "any"
+                },
+                "name_plural": {
+                  "example": "any"
+                },
+                "name_short": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "role"
         ],
         "description": "Удаление записи",
         "parameters": [

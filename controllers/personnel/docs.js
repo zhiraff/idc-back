@@ -152,7 +152,7 @@ const createDocs = async (flKey, name, serial, number, dateIssue, whoIssue, podr
     if (typeof active !== 'undefined'){
     updateObject['active'] = active
   }
-  updateObject['updatedAt'] = Date.now()
+  updateObject['updatedAt'] = new Date()
       if (typeof user.username !== 'undefined'){
     updateObject['updatedBy'] = user.username
   }else{

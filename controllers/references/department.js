@@ -185,7 +185,7 @@ const creatDepartment = async(parent_id, begin, end, code, name, department_item
       if (typeof address !== 'undefined'){
     updateObject['address'] = address
   }
-  updateObject['updatedAt'] = Date.now()
+  updateObject['updatedAt'] = new Date()
       if (typeof user.username !== 'undefined'){
     updateObject['updatedBy'] = user.username
   }else{

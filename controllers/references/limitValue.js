@@ -120,7 +120,7 @@ const creatValue = async(radionuclide_id, indicator, value, gister, user) => {
     if (typeof gister !== 'undefined'){
     updateObject['gister'] = gister
   }
-  updateObject['updatedAt'] = Date.now()
+  updateObject['updatedAt'] = new Date()
       if (typeof user.username !== 'undefined'){
     updateObject['updatedBy'] = user.username
   }else{

@@ -178,7 +178,7 @@ const getOneAddress = async(addressId) => {
       if (typeof appart !== 'undefined'){
     updateObject['appart'] = appart
   }
-  updateObject['updatedAt'] = Date.now()
+  updateObject['updatedAt'] = new Date()
       if (typeof user.username !== 'undefined'){
     updateObject['updatedBy'] = user.username
   }else{

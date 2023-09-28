@@ -67,6 +67,10 @@ const doc = {
       name: 'role',
       description: 'Справочник ролей'
     },
+    {
+      name: 'document',
+      description: 'Работа с документами поступающими в ОРБ'
+    },
   ],
   host: 'localhost:3000',
   schemes: ['http']

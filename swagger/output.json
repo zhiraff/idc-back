@@ -55,6 +55,10 @@
     {
       "name": "role",
       "description": "Справочник ролей"
+    },
+    {
+      "name": "document",
+      "description": "Работа с документами поступающими в ОРБ"
     }
   ],
   "schemes": [
@@ -1865,6 +1869,1220 @@
           "personnel"
         ],
         "description": "Просмотр персонала подробно",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/header/": {
+      "get": {
+        "tags": [
+          "document"
+        ],
+        "description": "Показ все заголовки документа",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "document"
+        ],
+        "description": "Создание записи",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "organization": {
+                  "example": "any"
+                },
+                "typeDocument": {
+                  "example": "any"
+                },
+                "typeExam": {
+                  "example": "any"
+                },
+                "dateDocument": {
+                  "example": "any"
+                },
+                "numberDocument": {
+                  "example": "any"
+                },
+                "dateExam": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/header/search": {
+      "get": {
+        "tags": [
+          "document"
+        ],
+        "description": "Поиск заголовка документа",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "organization",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "typeDocument",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "typeExam",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "dateDocument",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "numberDocument",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "dateExam",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/header/{id}": {
+      "get": {
+        "tags": [
+          "document"
+        ],
+        "description": "Просмотр заголовка документа подробно",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "document"
+        ],
+        "description": "Обновление записи",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "organization": {
+                  "example": "any"
+                },
+                "typeDocument": {
+                  "example": "any"
+                },
+                "typeExam": {
+                  "example": "any"
+                },
+                "dateDocument": {
+                  "example": "any"
+                },
+                "numberDocument": {
+                  "example": "any"
+                },
+                "dateExam": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "document"
+        ],
+        "description": "Удаление записи",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/bpe/": {
+      "get": {
+        "tags": [
+          "document"
+        ],
+        "description": "Показ всех результатов БФО",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "document"
+        ],
+        "description": "Создание записи",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "docKey": {
+                  "example": "any"
+                },
+                "flKey": {
+                  "example": "any"
+                },
+                "dateExam": {
+                  "example": "any"
+                },
+                "typeControl": {
+                  "example": "any"
+                },
+                "dateInput": {
+                  "example": "any"
+                },
+                "radionuclideKey": {
+                  "example": "any"
+                },
+                "material": {
+                  "example": "any"
+                },
+                "consist": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/bpe/search": {
+      "get": {
+        "tags": [
+          "document"
+        ],
+        "description": "Поиск результатов БФО",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "docKey",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "flKey",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "dateExam",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "typeControl",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "dateInput",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "radionuclideKey",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "material",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "consist",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/bpe/{id}": {
+      "get": {
+        "tags": [
+          "document"
+        ],
+        "description": "Просмотр результатов БФО подробно",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "document"
+        ],
+        "description": "Обновление записи",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "docKey": {
+                  "example": "any"
+                },
+                "flKey": {
+                  "example": "any"
+                },
+                "dateExam": {
+                  "example": "any"
+                },
+                "typeControl": {
+                  "example": "any"
+                },
+                "dateInput": {
+                  "example": "any"
+                },
+                "radionuclideKey": {
+                  "example": "any"
+                },
+                "material": {
+                  "example": "any"
+                },
+                "consist": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "document"
+        ],
+        "description": "Удаление записи",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/hrs/": {
+      "get": {
+        "tags": [
+          "document"
+        ],
+        "description": "Показ всех результатов СИЧ",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "document"
+        ],
+        "description": "Создание записи",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "docKey": {
+                  "example": "any"
+                },
+                "flKey": {
+                  "example": "any"
+                },
+                "dateExam": {
+                  "example": "any"
+                },
+                "typeControl": {
+                  "example": "any"
+                },
+                "bodyPartKey": {
+                  "example": "any"
+                },
+                "radionuclideKey": {
+                  "example": "any"
+                },
+                "consist": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/hrs/search": {
+      "get": {
+        "tags": [
+          "document"
+        ],
+        "description": "Поиск результатов СИЧ",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "docKey",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "flKey",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "dateExam",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "typeControl",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "bodyPartKey",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "radionuclideKey",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "consist",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/hrs/{id}": {
+      "get": {
+        "tags": [
+          "document"
+        ],
+        "description": "Просмотр результатов СИЧ подробно",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "document"
+        ],
+        "description": "Обновление записи",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "docKey": {
+                  "example": "any"
+                },
+                "flKey": {
+                  "example": "any"
+                },
+                "dateExam": {
+                  "example": "any"
+                },
+                "typeControl": {
+                  "example": "any"
+                },
+                "bodyPartKey": {
+                  "example": "any"
+                },
+                "radionuclideKey": {
+                  "example": "any"
+                },
+                "consist": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "document"
+        ],
+        "description": "Удаление записи",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/erd/": {
+      "get": {
+        "tags": [
+          "document"
+        ],
+        "description": "Показ всех ОЭД",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "document"
+        ],
+        "description": "Создание записи",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "docKey": {
+                  "example": "any"
+                },
+                "flKey": {
+                  "example": "any"
+                },
+                "beginPeriod": {
+                  "example": "any"
+                },
+                "endPeriod": {
+                  "example": "any"
+                },
+                "dose": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/erd/search": {
+      "get": {
+        "tags": [
+          "document"
+        ],
+        "description": "Поиск ОЭД",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "docKey",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "flKey",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "beginPeriod",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endPeriod",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "dose",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/erd/{id}": {
+      "get": {
+        "tags": [
+          "document"
+        ],
+        "description": "Просмотр ОЭД подробно",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "document"
+        ],
+        "description": "Обновление записи",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "docKey": {
+                  "example": "any"
+                },
+                "flKey": {
+                  "example": "any"
+                },
+                "beginPeriod": {
+                  "example": "any"
+                },
+                "endPeriod": {
+                  "example": "any"
+                },
+                "dose": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "document"
+        ],
+        "description": "Удаление записи",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/ctc/": {
+      "get": {
+        "tags": [
+          "document"
+        ],
+        "description": "Показ всех результатов хелатотерапии",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "document"
+        ],
+        "description": "Создание записи",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "docKey": {
+                  "example": "any"
+                },
+                "flKey": {
+                  "example": "any"
+                },
+                "dateExam": {
+                  "example": "any"
+                },
+                "typeControl": {
+                  "example": "any"
+                },
+                "dateInput": {
+                  "example": "any"
+                },
+                "radionuclideKey": {
+                  "example": "any"
+                },
+                "material": {
+                  "example": "any"
+                },
+                "consist": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/ctc/search": {
+      "get": {
+        "tags": [
+          "document"
+        ],
+        "description": "Поиск результатов хелатотерапии",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "docKey",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "flKey",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "dateExam",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "typeControl",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "dateInput",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "radionuclideKey",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "material",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "consist",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/ctc/{id}": {
+      "get": {
+        "tags": [
+          "document"
+        ],
+        "description": "Просмотр результатов хелатотерапии подробно",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "document"
+        ],
+        "description": "Обновление записи",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "docKey": {
+                  "example": "any"
+                },
+                "flKey": {
+                  "example": "any"
+                },
+                "dateExam": {
+                  "example": "any"
+                },
+                "typeControl": {
+                  "example": "any"
+                },
+                "dateInput": {
+                  "example": "any"
+                },
+                "radionuclideKey": {
+                  "example": "any"
+                },
+                "material": {
+                  "example": "any"
+                },
+                "consist": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "document"
+        ],
+        "description": "Удаление записи",
         "parameters": [
           {
             "name": "id",

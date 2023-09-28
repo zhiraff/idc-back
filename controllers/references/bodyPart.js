@@ -75,7 +75,6 @@ countData['currentPage'] = pg
  //.where(queryObject)
  .limit(prpg).offset((pg-1)*prpg)
   resultData.push(countData)
-  console.log(resultData)
   return resultData
 }
 

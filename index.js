@@ -25,7 +25,13 @@ app.use(
 //Подключение middleware для работы
 const authRouter = require("./routes/auth.js");
 const personnelRouter = require("./routes/personnel.js");
-//Подключение middleware для работы справочников
+// Заведение документов
+const documentRouter = require("./routes/document/docHeader.js");
+const docBpeRouter = require("./routes/document/docBpe.js");
+const docHrsRouter = require("./routes/document/docHrs.js");
+const docErdRouter = require("./routes/document/docErd.js");
+const docCtcRouter = require("./routes/document/docCtc.js");
+// Справочники
 const radionuclideRouter = require("./routes/references/radionuclide.js");
 const professionRouter = require("./routes/references/profession.js");
 const limitValueRouter = require("./routes/references/limitValue.js");
@@ -69,9 +75,16 @@ app.use(auth.authorize({
     done(auth);
 }))
 
-//привязка маршрутов справочников к middleware справочников
+//привязка маршрутов к middleware 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/personnel", personnelRouter);
+// Заведение документов
+app.use("/api/v1/document/header", documentRouter);
+app.use("/api/v1/document/bpe", docBpeRouter);
+app.use("/api/v1/document/hrs", docHrsRouter);
+app.use("/api/v1/document/erd", docErdRouter);
+app.use("/api/v1/document/ctc", docCtcRouter);
+// справочники
 app.use("/api/v1/references/radionuclide", radionuclideRouter);
 app.use("/api/v1/references/profession", professionRouter);
 app.use("/api/v1/references/limitvalue", limitValueRouter);
@@ -80,6 +93,7 @@ app.use("/api/v1/references/kindidc", kindIdcRouter);
 app.use("/api/v1/references/department", departmentRouter);
 app.use("/api/v1/references/user", userRouter);
 app.use("/api/v1/references/role", roleRouter);
+
 
 app.get("/", async (req, res) => {
   //#swagger.ignore = true

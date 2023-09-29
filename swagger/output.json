@@ -3101,6 +3101,19 @@
         }
       }
     },
+    "/api/v1/document/file/test": {
+      "post": {
+        "tags": [
+          "document"
+        ],
+        "description": "Загрузка скан-файла",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/v1/references/radionuclide/": {
       "get": {
         "tags": [

@@ -31,6 +31,7 @@ const docBpeRouter = require("./routes/document/docBpe.js");
 const docHrsRouter = require("./routes/document/docHrs.js");
 const docErdRouter = require("./routes/document/docErd.js");
 const docCtcRouter = require("./routes/document/docCtc.js");
+const docFileRouter = require("./routes/document/docFile.js");
 // Справочники
 const radionuclideRouter = require("./routes/references/radionuclide.js");
 const professionRouter = require("./routes/references/profession.js");
@@ -84,6 +85,7 @@ app.use("/api/v1/document/bpe", docBpeRouter);
 app.use("/api/v1/document/hrs", docHrsRouter);
 app.use("/api/v1/document/erd", docErdRouter);
 app.use("/api/v1/document/ctc", docCtcRouter);
+app.use("/api/v1/document/file", docFileRouter);
 // справочники
 app.use("/api/v1/references/radionuclide", radionuclideRouter);
 app.use("/api/v1/references/profession", professionRouter);
@@ -107,11 +109,7 @@ app.get("/", async (req, res) => {
 
 })
 
-
-
 //const specs = swaggerJsdoc(require("./swagger-option.js"));
-
-
 
 app.listen(port, () => {
     console.log(`Server listening on http://localhost:${port}`)

@@ -97,10 +97,20 @@ const getAddressParam = async (page, perpage, flKey, type, zipCode, country, reg
     queryObjectString['appart'] = "%%"
   }
 
+  //console.log(queryObject)
+  //console.log(queryObjectString)
+
   let resultData = await knex("fl_address").select()
   .orderBy(sortField, sortDirect)
   .where(queryObject)
-  .andWhereILike("type", queryObjectString.type)
+  //.andWhereILike("type", queryObjectString.type)
+  .andWhere(qb => {
+     if (queryObjectString.type === "%%"){
+      return qb.whereILike("type", queryObjectString.type).orWhereNull("type")
+     }else{
+      return qb.whereILike("type", queryObjectString.type)
+     }
+  })
   .andWhereILike("country", queryObjectString.country)
   .andWhereILike("region", queryObjectString.region)
   .andWhereILike("area", queryObjectString.area)
@@ -114,7 +124,14 @@ const getAddressParam = async (page, perpage, flKey, type, zipCode, country, reg
 
   let countData = await knex("fl_address")
   .where(queryObject)
-  .andWhereILike("type", queryObjectString.type)
+  //.andWhereILike("type", queryObjectString.type)
+  .andWhere(qb => {
+    if (queryObjectString.type === "%%"){
+     return qb.whereILike("type", queryObjectString.type).orWhereNull("type")
+    }else{
+     return qb.whereILike("type", queryObjectString.type)
+    }
+ })
   .andWhereILike("country", queryObjectString.country)
   .andWhereILike("region", queryObjectString.region)
   .andWhereILike("area", queryObjectString.area)

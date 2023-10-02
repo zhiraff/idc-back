@@ -1,4 +1,5 @@
 require("dotenv").config();
+const knex = require("../../knex_init");
 const fs = require('fs');
 const multer  = require('multer')
 let saveFolder = process.env.UPLOAD_PATH
@@ -61,14 +62,69 @@ if (typeof saveFolder === 'undefined'){
     },
     filename: function (req, file, cb) {
         let exten = file.originalname.split(".").pop()
+        file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8')
       cb(null, `${file.fieldname}-${Date.now()}.${exten}`)
     }
   })
 
   const upload = multer({ storage: storage })
+    //методы работы с файлами
+  //скачать файл по ID
+  const getDocFile = async (fileId) => {
+    let downloadFile = await knex("docFile").first().where({ id: fileId })
+    console.log(downloadFile)
+    return downloadFile
+  }
 
+  //посомтреть информацию о файле по ID
+    const getDocFileInfo = async (fileId) => {
+      return knex("docFile").first().where({ id: fileId })
+    }
+
+  //посомтреть информацию обо всех файлах по docHeadID
+  const getDocFileInfoByDocHeader = async (page, perpage, docHeaderId) => {
+    const pg = typeof page !== 'undefined' && page !== '' ? page : 1
+    const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
+
+    let countData = await knex("docFile").where({ docKey: docHeaderId }).first().count('id as countRow')
+    let resultData = await knex("docFile").select().where({ docKey: docHeaderId }).limit(prpg).offset((pg-1)*prpg)
+    countData['pages'] = Math.ceil(countData.countRow/prpg)
+    countData['currentPage'] = pg
+    resultData.push(countData)
+    return resultData
+  }
+
+   //сохранить файл
+   const saveDocFile = async (docKey, file, user) => {
+    const { originalname, filename, mimetype, path, size } = file
+    const newDocFile = {
+      docKey: docKey,
+      originalName: originalname,
+      name: filename,
+      mimetype: mimetype,
+      extension: originalname.split(".").pop(),
+      pathSave: path,
+      placeSave: "",
+      size: size,
+      createdBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+      updatedBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+    };
+     const result = await knex("docFile").insert([newDocFile], ["id"]);
+     newDocFile['id'] = result[0].id
+     return newDocFile;
+   }
+
+  //удаление Файла по id file
+  const deleteDocFile = async (docFileId) => {
+  return knex("docFile").where({ id: docFileId }).del()
+  }
+  //удаление всех файлов по id doc header
+  const deleteDocFileByHeader = async (docHeaderId) => {
+  return knex("docFile").where({ docKey: docHeaderId }).del()
+  }
+
+/*
   //методы работы с файлами
-
   //Получить список всех файлов, с постраничной пагинацией
 const getDocFile = async (page, perpage, sort) => {
     const pg = typeof page !== 'undefined' && page !== '' ? page : 1
@@ -85,7 +141,6 @@ const getDocFile = async (page, perpage, sort) => {
     }
     let countData = await knex("docFile").first().count('id as countRow')
     let resultData = await knex("docFile").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
-    //console.log(`count: ${count}`)
     countData['pages'] = Math.ceil(countData.countRow/prpg)
     countData['currentPage'] = pg
     resultData.push(countData)
@@ -171,19 +226,35 @@ if (typeof placeSave !== 'undefined'){
    .andWhereILike("placeSave", queryObjectString.placeSave)
    .select()
    .orderBy(sortField, sortDirect)
-   //.where(queryObject)
    .limit(prpg).offset((pg-1)*prpg)
     resultData.push(countData)
     return resultData
   }
   
   //Показать файл подробно (по ID файла, не заголовка документа)
-  const getOneDocFile = async(docFileId) => {
+  const getOneDocFileById = async(docFileId) => {
     //knex("sessions").first("id", "userId", "sessionId").where({ sessionId: sessionId });
     return knex("docFile").first().where({ id: docFileId })
   }
+
+   //Показать все файлы по ID заголовка документа
+   const getDocFilesByHeaderId = async(docHeaderId) => {
+    //knex("sessions").first("id", "userId", "sessionId").where({ sessionId: sessionId });
+    let resultData = await knex("docFile")
+    .select()
+    .where({ docKey: docHeaderId })
+    let countData = await knex("docFile")
+    .where({ docKey: docHeaderId })
+    .first()
+    .count('id as countRow')
+    
+    //countData['pages'] = Math.ceil(countData.countRow/prpg)
+    //countData['currentPage'] = pg
+    resultData.push(countData)
+    return resultData
+  }
   
-  //Сохранить файл
+  //Сохранить файл (базовый случай)
   const creatDocFile = async(docKey, originalName, name, mimetype, extension, pathSave, placeSave, size, user) => {
     
     const newDocFile = {
@@ -202,58 +273,22 @@ if (typeof placeSave !== 'undefined'){
      newDocFile['id'] = result[0].id
      return newDocFile
   }
-  
-  // обновление записи о файле
-   const updateDocFile = async (docKey, originalName, name, mimetype, extension, pathSave, placeSave, size, user) => {
-      let updateObject = {}
-      if (typeof docKey !== 'undefined'){
-      updateObject['docKey'] = docKey
-    }
-    if (typeof originalName !== 'undefined'){
-      updateObject['originalName'] = originalName
-    }
-    if (typeof name !== 'undefined'){
-      updateObject['name'] = name
-    }
-    if (typeof mimetype !== 'undefined'){
-      updateObject['mimetype'] = mimetype
-    }
-    if (typeof extension !== 'undefined'){
-      updateObject['extension'] = extension
-    }
-    if (typeof pathSave !== 'undefined'){
-      updateObject['pathSave'] = pathSave
-    }
-    if (typeof placeSave !== 'undefined'){
-      updateObject['placeSave'] = placeSave
-    }
-    if (typeof size !== 'undefined'){
-      updateObject['size'] = size
-    }
-  
-    updateObject['updatedAt'] = new Date()
-     
-    if (typeof user.username !== 'undefined'){
-      updateObject['updatedBy'] = user.username
-    }else{
-      updateObject['updatedBy'] = 'unknown'
-    }
-     return knex("docFile")
-      .where({ id: docFileId })
-      .update(updateObject);
-   }
-  
-   //удаление Файла
+
+   //удаление Файла по id file
    const deleteDocFile = async (docFileId) => {
     return knex("docFile").where({ id: docFileId }).del()
    }
+   //удаление всех файлов по id doc header
+   const deleteDocFileByHeader = async (docHeaderId) => {
+    return knex("docFile").where({ docKey: docHeaderId }).del()
+   }
   
-
-module.exports.get = getDocFile;
-module.exports.getByParam = getDocFileParam;
-module.exports.getOne = getOneDocFile;
-module.exports.create = creatDocFile;
-module.exports.update = updateDocFile;
-module.exports.delete = deleteDocFile;
+*/
+module.exports.download = getDocFile;
+module.exports.getOneById = getDocFileInfo;
+module.exports.getAllByDocId = getDocFileInfoByDocHeader;
+module.exports.save = saveDocFile;
+module.exports.deleteById = deleteDocFile;
+module.exports.deleteByHeader = deleteDocFileByHeader;
 module.exports.upload = upload
   

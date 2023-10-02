@@ -3101,15 +3101,161 @@
         }
       }
     },
-    "/api/v1/document/file/test": {
+    "/api/v1/document/file/{docheaderId}": {
       "post": {
         "tags": [
           "document"
         ],
         "description": "Загрузка скан-файла",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "docheaderId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "filescan",
+            "in": "formData",
+            "type": "file",
+            "required": true,
+            "description": "Some description..."
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/file/all/{id_docHeader}": {
+      "get": {
+        "tags": [
+          "document"
+        ],
+        "description": "Показ всех файлов для конкретного документа по id_docHeader",
+        "parameters": [
+          {
+            "name": "id_docHeader",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/file/{id}": {
+      "get": {
+        "tags": [
+          "document"
+        ],
+        "description": "Загрузка файла на АРМ",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "document"
+        ],
+        "description": "Удаление файла по id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/file/info/{id}": {
+      "get": {
+        "tags": [
+          "document"
+        ],
+        "description": "Просмотр информацию о загруженном файле подробно",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/file/all/{id_dochead}": {
+      "delete": {
+        "tags": [
+          "document"
+        ],
+        "description": "Удаление всех файлов по id_dochead",
+        "parameters": [
+          {
+            "name": "id_dochead",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
           }
         }
       }

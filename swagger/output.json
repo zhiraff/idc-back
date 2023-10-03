@@ -3212,6 +3212,30 @@
         }
       }
     },
+    "/api/v1/document/file/preview/{id}": {
+      "get": {
+        "tags": [
+          "document"
+        ],
+        "description": "Получение содержимого файла для превью. (Осторожно swagger может крашнуться!)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
     "/api/v1/document/file/info/{id}": {
       "get": {
         "tags": [

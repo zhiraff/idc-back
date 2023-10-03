@@ -31,6 +31,10 @@ const getRadionuclide = async (page, perpage, sort) => {
 
 //Получить список радионуклидов, с по различным параметрам
 const getRadionuclideParam = async (symbol, name, htmlcode, page, perpage, sort) => {
+  // 1. Поиск по числовым значениям осуществляется через where
+  // 2. Поиск по текстовым значением осуществлется через like
+  // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
+  // дополнительно проверяется на null !
   const pg = typeof page !== 'undefined' && page !== '' ? page : 1
   const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
   let sortField = 'id'
@@ -65,14 +69,28 @@ const getRadionuclideParam = async (symbol, name, htmlcode, page, perpage, sort)
   .orderBy(sortField, sortDirect)
   .whereILike('symbol', queryObjectString.symbol)
   .andWhereILike('name', queryObjectString.name)
-  .andWhereILike('htmlcode', queryObjectString.htmlcode)
+  //.andWhereILike('htmlcode', queryObjectString.htmlcode)
+  .andWhere(qb => {
+    if (queryObjectString.htmlcode === "%%"){
+     return qb.whereILike("htmlcode", queryObjectString.htmlcode).orWhereNull("htmlcode")
+    }else{
+     return qb.whereILike("htmlcode", queryObjectString.htmlcode)
+    }
+  })
   .limit(prpg)
   .offset((pg-1)*prpg)
 
   let countData = await knex("radionuclide")
   .whereILike('symbol', queryObjectString.symbol)
   .andWhereILike('name', queryObjectString.name)
-  .andWhereILike('htmlcode', queryObjectString.htmlcode)
+  //.andWhereILike('htmlcode', queryObjectString.htmlcode)
+  .andWhere(qb => {
+    if (queryObjectString.htmlcode === "%%"){
+     return qb.whereILike("htmlcode", queryObjectString.htmlcode).orWhereNull("htmlcode")
+    }else{
+     return qb.whereILike("htmlcode", queryObjectString.htmlcode)
+    }
+  })
   .first()
   .count('id as countRow')
 

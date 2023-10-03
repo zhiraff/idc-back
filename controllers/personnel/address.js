@@ -26,6 +26,10 @@ const getAddress = async (page, perpage, sort) => {
 
 //Получить персонал, с постраничной пагинацией и параметрами
 const getAddressParam = async (page, perpage, flKey, type, zipCode, country, region, area, city, street, home, struct, build, appart, sort) => {
+  // 1. Поиск по числовым значениям осуществляется через where
+  // 2. Поиск по текстовым значением осуществлется через like
+  // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
+  // дополнительно проверяется на null !
   const pg = typeof page !== 'undefined' && page !== '' ? page : 1
   const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
   let sortField = 'id'
@@ -113,12 +117,33 @@ const getAddressParam = async (page, perpage, flKey, type, zipCode, country, reg
   })
   .andWhereILike("country", queryObjectString.country)
   .andWhereILike("region", queryObjectString.region)
-  .andWhereILike("area", queryObjectString.area)
+  //.andWhereILike("area", queryObjectString.area)
+  .andWhere(qb => {
+    if (queryObjectString.area === "%%"){
+     return qb.whereILike("area", queryObjectString.area).orWhereNull("area")
+    }else{
+     return qb.whereILike("area", queryObjectString.area)
+    }
+ })
   .andWhereILike("city", queryObjectString.city)
   .andWhereILike("street", queryObjectString.street)
   .andWhereILike("home", queryObjectString.home)
-  .andWhereILike("struct", queryObjectString.struct)
-  .andWhereILike("build", queryObjectString.build)
+  //.andWhereILike("struct", queryObjectString.struct)
+  .andWhere(qb => {
+    if (queryObjectString.struct === "%%"){
+     return qb.whereILike("struct", queryObjectString.struct).orWhereNull("struct")
+    }else{
+     return qb.whereILike("struct", queryObjectString.struct)
+    }
+ })
+  //.andWhereILike("build", queryObjectString.build)
+  .andWhere(qb => {
+    if (queryObjectString.build === "%%"){
+     return qb.whereILike("build", queryObjectString.build).orWhereNull("build")
+    }else{
+     return qb.whereILike("build", queryObjectString.build)
+    }
+ })
   .andWhereILike("appart", queryObjectString.appart)
   .limit(prpg).offset((pg-1)*prpg)
 
@@ -134,12 +159,33 @@ const getAddressParam = async (page, perpage, flKey, type, zipCode, country, reg
  })
   .andWhereILike("country", queryObjectString.country)
   .andWhereILike("region", queryObjectString.region)
-  .andWhereILike("area", queryObjectString.area)
+  //.andWhereILike("area", queryObjectString.area)
+  .andWhere(qb => {
+    if (queryObjectString.area === "%%"){
+     return qb.whereILike("area", queryObjectString.area).orWhereNull("area")
+    }else{
+     return qb.whereILike("area", queryObjectString.area)
+    }
+ })
   .andWhereILike("city", queryObjectString.city)
   .andWhereILike("street", queryObjectString.street)
   .andWhereILike("home", queryObjectString.home)
-  .andWhereILike("struct", queryObjectString.struct)
-  .andWhereILike("build", queryObjectString.build)
+  //.andWhereILike("struct", queryObjectString.struct)
+  .andWhere(qb => {
+    if (queryObjectString.struct === "%%"){
+     return qb.whereILike("struct", queryObjectString.struct).orWhereNull("struct")
+    }else{
+     return qb.whereILike("struct", queryObjectString.struct)
+    }
+ })
+  //.andWhereILike("build", queryObjectString.build)
+  .andWhere(qb => {
+    if (queryObjectString.build === "%%"){
+     return qb.whereILike("build", queryObjectString.build).orWhereNull("build")
+    }else{
+     return qb.whereILike("build", queryObjectString.build)
+    }
+ })
   .andWhereILike("appart", queryObjectString.appart)
   .first()
   .count('id as countRow')

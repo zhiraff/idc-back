@@ -29,6 +29,10 @@ const getProfession = async (page, perpage, sort) => {
 }
 
 const getProfessionParam = async (page, perpage, division, code, name, okz, sort) => {
+  // 1. Поиск по числовым значениям осуществляется через where
+  // 2. Поиск по текстовым значением осуществлется через like
+  // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
+  // дополнительно проверяется на null !
   const pg = typeof page !== 'undefined' && page !== '' ? page : 1
   const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
   let sortField = 'id'
@@ -65,16 +69,44 @@ const getProfessionParam = async (page, perpage, division, code, name, okz, sort
   let resultData = await knex("profession").select()
   .orderBy(sortField, sortDirect)
   .where(queryObject)
-  .andWhereILike('division', queryObjectString.division)
+  //.andWhereILike('division', queryObjectString.division)
+  .andWhere(qb => {
+    if (queryObjectString.division === "%%"){
+     return qb.whereILike("division", queryObjectString.division).orWhereNull("division")
+    }else{
+     return qb.whereILike("division", queryObjectString.division)
+    }
+  })
   .andWhereILike('name', queryObjectString.name)
-  .andWhereILike('okz', queryObjectString.okz)
+  //.andWhereILike('okz', queryObjectString.okz)
+  .andWhere(qb => {
+    if (queryObjectString.okz === "%%"){
+     return qb.whereILike("okz", queryObjectString.okz).orWhereNull("okz")
+    }else{
+     return qb.whereILike("okz", queryObjectString.okz)
+    }
+  })
   .limit(prpg).offset((pg-1)*prpg)
 
   let countData = await knex("profession")
   .where(queryObject)
-  .andWhereILike('division', queryObjectString.division)
+  //.andWhereILike('division', queryObjectString.division)
+  .andWhere(qb => {
+    if (queryObjectString.division === "%%"){
+     return qb.whereILike("division", queryObjectString.division).orWhereNull("division")
+    }else{
+     return qb.whereILike("division", queryObjectString.division)
+    }
+  })
   .andWhereILike('name', queryObjectString.name)
-  .andWhereILike('okz', queryObjectString.okz)
+  //.andWhereILike('okz', queryObjectString.okz)
+  .andWhere(qb => {
+    if (queryObjectString.okz === "%%"){
+     return qb.whereILike("okz", queryObjectString.okz).orWhereNull("okz")
+    }else{
+     return qb.whereILike("okz", queryObjectString.okz)
+    }
+  })
   .first()
   .count('id as countRow')
 

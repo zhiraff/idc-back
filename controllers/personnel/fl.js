@@ -85,6 +85,10 @@ const createFl = async ( signImport, firstName, secondName, thirdName, sex,
 const getFlParam = async (page, perpage, signImport, firstName, secondName, thirdName, sex,
             family, snils, inn, organization, department, departmentMCC,
             jobCode, tabNum, accNum, id_kadr, sort) => {
+  // 1. Поиск по числовым значениям осуществляется через where
+  // 2. Поиск по текстовым значением осуществлется через like
+  // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
+  // дополнительно проверяется на null !
   const pg = typeof page !== 'undefined' && page !== '' ? page : 1
   const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
   let sortField = 'id'
@@ -175,16 +179,66 @@ const getFlParam = async (page, perpage, signImport, firstName, secondName, thir
   .select('profession.name as jobName', 'department.name as departmentMCCname', 'FL.*')
   .orderBy(sortField, sortDirect)
   .where(queryObject)
-  .andWhereILike("signImport", queryObjectString.signImport)
-  .andWhereILike("firstName", queryObjectString.firstName)
-  .andWhereILike("secondName", queryObjectString.secondName)
-  .andWhereILike("thirdName", queryObjectString.thirdName)
+  //.andWhereILike("signImport", queryObjectString.signImport)
+  .andWhere(qb => {
+    if (queryObjectString.signImport === "%%"){
+     return qb.whereILike("signImport", queryObjectString.signImport).orWhereNull("signImport")
+    }else{
+     return qb.whereILike("signImport", queryObjectString.signImport)
+    }
+  })
+  //.andWhereILike("firstName", queryObjectString.firstName)
+  .andWhere(qb => {
+    if (queryObjectString.firstName === "%%"){
+     return qb.whereILike("firstName", queryObjectString.firstName).orWhereNull("firstName")
+    }else{
+     return qb.whereILike("firstName", queryObjectString.firstName)
+    }
+ })
+ 
+  //.andWhereILike("secondName", queryObjectString.secondName)
+  .andWhere(qb => {
+    if (queryObjectString.secondName === "%%"){
+     return qb.whereILike("secondName", queryObjectString.secondName).orWhereNull("secondName")
+    }else{
+     return qb.whereILike("secondName", queryObjectString.secondName)
+    }
+ })
+  //.andWhereILike("thirdName", queryObjectString.thirdName)
+  .andWhere(qb => {
+    if (queryObjectString.thirdName === "%%"){
+     return qb.whereILike("thirdName", queryObjectString.thirdName).orWhereNull("thirdName")
+    }else{
+     return qb.whereILike("thirdName", queryObjectString.thirdName)
+    }
+  })
   .andWhereILike("sex", queryObjectString.sex)
   .andWhereILike("family", queryObjectString.family)
-  .andWhereILike("snils", queryObjectString.snils)
-  .andWhereILike("inn", queryObjectString.inn)
+  //.andWhereILike("snils", queryObjectString.snils)
+  .andWhere(qb => {
+    if (queryObjectString.snils === "%%"){
+     return qb.whereILike("snils", queryObjectString.snils).orWhereNull("snils")
+    }else{
+     return qb.whereILike("snils", queryObjectString.snils)
+    }
+  })
+  //.andWhereILike("inn", queryObjectString.inn)
+  .andWhere(qb => {
+    if (queryObjectString.inn === "%%"){
+     return qb.whereILike("inn", queryObjectString.inn).orWhereNull("inn")
+    }else{
+     return qb.whereILike("inn", queryObjectString.inn)
+    }
+  })
   .andWhereILike("organization", queryObjectString.organization)
-  .andWhereILike("department", queryObjectString.department)
+  //.andWhereILike("department", queryObjectString.department)
+  .andWhere(qb => {
+    if (queryObjectString.department === "%%"){
+     return qb.whereILike("department", queryObjectString.department).orWhereNull("department")
+    }else{
+     return qb.whereILike("department", queryObjectString.department)
+    }
+  })
   .andWhereILike("tabNum", queryObjectString.tabNum)
   .andWhereILike("accNum", queryObjectString.accNum)
   .limit(prpg)
@@ -192,18 +246,68 @@ const getFlParam = async (page, perpage, signImport, firstName, secondName, thir
 
   let countData = await knex("FL")
   .where(queryObject)
-  .andWhereILike("signImport", queryObjectString.signImport)
-  .andWhereILike("firstName", queryObjectString.firstName)
-  .andWhereILike("secondName", queryObjectString.secondName)
-  .andWhereILike("thirdName", queryObjectString.thirdName)
-  .andWhereILike("sex", queryObjectString.sex)
-  .andWhereILike("family", queryObjectString.family)
-  .andWhereILike("snils", queryObjectString.snils)
-  .andWhereILike("inn", queryObjectString.inn)
-  .andWhereILike("organization", queryObjectString.organization)
-  .andWhereILike("department", queryObjectString.department)
-  .andWhereILike("tabNum", queryObjectString.tabNum)
-  .andWhereILike("accNum", queryObjectString.accNum)
+    //.andWhereILike("signImport", queryObjectString.signImport)
+    .andWhere(qb => {
+      if (queryObjectString.signImport === "%%"){
+       return qb.whereILike("signImport", queryObjectString.signImport).orWhereNull("signImport")
+      }else{
+       return qb.whereILike("signImport", queryObjectString.signImport)
+      }
+    })
+    //.andWhereILike("firstName", queryObjectString.firstName)
+    .andWhere(qb => {
+      if (queryObjectString.firstName === "%%"){
+       return qb.whereILike("firstName", queryObjectString.firstName).orWhereNull("firstName")
+      }else{
+       return qb.whereILike("firstName", queryObjectString.firstName)
+      }
+   })
+   
+    //.andWhereILike("secondName", queryObjectString.secondName)
+    .andWhere(qb => {
+      if (queryObjectString.secondName === "%%"){
+       return qb.whereILike("secondName", queryObjectString.secondName).orWhereNull("secondName")
+      }else{
+       return qb.whereILike("secondName", queryObjectString.secondName)
+      }
+   })
+    //.andWhereILike("thirdName", queryObjectString.thirdName)
+    .andWhere(qb => {
+      if (queryObjectString.thirdName === "%%"){
+       return qb.whereILike("thirdName", queryObjectString.thirdName).orWhereNull("thirdName")
+      }else{
+       return qb.whereILike("thirdName", queryObjectString.thirdName)
+      }
+    })
+    .andWhereILike("sex", queryObjectString.sex)
+    .andWhereILike("family", queryObjectString.family)
+    //.andWhereILike("snils", queryObjectString.snils)
+    .andWhere(qb => {
+      if (queryObjectString.snils === "%%"){
+       return qb.whereILike("snils", queryObjectString.snils).orWhereNull("snils")
+      }else{
+       return qb.whereILike("snils", queryObjectString.snils)
+      }
+    })
+    //.andWhereILike("inn", queryObjectString.inn)
+    .andWhere(qb => {
+      if (queryObjectString.inn === "%%"){
+       return qb.whereILike("inn", queryObjectString.inn).orWhereNull("inn")
+      }else{
+       return qb.whereILike("inn", queryObjectString.inn)
+      }
+    })
+    .andWhereILike("organization", queryObjectString.organization)
+    //.andWhereILike("department", queryObjectString.department)
+    .andWhere(qb => {
+      if (queryObjectString.department === "%%"){
+       return qb.whereILike("department", queryObjectString.department).orWhereNull("department")
+      }else{
+       return qb.whereILike("department", queryObjectString.department)
+      }
+    })
+    .andWhereILike("tabNum", queryObjectString.tabNum)
+    .andWhereILike("accNum", queryObjectString.accNum)
   .first()
   .count('id as countRow')
 

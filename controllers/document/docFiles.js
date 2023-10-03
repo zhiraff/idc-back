@@ -3,7 +3,8 @@ const knex = require("../../knex_init");
 const fs = require('fs');
 const multer  = require('multer')
 let saveFolder = process.env.UPLOAD_PATH
-const defaultPath = './upload/document'
+const path = require('path');
+const defaultPath = path.join(process.cwd(), 'upload', 'document')
 
 //Проверка достуности папки для загрузки скан-файлов
 if (typeof saveFolder === 'undefined'){
@@ -12,7 +13,7 @@ if (typeof saveFolder === 'undefined'){
     saveFolder = defaultPath
     fs.access(saveFolder, fs.constants.R_OK | fs.constants.W_OK, (err) => {
        if (err) {
-        console.log("Директория для сохранения файлов не существут () %s ) \nпопытка создать директорию", saveFolder);
+        console.log("Директория для сохранения файлов не существует ( %s )  ) \nпопытка создать директорию", saveFolder);
         try {
             fs.mkdirSync(saveFolder, { recursive: true })
             console.log('Директория создана')
@@ -29,7 +30,7 @@ if (typeof saveFolder === 'undefined'){
    //проверка на доступность указанной директории
    fs.access(saveFolder, fs.constants.R_OK | fs.constants.W_OK, (err) => {
     if (err) {
-    console.log("Директория для сохранения файлов не существут () %s ) \nпопытка создать директорию", saveFolder);
+    console.log("Директория для сохранения файлов не существует ( %s )  \nпопытка создать директорию", saveFolder);
     
     try {
         fs.mkdirSync(saveFolder, { recursive: true })
@@ -49,7 +50,8 @@ if (typeof saveFolder === 'undefined'){
   const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         dt = new Date()
-        fldr = `${saveFolder}/${dt.getFullYear()}`
+        //fldr = `${saveFolder}/${dt.getFullYear()}`
+        fldr = path.join(saveFolder, `${dt.getFullYear()}`)
         if (!fs.existsSync(fldr)){
             fs.mkdirSync(fldr, { recursive: true });
             try {
@@ -58,7 +60,7 @@ if (typeof saveFolder === 'undefined'){
                 console.log(`Невозможно создать директорию ${fldr} \n для сохранения файла`)
             }
         }
-      cb(null, `${fldr}/`)
+      cb(null, `${fldr}`)
     },
     filename: function (req, file, cb) {
         let exten = file.originalname.split(".").pop()
@@ -72,7 +74,7 @@ if (typeof saveFolder === 'undefined'){
   //скачать файл по ID
   const getDocFile = async (fileId) => {
     let downloadFile = await knex("docFile").first().where({ id: fileId })
-    console.log(downloadFile)
+    //console.log(downloadFile)
     return downloadFile
   }
 

@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router()
-
 const docFileController = require("../../controllers/document/docFiles.js")
+const { reject } = require("lodash")
 
 const uploadDocument = docFileController.upload
 
@@ -75,19 +75,71 @@ router.get("/:id", (req, res) => {
 const docFileId = req.params.id;
 docFileController.download(docFileId)
 .then((data) => {
-  res.download(data.pathSave)
-/*
-  res.status(200).json({
-    status: "success",
-    data: data
-  })
-  */
+  if(typeof data === 'undefined'){
+  
+    res.status(400).json({
+      status: "error",
+      data: "Файл не найден"
+    })
+  }else{
+    res.download(data.pathSave, data.originalName)
+    // метод senfile для превью
+
+    /*
+    const options = {
+      root: process.cwd(),
+      dotfiles: 'deny',
+      headers: {
+        'x-timestamp': Date.now(),
+        'x-sent': true
+      }
+    }
+    res.sendFile(data.pathSave, options)
+    */
+  }
+
 })
 .catch((err)=>{
   console.log(err)
   res.status(400).json({
     status: "error",
-    data: ""
+    data: "Файл не найден"
+  })
+})
+});
+
+//отправка в ответ (для превью например)
+router.get("/preview/:id", (req, res) => {
+  /* #swagger.tags = ['document']
+     #swagger.description = 'Получение содержимого файла для превью. (Осторожно swagger может крашнуться!)'
+*/
+const docFileId = req.params.id;
+docFileController.download(docFileId)
+.then((data) => {
+  if(typeof data === 'undefined'){
+  
+    res.status(400).json({
+      status: "error",
+      data: "Файл не найден"
+    })
+  }else{
+    const options = {
+      root: process.cwd(),
+      dotfiles: 'deny',
+      headers: {
+        'x-timestamp': Date.now(),
+        'x-sent': true
+      }
+    }
+    res.sendFile(data.pathSave, options)
+  }
+
+})
+.catch((err)=>{
+  console.log(err)
+  res.status(400).json({
+    status: "error",
+    data: "Файл не найден"
   })
 })
 });

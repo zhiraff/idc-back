@@ -25,6 +25,10 @@ const getDocHrs = async (page, perpage, sort) => {
 
 //Получить результаты СИЧ, с постраничной пагинацией и параметрами
 const getDocHrsParam = async (page, perpage, docKey, flKey, dateExam, typeControl, bodyPartKey, radionuclideKey,  consist, sort) => {
+  // 1. Поиск по числовым значениям осуществляется через where
+  // 2. Поиск по текстовым значением осуществлется через like
+  // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
+  // дополнительно проверяется на null !
   const pg = typeof page !== 'undefined' && page !== '' ? page : 1
   const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
     let sortField = 'id'

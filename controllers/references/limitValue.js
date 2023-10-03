@@ -35,6 +35,10 @@ const getValue = async (page, perpage, sort) => {
 
 //Получить контрольные значения, с постраничной пагинацией и параметрами
 const getValueParam = async (page, perpage, radionuclide_id, indicator, value, gister, sort) => {
+  // 1. Поиск по числовым значениям осуществляется через where
+  // 2. Поиск по текстовым значением осуществлется через like
+  // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
+  // дополнительно проверяется на null !
   const pg = typeof page !== 'undefined' && page !== '' ? page : 1
   const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
   let sortField = 'id'
@@ -68,12 +72,26 @@ const getValueParam = async (page, perpage, radionuclide_id, indicator, value, g
   .select()
   .orderBy(sortField, sortDirect)
   .where(queryObject)
-  .andWhereILike('indicator', queryObjectString.indicator)
+  //.andWhereILike('indicator', queryObjectString.indicator)
+  .andWhere(qb => {
+    if (queryObjectString.indicator === "%%"){
+     return qb.whereILike("indicator", queryObjectString.indicator).orWhereNull("indicator")
+    }else{
+     return qb.whereILike("indicator", queryObjectString.indicator)
+    }
+  })
   .limit(prpg).offset((pg-1)*prpg)
 
   let countData = await knex("limitValue")
   .where(queryObject)
-  .andWhereILike('indicator', queryObjectString.indicator)
+  //.andWhereILike('indicator', queryObjectString.indicator)
+  .andWhere(qb => {
+    if (queryObjectString.indicator === "%%"){
+     return qb.whereILike("indicator", queryObjectString.indicator).orWhereNull("indicator")
+    }else{
+     return qb.whereILike("indicator", queryObjectString.indicator)
+    }
+  })
   .first()
   .count('id as countRow')
 

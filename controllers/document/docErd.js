@@ -25,6 +25,10 @@ const getDocErd = async (page, perpage, sort) => {
 
 //Получить ОЭД, с постраничной пагинацией и параметрами
 const getDocErdParam = async (page, perpage, docKey, flKey, beginPeriod, endPeriod, dose, sort) => {
+  // 1. Поиск по числовым значениям осуществляется через where
+  // 2. Поиск по текстовым значением осуществлется через like
+  // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
+  // дополнительно проверяется на null !
   const pg = typeof page !== 'undefined' && page !== '' ? page : 1
   const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
     let sortField = 'id'

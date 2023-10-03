@@ -25,6 +25,10 @@ const getRole = async (page, perpage, sort) => {
 
 //Получить роли, с постраничной пагинацией и параметрами
 const getRoleParam = async (page, perpage, name, name_plural, name_short, sort) => {
+  // 1. Поиск по числовым значениям осуществляется через where
+  // 2. Поиск по текстовым значением осуществлется через like
+  // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
+  // дополнительно проверяется на null !
   const pg = typeof page !== 'undefined' && page !== '' ? page : 1
   const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
     let sortField = 'id'
@@ -56,9 +60,30 @@ if (typeof name_short !== 'undefined'){
 }
 
 let countData = await knex("roles")
-.whereILike("name", queryObjectString.name)
-.andWhereILike("name_plural", queryObjectString.name_plural)
-.andWhereILike("name_short", queryObjectString.name_short)
+//.whereILike("name", queryObjectString.name)
+.andWhere(qb => {
+  if (queryObjectString.name === "%%"){
+   return qb.whereILike("name", queryObjectString.name).orWhereNull("name")
+  }else{
+   return qb.whereILike("name", queryObjectString.name)
+  }
+})
+//.andWhereILike("name_plural", queryObjectString.name_plural)
+.andWhere(qb => {
+  if (queryObjectString.name_plural === "%%"){
+   return qb.whereILike("name_plural", queryObjectString.name_plural).orWhereNull("name_plural")
+  }else{
+   return qb.whereILike("name_plural", queryObjectString.name_plural)
+  }
+})
+//.andWhereILike("name_short", queryObjectString.name_short)
+.andWhere(qb => {
+  if (queryObjectString.name_short === "%%"){
+   return qb.whereILike("name_short", queryObjectString.name_short).orWhereNull("name_short")
+  }else{
+   return qb.whereILike("name_short", queryObjectString.name_short)
+  }
+})
 .first()
 .count('id as countRow')
 
@@ -66,9 +91,30 @@ countData['pages'] = Math.ceil(countData.countRow/prpg)
 countData['currentPage'] = pg
 
  let resultData = await knex("roles")
- .whereILike("name", queryObjectString.name)
- .andWhereILike("name_plural", queryObjectString.name_plural)
- .andWhereILike("name_short", queryObjectString.name_short)
+//.whereILike("name", queryObjectString.name)
+.andWhere(qb => {
+  if (queryObjectString.name === "%%"){
+   return qb.whereILike("name", queryObjectString.name).orWhereNull("name")
+  }else{
+   return qb.whereILike("name", queryObjectString.name)
+  }
+})
+//.andWhereILike("name_plural", queryObjectString.name_plural)
+.andWhere(qb => {
+  if (queryObjectString.name_plural === "%%"){
+   return qb.whereILike("name_plural", queryObjectString.name_plural).orWhereNull("name_plural")
+  }else{
+   return qb.whereILike("name_plural", queryObjectString.name_plural)
+  }
+})
+//.andWhereILike("name_short", queryObjectString.name_short)
+.andWhere(qb => {
+  if (queryObjectString.name_short === "%%"){
+   return qb.whereILike("name_short", queryObjectString.name_short).orWhereNull("name_short")
+  }else{
+   return qb.whereILike("name_short", queryObjectString.name_short)
+  }
+})
  .select()
  .orderBy(sortField, sortDirect)
  //.where(queryObject)

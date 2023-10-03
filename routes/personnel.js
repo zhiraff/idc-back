@@ -27,6 +27,7 @@ router.get("/", (req, res) => {
     let mtdt
     for (let i=0; i< data.length; i++){
      data[i].address = await personnelController.getAddressByParam(1, 25, data[i].id)
+    // console.log(data[i].address)
      mtindx = data[i].address.findIndex(x => x.countRow)
      mtdt = data[i].address.splice(mtindx, 1)
 

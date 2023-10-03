@@ -24,7 +24,10 @@ const getDocHeader = async (page, perpage, sort) => {
 
 //Получить Заголовки документов, с постраничной пагинацией и параметрами
 const getDocHeaderParam = async (page, perpage, organization, typeDocument, typeExam, dateDocument, numberDocument, dateExam, sort) => {
-  const pg = typeof page !== 'undefined' && page !== '' ? page : 1
+  // 1. Поиск по числовым значениям осуществляется через where
+  // 2. Поиск по текстовым значением осуществлется через like
+  // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
+  // дополнительно проверяется на null !const pg = typeof page !== 'undefined' && page !== '' ? page : 1
   const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
     let sortField = 'id'
   let sortDirect = 'asc'

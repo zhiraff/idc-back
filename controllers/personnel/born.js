@@ -26,6 +26,10 @@ const getBorn = async (page, perpage, sort) => {
 
 //Получить персонал, с постраничной пагинацией и параметрами
 const getBornParam = async (page, perpage, flKey, date, country, region, area, locality, sort) => {
+  // 1. Поиск по числовым значениям осуществляется через where
+  // 2. Поиск по текстовым значением осуществлется через like
+  // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
+  // дополнительно проверяется на null !
   const pg = typeof page !== 'undefined' && page !== '' ? page : 1
   const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
   let sortField = 'id'
@@ -72,14 +76,28 @@ const getBornParam = async (page, perpage, flKey, date, country, region, area, l
   .where(queryObject)
   .andWhereILike("country", queryObjectString.country)
   .andWhereILike("region", queryObjectString.region)
-  .andWhereILike("area", queryObjectString.area)
+  //.andWhereILike("area", queryObjectString.area)
+  .andWhere(qb => {
+    if (queryObjectString.area === "%%"){
+     return qb.whereILike("area", queryObjectString.area).orWhereNull("area")
+    }else{
+     return qb.whereILike("area", queryObjectString.area)
+    }
+ })
   .andWhereILike("locality", queryObjectString.locality)
   .limit(prpg).offset((pg-1)*prpg)
   let countData = await knex("fl_born")
   .where(queryObject)
   .andWhereILike("country", queryObjectString.country)
   .andWhereILike("region", queryObjectString.region)
-  .andWhereILike("area", queryObjectString.area)
+  //.andWhereILike("area", queryObjectString.area)
+  .andWhere(qb => {
+    if (queryObjectString.area === "%%"){
+     return qb.whereILike("area", queryObjectString.area).orWhereNull("area")
+    }else{
+     return qb.whereILike("area", queryObjectString.area)
+    }
+ })
   .andWhereILike("locality", queryObjectString.locality)
   .first()
   .count('id as countRow')

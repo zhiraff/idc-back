@@ -25,6 +25,10 @@ const getBodypart = async (page, perpage, sort) => {
 
 //Получить части тела, с постраничной пагинацией и параметрами
 const getBodypartParam = async (page, perpage, type, name, sort) => {
+  // 1. Поиск по числовым значениям осуществляется через where
+  // 2. Поиск по текстовым значением осуществлется через like
+  // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
+  // дополнительно проверяется на null !
   const pg = typeof page !== 'undefined' && page !== '' ? page : 1
   const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
     let sortField = 'id'
@@ -60,7 +64,14 @@ if (typeof type !== 'undefined'){
 
 let countData = await knex("bodyPart")
 .whereILike("name", queryObjectString.name)
-.andWhereILike("type", queryObjectString.type)
+//.andWhereILike("type", queryObjectString.type)
+.andWhere(qb => {
+  if (queryObjectString.type === "%%"){
+   return qb.whereILike("type", queryObjectString.type).orWhereNull("type")
+  }else{
+   return qb.whereILike("type", queryObjectString.type)
+  }
+})
 .first()
 .count('id as countRow')
 
@@ -69,7 +80,14 @@ countData['currentPage'] = pg
 
  let resultData = await knex("bodyPart")
  .whereILike("name", queryObjectString.name)
- .andWhereILike("type", queryObjectString.type)
+ //.andWhereILike("type", queryObjectString.type)
+ .andWhere(qb => {
+  if (queryObjectString.type === "%%"){
+   return qb.whereILike("type", queryObjectString.type).orWhereNull("type")
+  }else{
+   return qb.whereILike("type", queryObjectString.type)
+  }
+})
  .select()
  .orderBy(sortField, sortDirect)
  //.where(queryObject)

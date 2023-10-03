@@ -38,6 +38,10 @@ const getDepartment = async (page, perpage, sort) => {
 
 //Получить подразделения, с постраничной пагинацией и параметрами
 const getDepartmentParam = async (page, perpage, parent_id, begin, end, code, name, department_item_id, full_name, address, sort) => {
+  // 1. Поиск по числовым значениям осуществляется через where
+  // 2. Поиск по текстовым значением осуществлется через like
+  // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
+  // дополнительно проверяется на null !
   const pg = typeof page !== 'undefined' && page !== '' ? page : 1
   const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
   let queryObject = {}
@@ -94,9 +98,30 @@ const getDepartmentParam = async (page, perpage, parent_id, begin, end, code, na
   .where(queryObject)
   .andWhereILike('code', queryObjectString.code)
   .andWhereILike('name', queryObjectString.name)
-  .andWhereILike('department_item_id', queryObjectString.department_item_id)
-  .andWhereILike('full_name', queryObjectString.full_name)
-  .andWhereILike('address', queryObjectString.address)
+  //.andWhereILike('department_item_id', queryObjectString.department_item_id)
+  .andWhere(qb => {
+    if (queryObjectString.department_item_id === "%%"){
+     return qb.whereILike("department_item_id", queryObjectString.department_item_id).orWhereNull("department_item_id")
+    }else{
+     return qb.whereILike("department_item_id", queryObjectString.department_item_id)
+    }
+  })
+  //.andWhereILike('full_name', queryObjectString.full_name)
+  .andWhere(qb => {
+    if (queryObjectString.full_name === "%%"){
+     return qb.whereILike("full_name", queryObjectString.full_name).orWhereNull("full_name")
+    }else{
+     return qb.whereILike("full_name", queryObjectString.full_name)
+    }
+  })
+  //.andWhereILike('address', queryObjectString.address)
+  .andWhere(qb => {
+    if (queryObjectString.address === "%%"){
+     return qb.whereILike("address", queryObjectString.address).orWhereNull("address")
+    }else{
+     return qb.whereILike("address", queryObjectString.address)
+    }
+  })
   .limit(prpg).offset((pg-1)*prpg)
 
   for (let i = 0;i < resultData.length; i++){
@@ -110,9 +135,30 @@ const getDepartmentParam = async (page, perpage, parent_id, begin, end, code, na
   .where(queryObject)
   .andWhereILike('code', queryObjectString.code)
   .andWhereILike('name', queryObjectString.name)
-  .andWhereILike('department_item_id', queryObjectString.department_item_id)
-  .andWhereILike('full_name', queryObjectString.full_name)
-  .andWhereILike('address', queryObjectString.address)
+  //.andWhereILike('department_item_id', queryObjectString.department_item_id)
+  .andWhere(qb => {
+    if (queryObjectString.department_item_id === "%%"){
+     return qb.whereILike("department_item_id", queryObjectString.department_item_id).orWhereNull("department_item_id")
+    }else{
+     return qb.whereILike("department_item_id", queryObjectString.department_item_id)
+    }
+  })
+  //.andWhereILike('full_name', queryObjectString.full_name)
+  .andWhere(qb => {
+    if (queryObjectString.full_name === "%%"){
+     return qb.whereILike("full_name", queryObjectString.full_name).orWhereNull("full_name")
+    }else{
+     return qb.whereILike("full_name", queryObjectString.full_name)
+    }
+  })
+  //.andWhereILike('address', queryObjectString.address)
+  .andWhere(qb => {
+    if (queryObjectString.address === "%%"){
+     return qb.whereILike("address", queryObjectString.address).orWhereNull("address")
+    }else{
+     return qb.whereILike("address", queryObjectString.address)
+    }
+  })
   .first()
   .count('id as countRow')
 

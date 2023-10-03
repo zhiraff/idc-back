@@ -10,7 +10,7 @@ exports.up = function(knex) {
     table.foreign("docKey").references("docHeader.id").onDelete("cascade");
     table.string("originalName", 255).notNullable().comment('Оригинальное имя файла (начальное)');
     table.string("name", 255).notNullable().comment('Имя файла (под которым хранится');
-    table.string("type", 10).notNullable().comment('Тип файла (pdf/docx)');
+    table.string("mimetype", 100).notNullable().comment('Mime-тип файла');
     table.string("extension", 10).notNullable().comment('Расширение файла');
     table.string("pathSave", 255).notNullable().comment('Путь хранения');
     table.string("placeSave", 255).comment('Место хранения оригинала');

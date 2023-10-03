@@ -26,6 +26,10 @@ const getFio = async (page, perpage, sort) => {
 
 //Получить персонал, с постраничной пагинацией и параметрами
 const getFioParam = async (page, perpage, flKey, firstName, secondName, thirdName, date, comment, sort) => {
+  // 1. Поиск по числовым значениям осуществляется через where
+  // 2. Поиск по текстовым значением осуществлется через like
+  // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
+  // дополнительно проверяется на null !
   const pg = typeof page !== 'undefined' && page !== '' ? page : 1
   const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
   let sortField = 'id'
@@ -70,18 +74,75 @@ const getFioParam = async (page, perpage, flKey, firstName, secondName, thirdNam
   let resultData = await knex("fl_ch_fio").select()
   .orderBy(sortField, sortDirect)
   .where(queryObject)
-  .andWhereILike("firstName", queryObjectString.firstName)
-  .andWhereILike("secondName", queryObjectString.secondName)
-  .andWhereILike("thirdName", queryObjectString.thirdName)
-  .andWhereILike("comment", queryObjectString.comment)
+  //.andWhereILike("firstName", queryObjectString.firstName)
+  .andWhere(qb => {
+    if (queryObjectString.firstName === "%%"){
+     return qb.whereILike("firstName", queryObjectString.firstName).orWhereNull("firstName")
+    }else{
+     return qb.whereILike("firstName", queryObjectString.firstName)
+    }
+ })
+  //.andWhereILike("secondName", queryObjectString.secondName)
+  .andWhere(qb => {
+    if (queryObjectString.secondName === "%%"){
+     return qb.whereILike("secondName", queryObjectString.secondName).orWhereNull("secondName")
+    }else{
+     return qb.whereILike("secondName", queryObjectString.secondName)
+    }
+ })
+
+  //.andWhereILike("thirdName", queryObjectString.thirdName)
+  .andWhere(qb => {
+    if (queryObjectString.thirdName === "%%"){
+     return qb.whereILike("thirdName", queryObjectString.thirdName).orWhereNull("thirdName")
+    }else{
+     return qb.whereILike("thirdName", queryObjectString.thirdName)
+    }
+  })
+  //.andWhereILike("comment", queryObjectString.comment)
+  .andWhere(qb => {
+    if (queryObjectString.comment === "%%"){
+     return qb.whereILike("comment", queryObjectString.comment).orWhereNull("comment")
+    }else{
+     return qb.whereILike("comment", queryObjectString.comment)
+    }
+  })
   .limit(prpg).offset((pg-1)*prpg)
 
   let countData = await knex("fl_ch_fio")
   .where(queryObject)
-  .andWhereILike("firstName", queryObjectString.firstName)
-  .andWhereILike("secondName", queryObjectString.secondName)
-  .andWhereILike("thirdName", queryObjectString.thirdName)
-  .andWhereILike("comment", queryObjectString.comment)
+  //.andWhereILike("firstName", queryObjectString.firstName)
+  .andWhere(qb => {
+    if (queryObjectString.firstName === "%%"){
+     return qb.whereILike("firstName", queryObjectString.firstName).orWhereNull("firstName")
+    }else{
+     return qb.whereILike("firstName", queryObjectString.firstName)
+    }
+ })
+  //.andWhereILike("secondName", queryObjectString.secondName)
+  .andWhere(qb => {
+    if (queryObjectString.secondName === "%%"){
+     return qb.whereILike("secondName", queryObjectString.secondName).orWhereNull("secondName")
+    }else{
+     return qb.whereILike("secondName", queryObjectString.secondName)
+    }
+ })
+  //.andWhereILike("thirdName", queryObjectString.thirdName)
+  .andWhere(qb => {
+    if (queryObjectString.thirdName === "%%"){
+     return qb.whereILike("thirdName", queryObjectString.thirdName).orWhereNull("thirdName")
+    }else{
+     return qb.whereILike("thirdName", queryObjectString.thirdName)
+    }
+  })
+  //.andWhereILike("comment", queryObjectString.comment)
+  .andWhere(qb => {
+    if (queryObjectString.comment === "%%"){
+     return qb.whereILike("comment", queryObjectString.comment).orWhereNull("comment")
+    }else{
+     return qb.whereILike("comment", queryObjectString.comment)
+    }
+  })
   .first()
   .count('id as countRow')
   countData['pages'] = Math.ceil(countData.countRow/prpg)

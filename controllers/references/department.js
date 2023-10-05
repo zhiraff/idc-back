@@ -131,7 +131,7 @@ const getDepartmentParam = async (page, perpage, parent_id, begin, end, code, na
     }
   }
 
-  let countData = knex("department")
+  let countData = await knex("department")
   .where(queryObject)
   .andWhereILike('code', queryObjectString.code)
   .andWhereILike('name', queryObjectString.name)

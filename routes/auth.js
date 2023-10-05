@@ -45,7 +45,6 @@ router.post('/login', authController.passport.authenticate('local', {
 router.get('/errorlogin', async(req, res) => {
   // #swagger.tags = ['auth']
   //#swagger.ignore = true
-  
     res.status(400).json({
       'status': 'error',
       'sessionid': ''
@@ -99,6 +98,7 @@ router.get("/whoami", async (req, res) => {
 
   let username = ''
   let role = ''
+  let perm = []
   //console.log(req.isAuthenticated())
   if (req.isAuthenticated()){
     //ищем свой токен в куках
@@ -118,8 +118,8 @@ router.get("/whoami", async (req, res) => {
       if (username === 'Anonymous') {
         role = "Anonymous"
       }else{
-        const roleid = await authController.findUserByUsername(username)
-        role = await authController.findRoleById(roleid.role)
+        //const roleid = await authController.findUserByUsername(username)
+        //role = await authController.findRoleById(roleid.role)
       }
   } else {
     username = 'Anonymous'

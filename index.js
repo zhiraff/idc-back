@@ -23,8 +23,14 @@ app.use(
 );
 
 //Подключение middleware для работы
-const authRouter = require("./routes/auth.js");
 const personnelRouter = require("./routes/personnel.js");
+//Идентификация аутентификация авторизация
+const authRouter = require("./routes/auth.js");
+const authController = require("./controllers/auth.js")
+const permissionRouter = require("./routes/authentication/permission.js");
+const roleAssignPermissionRouter = require("./routes/authentication/roleAssignPermission.js");
+const userAssignPermissionRouter = require("./routes/authentication/userAssignPermission.js");
+const userAssignRoleRouter = require("./routes/authentication/userAssignRole.js");
 // Заведение документов
 const documentRouter = require("./routes/document/docHeader.js");
 const docBpeRouter = require("./routes/document/docBpe.js");
@@ -68,17 +74,42 @@ app.use(passport.authenticate('session'));
 
 app.use(auth.authorize({
   bindToProperty: 'user'
-}, function(req, done) {
+}, async function(req, done) {
+    let rls = []
+    let perm = new Set();
+    if (typeof req.user === 'undefined'){
+      //Пользователь не авторизован
       var auth = {
-        roles: ['Super Admin', 'User'],
-        permissions: ['CanAddContent', 'CanRemoveContent']
+        roles: ['anonymous'],
+        permissions: ['suck', 'cry']
     };
+    } else {
+      //Пользователь авторизован
+      //Роли у пользователя
+    rls = await authController.userRoles(req.user.id)
+      //Права у пользователя
+    let perm1 = await authController.userPermission(req.user.id)
+      //Права у ролей пользователя
+    let perm2 = await authController.rolePermissionByUserId(req.user.id)
+    //Объединим права у удалим дубликаты
+    let permSet = new Set(perm1.concat(perm2))
+
+    var auth = {
+    roles: await authController.userRoles(req.user.id),
+    permissions: Array.from(permSet)
+    };
+    }
     done(auth);
 }))
 
 //привязка маршрутов к middleware 
-app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/personnel", personnelRouter);
+//Идентификация аутентификация авторизация
+app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/permission", permissionRouter);
+app.use("/api/v1/rolepermission", roleAssignPermissionRouter);
+app.use("/api/v1/userpermission", userAssignPermissionRouter);
+app.use("/api/v1/userrole", userAssignRoleRouter);
 // Заведение документов
 app.use("/api/v1/document/header", documentRouter);
 app.use("/api/v1/document/bpe", docBpeRouter);
@@ -97,13 +128,16 @@ app.use("/api/v1/references/user", userRouter);
 app.use("/api/v1/references/role", roleRouter);
 
 
+//app.get("/", auth.isInRole('Super Admin'), async (req, res) => {
 app.get("/", async (req, res) => {
   //#swagger.ignore = true
-    const users = await knex.select().table("users");
-    let usrs_print = "";
-    users.forEach(element => {
-        usrs_print = usrs_print +"<br>" + element.id + " "+ element.username + " " + element.role;
-    });
+  //  const users = await knex.select().table("users");
+  //  let usrs_print = "";
+    let isAllowed = req.user.isInRole('add_users');
+   // console.log(isAllowed)
+  //  users.forEach(element => {
+  //      usrs_print = usrs_print +"<br>" + element.id + " "+ element.username + " " + element.role;
+  //  });
 
     res.status(200).send(`Добро пожаловать на backend АС "ИДК" <br> <br> Нужная страница находится здесь: <a href='${req.protocol}://${req.hostname}:${port}/api-docs'>${req.protocol}://${req.hostname}:${port}/api-docs</a>`);
 

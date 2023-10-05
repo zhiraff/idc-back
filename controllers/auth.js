@@ -15,7 +15,7 @@ const hash = (d) => {
 
 //ф-я поиска пользователя по username
 const findUserByUsername = async (username) => {
-  return knex("users").first("id", "username", "password", "role").where({ username: username });
+  return knex("users").first("id", "username", "password").where({ username: username });
 };
 
 //ф-я поиска пользователя по sessionId
@@ -113,9 +113,78 @@ passport.deserializeUser(function(user, cb) {
   });
 });
 
+//ф-я сбора ролей пользователя
+const userRoles = async (userId) => {
+  let ret = []
+  const res = await knex('userAssignRole')
+  .select('roles.name_short as role', 'userAssignRole.*')
+  .where('userKey', userId)
+  .leftJoin('roles', 'userAssignRole.roleKey', 'roles.id')
+
+  for (let i = 0; i < res.length; i++){
+    ret.push(res[i].role)
+ 
+  }
+  return ret;
+}
+
+//ф-я сбора прав у ролей по roleID
+const userRolePermissions = async (roleId) => {
+  let ret = []
+  const res = await knex('roleAssignPermission')
+.select('permission.codeName as permName', 'roleAssignPermission.*')
+.where('roleKey', roleId)
+.leftJoin('permission', 'roleAssignPermission.permKey', 'permission.id')
+
+for (let j = 0; j < res.length; j++){
+
+  ret.push(res[j].permName)
+}
+return ret
+}
+
+//ф-я сбора прав у пользователя
+const userPermission = async (userId) => {
+let ret = []
+const res = await knex('userAssignPermission')
+      .select('permission.codeName as permName', 'userAssignPermission.*')
+      .where('userKey', userId)
+      .leftJoin('permission', 'userAssignPermission.permKey', 'permission.id')
+      for (let i = 0; i < res.length; i++){
+        ret.push(res[j].permName)
+      }
+      return ret  
+}
+
+//ф-я сбора прав у ролей пользователя по userID
+const rolePermissionByUserId = async (userId) => {
+  let ret = []
+const userRoles = await knex('userAssignRole')
+.select()
+.where('userKey', userId)
+
+for (let i = 0; i < userRoles.length; i++){
+        //сбор прав наследуемых от ролей 
+    const userRolePermissions = await knex('roleAssignPermission')
+    .select('permission.codeName as permName', 'roleAssignPermission.*')
+    .where('roleKey', userRoles[i].id)
+    .leftJoin('permission', 'roleAssignPermission.permKey', 'permission.id')
+
+for (let j = 0; j < userRolePermissions.length; j++){
+  
+  ret.push(userRolePermissions[j].permName)
+}
+}
+return ret
+}
+
+
 module.exports.findUserByUsername = findUserByUsername;
 module.exports.findUserBySessionId = findUserBySessionId;
 module.exports.findRoleById = findRoleById;
 module.exports.createUser = createUser;
 module.exports.passport = passport;
-//module.exports.delete = deleteBodypart;
+module.exports.userRoles = userRoles;
+module.exports.userRolePermissions = userRolePermissions;
+module.exports.userPermission = userPermission;
+module.exports.rolePermissionByUserId = rolePermissionByUserId;

@@ -25,8 +25,8 @@ app.use(
 //Подключение middleware для работы
 const personnelRouter = require("./routes/personnel.js");
 //Идентификация аутентификация авторизация
-const authRouter = require("./routes/auth.js");
-const authController = require("./controllers/auth.js")
+const authRouter = require("./routes/authentication/auth.js");
+const authController = require("./controllers/authentication/auth.js")
 const permissionRouter = require("./routes/authentication/permission.js");
 const roleAssignPermissionRouter = require("./routes/authentication/roleAssignPermission.js");
 const userAssignPermissionRouter = require("./routes/authentication/userAssignPermission.js");
@@ -131,19 +131,14 @@ app.use("/api/v1/references/role", roleRouter);
 //app.get("/", auth.isInRole('Super Admin'), async (req, res) => {
 app.get("/", async (req, res) => {
   //#swagger.ignore = true
-  //  const users = await knex.select().table("users");
-  //  let usrs_print = "";
-    let isAllowed = req.user.isInRole('add_users');
+   // let isAllowed = req.user.isInRole('add_users');
    // console.log(isAllowed)
-  //  users.forEach(element => {
-  //      usrs_print = usrs_print +"<br>" + element.id + " "+ element.username + " " + element.role;
-  //  });
+
 
     res.status(200).send(`Добро пожаловать на backend АС "ИДК" <br> <br> Нужная страница находится здесь: <a href='${req.protocol}://${req.hostname}:${port}/api-docs'>${req.protocol}://${req.hostname}:${port}/api-docs</a>`);
 
 })
 
-//const specs = swaggerJsdoc(require("./swagger-option.js"));
 
 app.listen(port, () => {
     console.log(`Server listening on http://localhost:${port}`)

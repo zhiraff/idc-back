@@ -1,5 +1,5 @@
 
-const knex = require("../knex_init");
+const knex = require("../../knex_init");
 const crypto = require("crypto");
 const passport = require('passport');
 const LocalStrategy = require('passport-local');

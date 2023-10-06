@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const router = express.Router();
 
-const authController = require("../controllers/auth.js")
+const authController = require("../../controllers/authentication/auth")
 
 //вход
 router.post('/login', authController.passport.authenticate('local', {
@@ -97,8 +97,9 @@ router.get("/whoami", async (req, res) => {
   // #swagger.description = 'Кто я'
 
   let username = ''
-  let role = ''
-  let perm = []
+  let roles = ''
+  let permissions = []
+  //let perm = new Set();
   //console.log(req.isAuthenticated())
   if (req.isAuthenticated()){
     //ищем свой токен в куках
@@ -116,18 +117,26 @@ router.get("/whoami", async (req, res) => {
     username = await authController.findUserBySessionId(req.cookies.sessionId)
   }
       if (username === 'Anonymous') {
-        role = "Anonymous"
+        roles = "Anonymous"
+        permissions = ["login", "whoami"]
       }else{
         //const roleid = await authController.findUserByUsername(username)
-        //role = await authController.findRoleById(roleid.role)
+        const usr = await authController.findUserByUsername(username)
+        roles = await authController.userRoles(usr.id)
+        let perm1 = await authController.userPermission(req.user.id)
+        let perm2 = await authController.rolePermissionByUserId(req.user.id)
+        permissions = Array.from(new Set(perm1.concat(perm2))) 
       }
+
   } else {
     username = 'Anonymous'
-    role = "Anonymous"
+    roles = "Anonymous",
+    permissions = ["login", "whoami"]
   }
  res.status(200).json({
   "username": username,
-  "role": role
+  "roles": roles,
+  "permissions": permissions
  })
 });
 module.exports = router

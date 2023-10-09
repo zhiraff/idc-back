@@ -59,19 +59,7 @@ const getDocErdParam = async (page, perpage, docKey, flKey, beginPeriod, endPeri
     queryObject['dose'] = dose
   }
 
-/*
-let queryObjectString = {}
-if (typeof typeControl !== 'undefined'){
-  queryObjectString['typeControl'] = '%' + typeControl + '%'
-} else {
-  queryObjectString['typeControl'] = '%%'
-}
-  if (typeof material !== 'undefined'){
-    queryObjectString['material'] = '%' +  material + '%'
-}else {
-  queryObjectString['material'] = '%%'
-}
-*/
+
 let countData = await knex("docErd")
 .where(queryObject)
 .first()
@@ -101,6 +89,39 @@ const creatDocErd = async(docKey, flKey, beginPeriod, endPeriod, dose, user) => 
   const newDocErd = {
     docKey: docKey,
     flKey: flKey,
+    beginPeriod: beginPeriod,
+    endPeriod: endPeriod,
+    dose: dose,
+    createdBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+    updatedBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+  };
+   const result = await knex("docErd").insert([newDocErd], ["id"]);
+   newDocErd['id'] = result[0].id
+   return newDocErd;
+}
+//Создать ОЭД по табельному номеру
+const creatDocErdByAccNum = async(docKey, accNum, beginPeriod, endPeriod, dose, user) => {
+  const fl = await knex("FL").first().where("accNum", accNum)
+  const newDocErd = {
+    docKey: docKey,
+    flKey: fl.id,
+    beginPeriod: beginPeriod,
+    endPeriod: endPeriod,
+    dose: dose,
+    createdBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+    updatedBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+  };
+   const result = await knex("docErd").insert([newDocErd], ["id"]);
+   newDocErd['id'] = result[0].id
+   return newDocErd;
+}
+
+//Создать ОЭД по снилс
+const creatDocErdBySnils = async(docKey, snils, beginPeriod, endPeriod, dose, user) => {
+  const fl = await knex("FL").first().where("snils", snils)
+  const newDocErd = {
+    docKey: docKey,
+    flKey: fl.id,
     beginPeriod: beginPeriod,
     endPeriod: endPeriod,
     dose: dose,
@@ -160,5 +181,7 @@ module.exports.get = getDocErd;
 module.exports.getByParam = getDocErdParam;
 module.exports.getOne = getOneDocErd;
 module.exports.create = creatDocErd;
+module.exports.createByAccNum = creatDocErdByAccNum;
+module.exports.createBySnils = creatDocErdBySnils;
 module.exports.update = updateDocErd;
 module.exports.delete = deleteDocErd;

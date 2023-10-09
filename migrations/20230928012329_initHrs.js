@@ -1,3 +1,5 @@
+//Миграция создаёт 
+//Таблицу результатов СИЧ
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
@@ -11,7 +13,8 @@ exports.up = function(knex) {
     table.integer("flKey").notNullable().comment('ссылка на физическое лицо');
     table.foreign("flKey").references("FL.id").onDelete("restrict");
     table.date("dateExam").notNullable().comment('Дата взятия пробы');
-    table.string("typeControl", 255).notNullable().comment('Вид контроля');
+    table.integer("typeControlKey", 255).notNullable().comment('Вид контроля');
+    table.foreign("typeControlKey").references("kindIdc.id").onDelete("restrict");
     table.integer("bodyPartKey").notNullable().comment('ссылка на часть тела');
     table.foreign("bodyPartKey").references("bodyPart.id").onDelete("restrict");
     table.integer("radionuclideKey").notNullable().comment('ссылка на радионуклид');

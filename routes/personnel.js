@@ -71,12 +71,12 @@ router.get("/search", (req, res) => {
   //const perpage = req.query.perpage;
   //const sort = req.query.sort;
    const { page, perpage, signImport, firstName, secondName, thirdName, sex,
-            family, snils, inn, organization, department, departmentMCC,
-            jobCode, tabNum, accNum, id_kadr, sort  } = req.query
+            family, snils, inn, organization, department, departmentMCCKey,
+            jobCodeKey, tabNum, accNum, id_kadr, sort  } = req.query
 
   personnelController.getPersonnelByParam(page, perpage, signImport, firstName, secondName, thirdName, sex,
-            family, snils, inn, organization, department, departmentMCC,
-            jobCode, tabNum, accNum, id_kadr, sort).then( async (data) => {
+            family, snils, inn, organization, department, departmentMCCKey,
+            jobCodeKey, tabNum, accNum, id_kadr, sort).then( async (data) => {
               let metaindex = data.findIndex(x => x.countRow)
               let metadata = data.splice(metaindex, 1)
               let mtindx
@@ -149,8 +149,8 @@ router.post("/", async (req, res) => {
     */
     let idPersonnel = 0
     const { signImport, firstName, secondName, thirdName, sex,
-            family, snils, inn, organization, department, departmentMCC,
-            jobCode, tabNum, accNum, id_kadr, 
+            family, snils, inn, organization, department, departmentMCCKey,
+            jobCodeKey, tabNum, accNum, id_kadr, 
             fio,
            // fioDate, fioComment,
             born,
@@ -164,17 +164,17 @@ router.post("/", async (req, res) => {
     if (typeof sex === 'undefined' || sex ==='' ||
         typeof family === 'undefined' || family ==='' ||
         typeof organization === 'undefined' || organization ==='' ||
-        typeof jobCode === 'undefined' || jobCode ==='' ||
+        typeof jobCodeKey === 'undefined' || jobCodeKey ==='' ||
         typeof accNum === 'undefined' || accNum ==='' ){
                 return res.status(400).json({
                 status: "error",
-                data: "Не хватает одного из обязательных полей (sex, family, organization, jobCode, accNum) "
+                data: "Не хватает одного из обязательных полей (sex, family, organization, jobCodeKey, accNum) "
                 })
     }
     //создание записи в физ.лицах
     await personnelController.createPersonnel( signImport, firstName, secondName, thirdName, sex,
-            family, snils, inn, organization, department, departmentMCC,
-            jobCode, tabNum, accNum, id_kadr, req.user)
+            family, snils, inn, organization, department, departmentMCCKey,
+            jobCodeKey, tabNum, accNum, id_kadr, req.user)
     .then((data) => {
         idPersonnel = data.id
         /*
@@ -308,23 +308,23 @@ router.post("/fl", (req, res) => {
     #swagger.description = 'Создать физическое лицо'
     */
      const { signImport, firstName, secondName, thirdName, sex,
-            family, snils, inn, organization, department, departmentMCC,
-            jobCode, tabNum, accNum, id_kadr } = req.body
+            family, snils, inn, organization, department, departmentMCCKey,
+            jobCodeKey, tabNum, accNum, id_kadr } = req.body
     
     //проверка на наличие обязательных базовых вещей
     if (typeof sex === 'undefined' || sex ==='' ||
         typeof family === 'undefined' || family ==='' ||
         typeof organization === 'undefined' || organization ==='' ||
-        typeof jobCode === 'undefined' || jobCode ==='' ||
+        typeof jobCodeKey === 'undefined' || jobCodeKey ==='' ||
         typeof accNum === 'undefined' || accNum ==='' ){
                 return res.status(400).json({
                 status: "error",
-                data: "Не хватает одного из обязательных полей (sex, family, organization, jobCode, accNum) "
+                data: "Не хватает одного из обязательных полей (sex, family, organization, jobCodeKey, accNum) "
                 })
     }
     personnelController.createPersonnel( signImport, firstName, secondName, thirdName, sex,
-            family, snils, inn, organization, department, departmentMCC,
-            jobCode, tabNum, accNum, id_kadr, req.user)
+            family, snils, inn, organization, department, departmentMCCKey,
+            jobCodeKey, tabNum, accNum, id_kadr, req.user)
     .then((data) => {
         res.status(200).json({
             "status": "success",
@@ -423,11 +423,10 @@ router.post("/docs", (req, res) => {
          typeof serial === 'undefined' || serial ==='' ||
          typeof number === 'undefined' || number ==='' || 
          typeof dateIssue === 'undefined' || dateIssue ==='' ||
-         typeof whoIssue === 'undefined'  || whoIssue ===''  || 
-         typeof podrIssue === 'undefined' || podrIssue ==='' ){
+         typeof whoIssue === 'undefined'  || whoIssue ===''){
                 return res.status(400).json({
                 status: "error",
-                data: "Не хватает одного из обязательных полей (flKey, name, serial, number, dateIssue, whoIssue, podrIssue) "
+                data: "Не хватает одного из обязательных полей (flKey, name, serial, number, dateIssue, whoIssue) "
                 })
     }
     
@@ -533,15 +532,15 @@ router.get("/fl/search", (req, res) => {
   const inn = req.query.inn;
   const organization = req.query.organization;
   const department = req.query.department;
-  const departmentMCC = req.query.departmentMCC;
-  const jobCode = req.query.jobCode;
+  const departmentMCCKey = req.query.departmentMCCKey;
+  const jobCodeKey = req.query.jobCodeKey;
   const tabNum = req.query.tabNum;
   const accNum = req.query.accNum;
   const id_kadr = req.query.id_kadr;
   const sort = req.query.sort;
   personnelController.getPersonnelByParam(page, perpage, signImport, firstName, secondName, thirdName, sex,
-    family, snils, inn, organization, department, departmentMCC,
-    jobCode, tabNum, accNum, id_kadr, sort).then((data) => {
+    family, snils, inn, organization, department, departmentMCCKey,
+    jobCodeKey, tabNum, accNum, id_kadr, sort).then((data) => {
       let metaindex = data.findIndex(x => x.countRow)
       let metadata = data.splice(metaindex, 1)
       res.status(200).json({
@@ -593,12 +592,12 @@ router.patch("/fl/:id", (req, res) => {
     */
  const personneltId = req.params.id
  const {signImport, firstName, secondName, thirdName, sex,
-            family, snils, inn, organization, department, departmentMCC,
-            jobCode, tabNum, accNum, id_kadr} = req.body;
+            family, snils, inn, organization, department, departmentMCCKey,
+            jobCodeKey, tabNum, accNum, id_kadr} = req.body;
 
  personnelController.updatePersonnel(personneltId, signImport, firstName, secondName, thirdName, sex,
-            family, snils, inn, organization, department, departmentMCC,
-            jobCode, tabNum, accNum, id_kadr, req.user)
+            family, snils, inn, organization, department, departmentMCCKey,
+            jobCodeKey, tabNum, accNum, id_kadr, req.user)
  .then((data)=>{
   res.status(200).json({
     status: "success",
@@ -1271,8 +1270,8 @@ router.patch("/:id", (req, res) => {
     */
  const flId = req.params.id
 const { signImport, firstName, secondName, thirdName, sex,
-            family, snils, inn, organization, department, departmentMCC,
-            jobCode, tabNum, accNum, id_kadr} = req.body
+            family, snils, inn, organization, department, departmentMCCKey,
+            jobCodeKey, tabNum, accNum, id_kadr} = req.body
     //проверка на наличие полей
     if ( typeof signImport === 'undefined' &&
          typeof firstName === 'undefined' &&
@@ -1284,8 +1283,8 @@ const { signImport, firstName, secondName, thirdName, sex,
          typeof inn === 'undefined' &&
          typeof organization === 'undefined' &&
          typeof department === 'undefined' &&
-         typeof departmentMCC === 'undefined' &&
-         typeof jobCode === 'undefined' &&
+         typeof departmentMCCKey === 'undefined' &&
+         typeof jobCodeKey === 'undefined' &&
          typeof tabNum === 'undefined' &&
          typeof accNum === 'undefined' &&
          typeof id_kadr === 'undefined'
@@ -1297,8 +1296,8 @@ const { signImport, firstName, secondName, thirdName, sex,
     }
 
  personnelController.updatePersonnel(flId, signImport, firstName, secondName, thirdName, sex,
-            family, snils, inn, organization, department, departmentMCC,
-            jobCode, tabNum, accNum, id_kadr, req.user)
+            family, snils, inn, organization, department, departmentMCCKey,
+            jobCodeKey, tabNum, accNum, id_kadr, req.user)
  .then((data)=>{
   res.status(200).json({
     status: "success",

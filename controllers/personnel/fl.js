@@ -16,9 +16,9 @@ const getFl = async (page, perpage, sort) => {
   }
 
   let resultData = await knex("FL")
-  .leftJoin('profession', 'FL.jobCode', 'profession.id')
-  .leftJoin('department', 'FL.departmentMCC', 'department.id')
-  .select('profession.name as jobName', 'department.name as departmentMCCname', 'FL.*')
+  .leftJoin('profession', 'FL.jobCodeKey', 'profession.id')
+  .leftJoin('department', 'FL.departmentMCCKey', 'department.id')
+  .select('profession.name as jobName', 'department.name as departmentMCCKeyname', 'FL.*')
   .orderBy(sortField, sortDirect)
   .limit(prpg)
   .offset((pg-1)*prpg)
@@ -34,13 +34,13 @@ const getFl = async (page, perpage, sort) => {
 
 //создать персонал
 const createFl = async ( signImport, firstName, secondName, thirdName, sex,
-                family, snils, inn, organization, department, departmentMCC,
-                jobCode, tabNum, accNum, id_kadr, user) => {
+                family, snils, inn, organization, department, departmentMCCKey,
+                jobCodeKey, tabNum, accNum, id_kadr, user) => {
     createObject = {
         sex: sex,
         family: family,
         organization: organization,
-        jobCode: jobCode,
+        jobCodeKey: jobCodeKey,
         accNum: accNum,
         createdBy: typeof user.username !== 'undefined' ? user.username : "unknown",
         updatedBy: typeof user.username !== 'undefined' ? user.username : "unknown",
@@ -66,8 +66,8 @@ const createFl = async ( signImport, firstName, secondName, thirdName, sex,
     if (typeof department !== 'undefined'){
         createObject['department'] = department
     }
-    if (typeof departmentMCC !== 'undefined'){
-        createObject['departmentMCC'] = departmentMCC
+    if (typeof departmentMCCKey !== 'undefined'){
+        createObject['departmentMCCKey'] = departmentMCCKey
     }
     if (typeof tabNum !== 'undefined'){
         createObject['tabNum'] = tabNum
@@ -83,8 +83,8 @@ const createFl = async ( signImport, firstName, secondName, thirdName, sex,
 
 //Получить персонал, с постраничной пагинацией и параметрами
 const getFlParam = async (page, perpage, signImport, firstName, secondName, thirdName, sex,
-            family, snils, inn, organization, department, departmentMCC,
-            jobCode, tabNum, accNum, id_kadr, sort) => {
+            family, snils, inn, organization, department, departmentMCCKey,
+            jobCodeKey, tabNum, accNum, id_kadr, sort) => {
   // 1. Поиск по числовым значениям осуществляется через where
   // 2. Поиск по текстовым значением осуществлется через like
   // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
@@ -153,11 +153,11 @@ const getFlParam = async (page, perpage, signImport, firstName, secondName, thir
   }else{
     queryObjectString['department'] = "%%"
   }
-      if (typeof departmentMCC !== 'undefined'){
-    queryObject['departmentMCC'] = departmentMCC
+      if (typeof departmentMCCKey !== 'undefined'){
+    queryObject['departmentMCCKey'] = departmentMCCKey
   }
-      if (typeof jobCode !== 'undefined'){
-    queryObject['jobCode'] = jobCode
+      if (typeof jobCodeKey !== 'undefined'){
+    queryObject['jobCodeKey'] = jobCodeKey
   }
       if (typeof tabNum !== 'undefined'){
         queryObjectString['tabNum'] = "%"+tabNum+"%"
@@ -174,9 +174,9 @@ const getFlParam = async (page, perpage, signImport, firstName, secondName, thir
   }
 
   let resultData = await knex("FL")
-  .leftJoin('profession', 'FL.jobCode', 'profession.id')
-  .leftJoin('department', 'FL.departmentMCC', 'department.id')
-  .select('profession.name as jobName', 'department.name as departmentMCCname', 'FL.*')
+  .leftJoin('profession', 'FL.jobCodeKey', 'profession.id')
+  .leftJoin('department', 'FL.departmentMCCKey', 'department.id')
+  .select('profession.name as jobName', 'department.name as departmentMCCKeyname', 'FL.*')
   .orderBy(sortField, sortDirect)
   .where(queryObject)
   //.andWhereILike("signImport", queryObjectString.signImport)
@@ -322,8 +322,8 @@ const getFlParam = async (page, perpage, signImport, firstName, secondName, thir
 
 // обновление записи о физ.лице
  const updateFl = async (personnelId, signImport, firstName, secondName, thirdName, sex,
-            family, snils, inn, organization, department, departmentMCC,
-            jobCode, tabNum, accNum, id_kadr, user) => {
+            family, snils, inn, organization, department, departmentMCCKey,
+            jobCodeKey, tabNum, accNum, id_kadr, user) => {
     let updateObject = {}
     if (typeof signImport !== 'undefined'){
     updateObject['signImport'] = signImport
@@ -355,11 +355,11 @@ const getFlParam = async (page, perpage, signImport, firstName, secondName, thir
   if (typeof department !== 'undefined'){
     updateObject['department'] = department
   }
-  if (typeof departmentMCC !== 'undefined'){
-    updateObject['departmentMCC'] = departmentMCC
+  if (typeof departmentMCCKey !== 'undefined'){
+    updateObject['departmentMCCKey'] = departmentMCCKey
   }
-  if (typeof jobCode !== 'undefined'){
-    updateObject['jobCode'] = jobCode
+  if (typeof jobCodeKey !== 'undefined'){
+    updateObject['jobCodeKey'] = jobCodeKey
   }
   if (typeof tabNum !== 'undefined'){
     updateObject['tabNum'] = tabNum

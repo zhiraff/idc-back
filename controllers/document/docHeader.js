@@ -23,11 +23,12 @@ const getDocHeader = async (page, perpage, sort) => {
 }
 
 //Получить Заголовки документов, с постраничной пагинацией и параметрами
-const getDocHeaderParam = async (page, perpage, organization, typeDocument, typeExam, dateDocument, numberDocument, dateExam, sort) => {
+const getDocHeaderParam = async (page, perpage, organization, typeDocument, typeExam, dateDocument, numberDocument, beginPeriod, endPeriod, sort) => {
   // 1. Поиск по числовым значениям осуществляется через where
   // 2. Поиск по текстовым значением осуществлется через like
   // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
-  // дополнительно проверяется на null !const pg = typeof page !== 'undefined' && page !== '' ? page : 1
+  // дополнительно проверяется на null !
+  const pg = typeof page !== 'undefined' && page !== '' ? page : 1
   const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
     let sortField = 'id'
   let sortDirect = 'asc'
@@ -44,8 +45,11 @@ const getDocHeaderParam = async (page, perpage, organization, typeDocument, type
   if (typeof dateDocument !== 'undefined'){
     queryObject['dateDocument'] = dateDocument
   }
-    if (typeof dateExam !== 'undefined'){
-    queryObject['dateExam'] = dateExam
+    if (typeof beginPeriod !== 'undefined'){
+    queryObject['beginPeriod'] = beginPeriod
+  }
+  if (typeof endPeriod !== 'undefined'){
+    queryObject['endPeriod'] = endPeriod
   }
 
 let queryObjectString = {}
@@ -104,14 +108,15 @@ const getOneDocHeader = async(docHeaderId) => {
 }
 
 //Создать Заголовок документа
-const creatDocHeader = async(organization, typeDocument, typeExam, dateDocument, numberDocument, dateExam, user) => {
+const creatDocHeader = async(organization, typeDocument, typeExam, dateDocument, numberDocument, beginPeriod, endPeriod, user) => {
   const newDocHeader = {
     organization: organization,
     typeDocument: typeDocument,
     typeExam: typeExam,
     dateDocument: dateDocument,
     numberDocument: numberDocument,
-    dateExam: dateExam,
+    beginPeriod: beginPeriod,
+    endPeriod: endPeriod,
     createdBy: typeof user.username !== 'undefined' ? user.username : "unknown",
     updatedBy: typeof user.username !== 'undefined' ? user.username : "unknown",
   };
@@ -121,7 +126,7 @@ const creatDocHeader = async(organization, typeDocument, typeExam, dateDocument,
 }
 
 // обновление заголовка
- const updateDocHeader = async (docHeaderId, organization, typeDocument, typeExam, dateDocument, numberDocument, dateExam, user) => {
+ const updateDocHeader = async (docHeaderId, organization, typeDocument, typeExam, dateDocument, numberDocument, beginPeriod, endPeriod, user) => {
     let updateObject = {}
     if (typeof organization !== 'undefined'){
     updateObject['organization'] = organization
@@ -143,8 +148,11 @@ const creatDocHeader = async(organization, typeDocument, typeExam, dateDocument,
     updateObject['numberDocument'] = numberDocument
   }
 
-  if (typeof dateExam !== 'undefined'){
-    updateObject['dateExam'] = dateExam
+  if (typeof beginPeriod !== 'undefined'){
+    updateObject['beginPeriod'] = beginPeriod
+  }
+  if (typeof endPeriod !== 'undefined'){
+    updateObject['endPeriod'] = endPeriod
   }
 
   updateObject['updatedAt'] = new Date()

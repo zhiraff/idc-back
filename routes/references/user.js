@@ -37,17 +37,16 @@ router.get("/search", (req, res) => {
   /* #swagger.tags = ['user']
      #swagger.description = 'Поиск пользователей'
   */
-   // username, firstName, secondName, thirdName, role
+   // username, firstName, secondName, thirdName
   const page = req.query.page;
   const perpage = req.query.perpage;
   const username = req.query.username;
   const firstName = req.query.firstName;
   const secondName = req.query.secondName;
   const thirdName = req.query.thirdName;
-  const role = req.query.role;
   const sort = req.query.sort;
   //console.log(req.user)
-        userController.getByParam(page, perpage, username, firstName, secondName, thirdName, role, sort).then((data) => {
+        userController.getByParam(page, perpage, username, firstName, secondName, thirdName, sort).then((data) => {
           let metaindex = data.findIndex(x => x.countRow)
           let metadata = data.splice(metaindex, 1)
           res.status(200).json({
@@ -94,18 +93,17 @@ router.post("/", (req, res) => {
   /* #swagger.tags = ['user']
      #swagger.description = 'Созданпе новой записи'
   */
-// username, password, firstName, secondName, thirdName, role
- const { username, password, firstName, secondName, thirdName, role } = req.body;
+// username, password, firstName, secondName, thirdName
+ const { username, password, firstName, secondName, thirdName } = req.body;
 //console.log(`symbol, name, htmlcode ${symbol}, ${name}, ${htmlcode}`)
 if (typeof username === 'undefined' || 
-    typeof password === 'undefined' || 
-    typeof role === 'undefined'){
+    typeof password === 'undefined'){
     return res.status(400).json({
     status: "error",
-    data: "Не хватает username, password или role "
+    data: "Не хватает username, password "
   })
 }
-  userController.create(username, password, firstName, secondName, thirdName, role, req.user)
+  userController.create(username, password, firstName, secondName, thirdName, req.user)
   .then((result) => {
     res.status(200).json({
       status: "success",
@@ -127,20 +125,19 @@ router.patch("/:id", (req, res) => {
      #swagger.description = Обновление записи'
   */
  const userId = req.params.id
- const {username, password, firstName, secondName, thirdName, role } = req.body;
+ const {username, password, firstName, secondName, thirdName } = req.body;
 
  if (typeof username === 'undefined' && 
     typeof password === 'undefined' &&
     typeof firstName === 'undefined' &&
     typeof secondName === 'undefined' &&
-    typeof thirdName === 'undefined' &&
-    typeof role === 'undefined'){
+    typeof thirdName === 'undefined'){
   return res.status(400).json({
     status: "error",
     data: "Нечего обновлять"
   })
  }
- userController.update(userId, username, password, firstName, secondName, thirdName, role, req.user)
+ userController.update(userId, username, password, firstName, secondName, thirdName, req.user)
  .then((data)=>{
   res.status(200).json({
     status: "success",

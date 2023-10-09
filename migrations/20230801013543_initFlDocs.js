@@ -1,3 +1,5 @@
+//Миграция создаёт справочник 
+//документы физического лица
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
@@ -13,7 +15,7 @@ exports.up = function(knex) {
     table.string("number", 255).notNullable().comment('Номер');
     table.date("dateIssue").notNullable().comment('Дата выдачи');
     table.string("whoIssue", 255).notNullable().comment('Кем выдано');
-    table.string("podrIssue", 255).notNullable().comment('Подразделение');
+    table.string("podrIssue", 255).comment('Подразделение');
     table.boolean("active").comment("Основной")
     table.timestamps(true, true, true);
     table.string("createdBy").notNullable();

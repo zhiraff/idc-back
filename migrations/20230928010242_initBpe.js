@@ -1,3 +1,5 @@
+//Миграция создаёт 
+//Таблицу результатов БФО
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
@@ -11,12 +13,12 @@ exports.up = function(knex) {
     table.integer("flKey").notNullable().comment('ссылка на физическое лицо');
     table.foreign("flKey").references("FL.id").onDelete("restrict");
     table.date("dateExam").notNullable().comment('Дата взятия пробы');
-    table.string("typeControl", 255).notNullable().comment('Вид контроля');
-    table.date("dateInput").comment('Дата поступления');
+    table.integer("typeControlKey", 255).notNullable().comment('Вид контроля');
+    table.foreign("typeControlKey").references("kindIdc.id").onDelete("restrict");
     table.integer("radionuclideKey").notNullable().comment('ссылка на радионуклид');
     table.foreign("radionuclideKey").references("radionuclide.id").onDelete("restrict");
     table.string("material", 255).notNullable().comment('Материал');
-    table.float("consist").notNullable().comment('содержание');
+    table.float("consist").notNullable().comment('Содержание, Бк');
     table.timestamps(true, true, true);
     table.string("createdBy").notNullable();
     table.string("updatedBy").notNullable();

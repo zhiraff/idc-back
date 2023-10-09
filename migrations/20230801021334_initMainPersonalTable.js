@@ -1,3 +1,5 @@
+//Миграция создаёт справочник 
+// главная таблица персонала
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }

@@ -1,3 +1,5 @@
+//Миграция создаёт справочник 
+//адресов физического лица
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }

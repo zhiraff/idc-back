@@ -1,3 +1,5 @@
+//Миграция создаёт справочник 
+//мест рождения физического лица
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }

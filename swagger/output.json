@@ -139,10 +139,10 @@
                 "department": {
                   "example": "any"
                 },
-                "departmentMCC": {
+                "departmentMCCKey": {
                   "example": "any"
                 },
-                "jobCode": {
+                "jobCodeKey": {
                   "example": "any"
                 },
                 "tabNum": {
@@ -248,12 +248,12 @@
             "type": "string"
           },
           {
-            "name": "departmentMCC",
+            "name": "departmentMCCKey",
             "in": "query",
             "type": "string"
           },
           {
-            "name": "jobCode",
+            "name": "jobCodeKey",
             "in": "query",
             "type": "string"
           },
@@ -331,10 +331,10 @@
                 "department": {
                   "example": "any"
                 },
-                "departmentMCC": {
+                "departmentMCCKey": {
                   "example": "any"
                 },
-                "jobCode": {
+                "jobCodeKey": {
                   "example": "any"
                 },
                 "tabNum": {
@@ -787,12 +787,12 @@
             "type": "string"
           },
           {
-            "name": "departmentMCC",
+            "name": "departmentMCCKey",
             "in": "query",
             "type": "string"
           },
           {
-            "name": "jobCode",
+            "name": "jobCodeKey",
             "in": "query",
             "type": "string"
           },
@@ -898,10 +898,10 @@
                 "department": {
                   "example": "any"
                 },
-                "departmentMCC": {
+                "departmentMCCKey": {
                   "example": "any"
                 },
-                "jobCode": {
+                "jobCodeKey": {
                   "example": "any"
                 },
                 "tabNum": {
@@ -1682,10 +1682,10 @@
                 "department": {
                   "example": "any"
                 },
-                "departmentMCC": {
+                "departmentMCCKey": {
                   "example": "any"
                 },
-                "jobCode": {
+                "jobCodeKey": {
                   "example": "any"
                 },
                 "tabNum": {
@@ -2717,7 +2717,10 @@
                 "numberDocument": {
                   "example": "any"
                 },
-                "dateExam": {
+                "beginPeriod": {
+                  "example": "any"
+                },
+                "endPeriod": {
                   "example": "any"
                 }
               }
@@ -2777,7 +2780,12 @@
             "type": "string"
           },
           {
-            "name": "dateExam",
+            "name": "beginPeriod",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endPeriod",
             "in": "query",
             "type": "string"
           },
@@ -2853,7 +2861,10 @@
                 "numberDocument": {
                   "example": "any"
                 },
-                "dateExam": {
+                "beginPeriod": {
+                  "example": "any"
+                },
+                "endPeriod": {
                   "example": "any"
                 }
               }
@@ -2945,10 +2956,7 @@
                 "dateExam": {
                   "example": "any"
                 },
-                "typeControl": {
-                  "example": "any"
-                },
-                "dateInput": {
+                "typeControlKey": {
                   "example": "any"
                 },
                 "radionuclideKey": {
@@ -3007,12 +3015,7 @@
             "type": "string"
           },
           {
-            "name": "typeControl",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "dateInput",
+            "name": "typeControlKey",
             "in": "query",
             "type": "string"
           },
@@ -3097,10 +3100,7 @@
                 "dateExam": {
                   "example": "any"
                 },
-                "typeControl": {
-                  "example": "any"
-                },
-                "dateInput": {
+                "typeControlKey": {
                   "example": "any"
                 },
                 "radionuclideKey": {
@@ -3136,6 +3136,102 @@
             "in": "path",
             "required": true,
             "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/bpe/accnum": {
+      "post": {
+        "tags": [
+          "document"
+        ],
+        "description": "Создание записи по табельному номеру человека",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "docKey": {
+                  "example": "any"
+                },
+                "accNum": {
+                  "example": "any"
+                },
+                "dateExam": {
+                  "example": "any"
+                },
+                "typeControlKey": {
+                  "example": "any"
+                },
+                "radionuclideKey": {
+                  "example": "any"
+                },
+                "material": {
+                  "example": "any"
+                },
+                "consist": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/bpe/snils": {
+      "post": {
+        "tags": [
+          "document"
+        ],
+        "description": "Создание записи по СНИЛС человека",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "docKey": {
+                  "example": "any"
+                },
+                "snils": {
+                  "example": "any"
+                },
+                "dateExam": {
+                  "example": "any"
+                },
+                "typeControlKey": {
+                  "example": "any"
+                },
+                "radionuclideKey": {
+                  "example": "any"
+                },
+                "material": {
+                  "example": "any"
+                },
+                "consist": {
+                  "example": "any"
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -3201,7 +3297,7 @@
                 "dateExam": {
                   "example": "any"
                 },
-                "typeControl": {
+                "typeControlKey": {
                   "example": "any"
                 },
                 "bodyPartKey": {
@@ -3260,7 +3356,7 @@
             "type": "string"
           },
           {
-            "name": "typeControl",
+            "name": "typeControlKey",
             "in": "query",
             "type": "string"
           },
@@ -3345,7 +3441,7 @@
                 "dateExam": {
                   "example": "any"
                 },
-                "typeControl": {
+                "typeControlKey": {
                   "example": "any"
                 },
                 "bodyPartKey": {
@@ -3381,6 +3477,102 @@
             "in": "path",
             "required": true,
             "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/hrs/accnum": {
+      "post": {
+        "tags": [
+          "document"
+        ],
+        "description": "Создание записи по accNum",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "docKey": {
+                  "example": "any"
+                },
+                "accNum": {
+                  "example": "any"
+                },
+                "dateExam": {
+                  "example": "any"
+                },
+                "typeControlKey": {
+                  "example": "any"
+                },
+                "bodyPartKey": {
+                  "example": "any"
+                },
+                "radionuclideKey": {
+                  "example": "any"
+                },
+                "consist": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/hrs/snils": {
+      "post": {
+        "tags": [
+          "document"
+        ],
+        "description": "Создание записи по snils",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "docKey": {
+                  "example": "any"
+                },
+                "snils": {
+                  "example": "any"
+                },
+                "dateExam": {
+                  "example": "any"
+                },
+                "typeControlKey": {
+                  "example": "any"
+                },
+                "bodyPartKey": {
+                  "example": "any"
+                },
+                "radionuclideKey": {
+                  "example": "any"
+                },
+                "consist": {
+                  "example": "any"
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -3616,6 +3808,90 @@
         }
       }
     },
+    "/api/v1/document/erd/accnum": {
+      "post": {
+        "tags": [
+          "document"
+        ],
+        "description": "Создание записи по accnum",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "docKey": {
+                  "example": "any"
+                },
+                "accNum": {
+                  "example": "any"
+                },
+                "beginPeriod": {
+                  "example": "any"
+                },
+                "endPeriod": {
+                  "example": "any"
+                },
+                "dose": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/erd/snils": {
+      "post": {
+        "tags": [
+          "document"
+        ],
+        "description": "Создание записи по снилс",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "docKey": {
+                  "example": "any"
+                },
+                "snils": {
+                  "example": "any"
+                },
+                "beginPeriod": {
+                  "example": "any"
+                },
+                "endPeriod": {
+                  "example": "any"
+                },
+                "dose": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
     "/api/v1/document/ctc/": {
       "get": {
         "tags": [
@@ -3669,7 +3945,7 @@
                 "dateExam": {
                   "example": "any"
                 },
-                "typeControl": {
+                "typeControlKey": {
                   "example": "any"
                 },
                 "dateInput": {
@@ -3731,7 +4007,7 @@
             "type": "string"
           },
           {
-            "name": "typeControl",
+            "name": "typeControlKey",
             "in": "query",
             "type": "string"
           },
@@ -3821,7 +4097,7 @@
                 "dateExam": {
                   "example": "any"
                 },
-                "typeControl": {
+                "typeControlKey": {
                   "example": "any"
                 },
                 "dateInput": {
@@ -3860,6 +4136,108 @@
             "in": "path",
             "required": true,
             "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/ctc/accnum": {
+      "post": {
+        "tags": [
+          "document"
+        ],
+        "description": "Создание записи по accNum",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "docKey": {
+                  "example": "any"
+                },
+                "accNum": {
+                  "example": "any"
+                },
+                "dateExam": {
+                  "example": "any"
+                },
+                "typeControlKey": {
+                  "example": "any"
+                },
+                "dateInput": {
+                  "example": "any"
+                },
+                "radionuclideKey": {
+                  "example": "any"
+                },
+                "material": {
+                  "example": "any"
+                },
+                "consist": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/ctc/snils": {
+      "post": {
+        "tags": [
+          "document"
+        ],
+        "description": "Создание записи по снилс",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "docKey": {
+                  "example": "any"
+                },
+                "snils": {
+                  "example": "any"
+                },
+                "dateExam": {
+                  "example": "any"
+                },
+                "typeControlKey": {
+                  "example": "any"
+                },
+                "dateInput": {
+                  "example": "any"
+                },
+                "radionuclideKey": {
+                  "example": "any"
+                },
+                "material": {
+                  "example": "any"
+                },
+                "consist": {
+                  "example": "any"
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -4043,6 +4421,313 @@
             "in": "path",
             "required": true,
             "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/income/": {
+      "get": {
+        "tags": [
+          "document"
+        ],
+        "description": "Показ всех поступлений радионуклидов",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "document"
+        ],
+        "description": "Создание записи",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "docKey": {
+                  "example": "any"
+                },
+                "flKey": {
+                  "example": "any"
+                },
+                "radionuclideKey": {
+                  "example": "any"
+                },
+                "dateIncome": {
+                  "example": "any"
+                },
+                "value": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/income/search": {
+      "get": {
+        "tags": [
+          "document"
+        ],
+        "description": "Поиск поступлений радионуклидов",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "docKey",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "flKey",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "radionuclideKey",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "dateIncome",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "value",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/income/{id}": {
+      "get": {
+        "tags": [
+          "document"
+        ],
+        "description": "Просмотр поступлений радионуклидов подробно",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "document"
+        ],
+        "description": "Обновление записи",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "docKey": {
+                  "example": "any"
+                },
+                "flKey": {
+                  "example": "any"
+                },
+                "radionuclideKey": {
+                  "example": "any"
+                },
+                "dateIncome": {
+                  "example": "any"
+                },
+                "value": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "document"
+        ],
+        "description": "Удаление записи",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/income/accnum": {
+      "post": {
+        "tags": [
+          "document"
+        ],
+        "description": "Создание записи по accnum",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "docKey": {
+                  "example": "any"
+                },
+                "accNum": {
+                  "example": "any"
+                },
+                "radionuclideKey": {
+                  "example": "any"
+                },
+                "dateIncome": {
+                  "example": "any"
+                },
+                "value": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/document/income/snils": {
+      "post": {
+        "tags": [
+          "document"
+        ],
+        "description": "Создание записи по snils",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "docKey": {
+                  "example": "any"
+                },
+                "snils": {
+                  "example": "any"
+                },
+                "radionuclideKey": {
+                  "example": "any"
+                },
+                "dateIncome": {
+                  "example": "any"
+                },
+                "value": {
+                  "example": "any"
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -5397,9 +6082,6 @@
                 },
                 "thirdName": {
                   "example": "any"
-                },
-                "role": {
-                  "example": "any"
                 }
               }
             }
@@ -5449,11 +6131,6 @@
           },
           {
             "name": "thirdName",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "role",
             "in": "query",
             "type": "string"
           },
@@ -5527,9 +6204,6 @@
                   "example": "any"
                 },
                 "thirdName": {
-                  "example": "any"
-                },
-                "role": {
                   "example": "any"
                 }
               }

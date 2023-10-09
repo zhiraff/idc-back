@@ -32,7 +32,7 @@ const getUser = async (page, perpage, sort) => {
   .first()
   .count('id as countRow')
 
-  countData['pages'] = countData.countRow/perpage
+  countData['pages'] = Math.ceil(countData.countRow/prpg)
   countData['currentPage'] = pg
   resultData.push(countData)
 
@@ -40,7 +40,7 @@ const getUser = async (page, perpage, sort) => {
 }
 
 //Получить пользователи, с постраничной пагинацией и параметрами
-const getUserParam = async (page, perpage, username, firstName, secondName, thirdName, role, sort) => {
+const getUserParam = async (page, perpage, username, firstName, secondName, thirdName, sort) => {
   // 1. Поиск по числовым значениям осуществляется через where
   // 2. Поиск по текстовым значением осуществлется через like
   // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
@@ -69,9 +69,7 @@ const getUserParam = async (page, perpage, username, firstName, secondName, thir
   } else {
     queryObjectString['thirdName'] = "%%"
   }
-  if (typeof role !== 'undefined'){
-    queryObject['role'] = role
-  }
+
   /*
   if (typeof department_item_id !== 'undefined'){
     queryObject['department_item_id'] = department_item_id
@@ -149,7 +147,7 @@ const getUserParam = async (page, perpage, username, firstName, secondName, thir
   .first()
   .count('id as countRow')
 
-  countData['pages'] = countData.countRow/perpage
+  countData['pages'] = Math.ceil(countData.countRow/prpg)
   countData['currentPage'] = pg
   resultData.push(countData)
 
@@ -163,11 +161,10 @@ const getOneUser = async(UserId) => {
 }
 
 //Создать пользователя
-const creatUser = async(username, password, firstName, secondName, thirdName, role, user) => {
+const creatUser = async(username, password, firstName, secondName, thirdName, user) => {
   let newUser = {
     username: username,
     password: hash(password),
-    role: role,
     createdBy: typeof user.username !== 'undefined' ? user.username : "unknown",
     updatedBy: typeof user.username !== 'undefined' ? user.username : "unknown",
   };
@@ -187,7 +184,7 @@ const creatUser = async(username, password, firstName, secondName, thirdName, ro
 }
 
 // обновление пользователя
- const updateUser = async (UserId, username, password, firstName, secondName, thirdName, role, user) => {
+ const updateUser = async (UserId, username, password, firstName, secondName, thirdName, user) => {
     let updateObject = {}
     if (typeof username !== 'undefined'){
     updateObject['username'] = username
@@ -204,9 +201,7 @@ const creatUser = async(username, password, firstName, secondName, thirdName, ro
       if (typeof thirdName !== 'undefined'){
     updateObject['thirdName'] = thirdName
   }
-      if (typeof role !== 'undefined'){
-    updateObject['role'] = role
-  }
+
   updateObject['updatedAt'] = new Date()
       if (typeof user.username !== 'undefined'){
     updateObject['updatedBy'] = user.username

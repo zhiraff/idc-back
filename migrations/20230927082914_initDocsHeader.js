@@ -1,3 +1,5 @@
+//Миграция создаёт 
+//Таблицу документов (заголовки)
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
@@ -11,7 +13,8 @@ exports.up = function(knex) {
     table.string("typeExam", 255).notNullable().comment('Тип обследования');
     table.date("dateDocument").notNullable().comment('Дата документа');
     table.string("numberDocument", 255).notNullable().comment('Номер документа');
-    table.date("dateExam").comment('Дата обследования');
+    table.date("beginPeriod").comment('Дата начала обследований');
+    table.date("endPeriod").comment('Дата окончания обследований');
     table.timestamps(true, true, true);
     table.string("createdBy").notNullable();
     table.string("updatedBy").notNullable();

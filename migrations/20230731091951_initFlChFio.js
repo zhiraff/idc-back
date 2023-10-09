@@ -1,3 +1,5 @@
+//Миграция создаёт справочник 
+//смены ФИО у физического лица
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }

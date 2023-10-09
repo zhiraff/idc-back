@@ -1,3 +1,5 @@
+//Миграция создаёт 
+//Таблицу прав доступа
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }

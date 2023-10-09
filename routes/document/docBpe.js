@@ -38,9 +38,9 @@ router.get("/search", (req, res) => {
        #swagger.description = 'Поиск результатов БФО'
     */
  
-  const {page, perpage, docKey, flKey, dateExam, typeControl, dateInput, radionuclideKey, material, consist, sort } = req.query;
+  const {page, perpage, docKey, flKey, dateExam, typeControlKey, radionuclideKey, material, consist, sort } = req.query;
   //console.log(`${organization}, ${typeDocument},\n ${typeExam}, ${dateDocument}, \n ${numberDocument}, ${dateExam}`)
-      docBpeController.getByParam(page, perpage, docKey, flKey, dateExam, typeControl, dateInput, radionuclideKey, material, consist, sort ).then((data) => {
+      docBpeController.getByParam(page, perpage, docKey, flKey, dateExam, typeControlKey, radionuclideKey, material, consist, sort ).then((data) => {
       let metaindex = data.findIndex(x => x.countRow)
       let metadata = data.splice(metaindex, 1)
       res.status(200).json({
@@ -89,22 +89,22 @@ router.post("/", (req, res) => {
     /* #swagger.tags = ['document']
        #swagger.description = 'Создание записи'
   */
- const { docKey, flKey, dateExam, typeControl, dateInput, radionuclideKey, material, consist } = req.body;
+ const { docKey, flKey, dateExam, typeControlKey, radionuclideKey, material, consist } = req.body;
 //console.log(`symbol, name, htmlcode ${symbol}, ${name}, ${htmlcode}`)
 if (typeof docKey === 'undefined' || 
     typeof flKey === 'undefined' || 
     typeof dateExam === 'undefined' || 
-    typeof typeControl === 'undefined' || 
+    typeof typeControlKey === 'undefined' || 
     typeof radionuclideKey === 'undefined' || 
     typeof material === 'undefined'|| 
     typeof consist === 'undefined'
  ){
     return res.status(400).json({
     status: "error",
-    data: "Не хватает docKey, flKey, dateExam, typeControl, radionuclideKey, material или consist"
+    data: "Не хватает docKey, flKey, dateExam, typeControlKey, radionuclideKey, material или consist"
   })
 }
-docBpeController.create(docKey, flKey, dateExam, typeControl, dateInput, radionuclideKey, material, consist, req.user)
+docBpeController.create(docKey, flKey, dateExam, typeControlKey, radionuclideKey, material, consist, req.user)
   .then((result) => {
     res.status(200).json({
       status: "success",
@@ -127,12 +127,12 @@ router.patch("/:id", (req, res) => {
        #swagger.description = 'Обновление записи'
   */
  const docBpeId = req.params.id
- const { docKey, flKey, dateExam, typeControl, dateInput, radionuclideKey, material, consist } = req.body;
+ const { docKey, flKey, dateExam, typeControlKey, radionuclideKey, material, consist } = req.body;
 
  if (typeof docKey === 'undefined' && 
     typeof flKey === 'undefined' && 
     typeof dateExam === 'undefined' && 
-    typeof typeControl === 'undefined' && 
+    typeof typeControlKey === 'undefined' && 
     typeof dateInput === 'undefined' && 
     typeof radionuclideKey === 'undefined' && 
     typeof material === 'undefined' && 
@@ -142,7 +142,7 @@ router.patch("/:id", (req, res) => {
     data: "Нечего обновлять"
   })
  }
- docBpeController.update(docBpeId, docKey, flKey, dateExam, typeControl, dateInput, radionuclideKey, material, consist, req.user)
+ docBpeController.update(docBpeId, docKey, flKey, dateExam, typeControlKey, radionuclideKey, material, consist, req.user)
  .then((data)=>{
   res.status(200).json({
     status: "success",
@@ -182,4 +182,79 @@ router.delete("/:id", (req, res) => {
 
 });
 
+//создание результатов БФО по табельному номеру
+router.post("/accnum", (req, res) => {
+  /* #swagger.tags = ['document']
+     #swagger.description = 'Создание записи по табельному номеру человека'
+*/
+const { docKey, accNum, dateExam, typeControlKey, radionuclideKey, material, consist } = req.body;
+//console.log(`symbol, name, htmlcode ${symbol}, ${name}, ${htmlcode}`)
+if (typeof docKey === 'undefined' || 
+  typeof accNum === 'undefined' || 
+  typeof dateExam === 'undefined' || 
+  typeof typeControlKey === 'undefined' || 
+  typeof radionuclideKey === 'undefined' || 
+  typeof material === 'undefined'|| 
+  typeof consist === 'undefined'
+){
+  return res.status(400).json({
+  status: "error",
+  data: "Не хватает docKey, accNum, dateExam, typeControlKey, radionuclideKey, material или consist"
+})
+}
+
+docBpeController.createByAccNum(docKey, accNum, dateExam, typeControlKey, radionuclideKey, material, consist, req.user)
+.then((result) => {
+  res.status(200).json({
+    status: "success",
+    data: result
+  })
+})
+.catch((err) => {
+  console.log(err)
+  res.status(400).json({
+    status: "error",
+    data: ""
+  })
+})
+
+});
+
+//создание результатов БФО по табельному номеру
+router.post("/snils", (req, res) => {
+  /* #swagger.tags = ['document']
+     #swagger.description = 'Создание записи по СНИЛС человека'
+*/
+const { docKey, snils, dateExam, typeControlKey, radionuclideKey, material, consist } = req.body;
+//console.log(`symbol, name, htmlcode ${symbol}, ${name}, ${htmlcode}`)
+if (typeof docKey === 'undefined' || 
+  typeof snils === 'undefined' || 
+  typeof dateExam === 'undefined' || 
+  typeof typeControlKey === 'undefined' || 
+  typeof radionuclideKey === 'undefined' || 
+  typeof material === 'undefined'|| 
+  typeof consist === 'undefined'
+){
+  return res.status(400).json({
+  status: "error",
+  data: "Не хватает docKey, snils, dateExam, typeControlKey, radionuclideKey, material или consist"
+})
+}
+
+docBpeController.createBySnils(docKey, snils, dateExam, typeControlKey, radionuclideKey, material, consist, req.user)
+.then((result) => {
+  res.status(200).json({
+    status: "success",
+    data: result
+  })
+})
+.catch((err) => {
+  console.log(err)
+  res.status(400).json({
+    status: "error",
+    data: ""
+  })
+})
+
+});
 module.exports = router

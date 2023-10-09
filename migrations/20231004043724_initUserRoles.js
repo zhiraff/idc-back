@@ -1,3 +1,5 @@
+//Миграция создаёт 
+//Таблицу назначения ролей пользователям
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
@@ -16,12 +18,19 @@ exports.up = function(knex) {
 })
 .then( async ()=> {
     const userAdminId = await knex('users').first('id').where('username', 'admin')
+    const userAlekseevaId = await knex('users').first('id').where('username', 'AnVlAlekseeva')
     const roleAdminId = await knex('roles').first('id').where('name_short', 'administrator')
     //console.log(userAdminId)
     //console.log(roleAdminId)
     return knex('userAssignRole').insert([
         {
             userKey: userAdminId.id,
+            roleKey: roleAdminId.id,
+            createdBy: 'migrations',
+            updatedBy: 'migrations',
+        },
+        {
+            userKey: userAlekseevaId.id,
             roleKey: roleAdminId.id,
             createdBy: 'migrations',
             updatedBy: 'migrations',

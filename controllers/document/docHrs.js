@@ -24,7 +24,7 @@ const getDocHrs = async (page, perpage, sort) => {
 }
 
 //Получить результаты СИЧ, с постраничной пагинацией и параметрами
-const getDocHrsParam = async (page, perpage, docKey, flKey, dateExam, typeControl, bodyPartKey, radionuclideKey,  consist, sort) => {
+const getDocHrsParam = async (page, perpage, docKey, flKey, dateExam, typeControlKey, bodyPartKey, radionuclideKey,  consist, sort) => {
   // 1. Поиск по числовым значениям осуществляется через where
   // 2. Поиск по текстовым значением осуществлется через like
   // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
@@ -62,17 +62,14 @@ const getDocHrsParam = async (page, perpage, docKey, flKey, dateExam, typeContro
     queryObject['consist'] = consist
   }
 
-let queryObjectString = {}
-if (typeof typeControl !== 'undefined'){
-  queryObjectString['typeControl'] = '%' + typeControl + '%'
-} else {
-  queryObjectString['typeControl'] = '%%'
-}
+  if (typeof typeControlKey !== 'undefined'){
+    queryObject['typeControlKey'] = typeControlKey
+  }
 
+let queryObjectString = {}
 
 let countData = await knex("docHrs")
 .where(queryObject)
-.andWhereILike("typeControl", queryObjectString.typeControl)
 .first()
 .count('id as countRow')
 
@@ -81,7 +78,6 @@ countData['currentPage'] = pg
 
  let resultData = await knex("docHrs")
  .where(queryObject)
- .andWhereILike("typeControl", queryObjectString.typeControl)
  .select()
  .orderBy(sortField, sortDirect)
  //.where(queryObject)
@@ -97,12 +93,50 @@ const getOneDocHrs = async(docHrsId) => {
 }
 
 //Создать результаты СИЧ
-const creatDocHrs = async(docKey, flKey, dateExam, typeControl, bodyPartKey, radionuclideKey,  consist, user) => {
+const creatDocHrs = async(docKey, flKey, dateExam, typeControlKey, bodyPartKey, radionuclideKey,  consist, user) => {
   const newDocHrs = {
     docKey: docKey,
     flKey: flKey,
     dateExam: dateExam,
-    typeControl: typeControl,
+    typeControlKey: typeControlKey,
+    bodyPartKey: bodyPartKey,
+    radionuclideKey: radionuclideKey,
+    consist: consist,
+    createdBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+    updatedBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+  };
+   const result = await knex("docHrs").insert([newDocHrs], ["id"]);
+   newDocHrs['id'] = result[0].id
+   return newDocHrs;
+}
+
+//Создать результаты СИЧ по теабельному номеру
+const creatDocHrsByAccNum = async(docKey, accNum, dateExam, typeControlKey, bodyPartKey, radionuclideKey,  consist, user) => {
+  const fl = await knex("FL").first().where("accNum", accNum)
+  const newDocHrs = {
+    docKey: docKey,
+    flKey: fl.id,
+    dateExam: dateExam,
+    typeControlKey: typeControlKey,
+    bodyPartKey: bodyPartKey,
+    radionuclideKey: radionuclideKey,
+    consist: consist,
+    createdBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+    updatedBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+  };
+   const result = await knex("docHrs").insert([newDocHrs], ["id"]);
+   newDocHrs['id'] = result[0].id
+   return newDocHrs;
+}
+
+//Создать результаты СИЧ по снилс
+const creatDocHrsBySnils = async(docKey, snils, dateExam, typeControlKey, bodyPartKey, radionuclideKey,  consist, user) => {
+  const fl = await knex("FL").first().where("snils", snils)
+  const newDocHrs = {
+    docKey: docKey,
+    flKey: fl.id,
+    dateExam: dateExam,
+    typeControlKey: typeControlKey,
     bodyPartKey: bodyPartKey,
     radionuclideKey: radionuclideKey,
     consist: consist,
@@ -115,7 +149,7 @@ const creatDocHrs = async(docKey, flKey, dateExam, typeControl, bodyPartKey, rad
 }
 
 // обновление результаты СИЧ
- const updateDocHrs = async (docHrsId, docKey, flKey, dateExam, typeControl, bodyPartKey, radionuclideKey,  consist, user) => {
+ const updateDocHrs = async (docHrsId, docKey, flKey, dateExam, typeControlKey, bodyPartKey, radionuclideKey,  consist, user) => {
     let updateObject = {}
     if (typeof docKey !== 'undefined'){
     updateObject['docKey'] = docKey
@@ -126,8 +160,8 @@ const creatDocHrs = async(docKey, flKey, dateExam, typeControl, bodyPartKey, rad
   if (typeof dateExam !== 'undefined'){
     updateObject['dateExam'] = dateExam
   }
-  if (typeof typeControl !== 'undefined'){
-    updateObject['typeControl'] = typeControl
+  if (typeof typeControlKey !== 'undefined'){
+    updateObject['typeControlKey'] = typeControlKey
   }
   if (typeof bodyPartKey !== 'undefined'){
     updateObject['bodyPartKey'] = bodyPartKey
@@ -157,16 +191,11 @@ const creatDocHrs = async(docKey, flKey, dateExam, typeControl, bodyPartKey, rad
   return knex("docHrs").where({ id: docHrsId }).del()
  }
 
-  //тест
-  /*
- const test = async (name) => {
-  console.log(`hello ${name}`)
-  return 1+1+1
- }
-*/
 module.exports.get = getDocHrs;
 module.exports.getByParam = getDocHrsParam;
 module.exports.getOne = getOneDocHrs;
 module.exports.create = creatDocHrs;
+module.exports.createByAccNum = creatDocHrsByAccNum;
+module.exports.createBySnils = creatDocHrsBySnils;
 module.exports.update = updateDocHrs;
 module.exports.delete = deleteDocHrs;

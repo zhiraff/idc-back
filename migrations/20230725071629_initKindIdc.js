@@ -1,3 +1,5 @@
+//Миграция создаёт справочник 
+//виды контроля
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
@@ -12,6 +14,45 @@ exports.up = function(knex) {
     table.timestamps(true, true, true);
     table.string("createdBy").notNullable();
     table.string("updatedBy").notNullable();
+})
+.then(()=> {
+  return knex("kindIdc").insert([
+    {
+      type: "СИЧ",
+      kind: "Текущий ИДК",
+      kindShort: "тк",
+      createdBy: "migrations",
+      updatedBy: "migrations"
+    },
+    {
+      type: "СИЧ",
+      kind: "Входной контроль",
+      kindShort: "вх",
+      createdBy: "migrations",
+      updatedBy: "migrations"
+    },
+    {
+      type: "СИЧ",
+      kind: "Специальный контроль",
+      kindShort: "ск",
+      createdBy: "migrations",
+      updatedBy: "migrations"
+    },
+    {
+      type: "СИЧ",
+      kind: "По направлению врача",
+      kindShort: "2 ТО",
+      createdBy: "migrations",
+      updatedBy: "migrations"
+    },
+    {
+      type: "СИЧ",
+      kind: "Информационный контроль",
+      kindShort: "ик",
+      createdBy: "migrations",
+      updatedBy: "migrations"
+    }
+  ])
 });
 };
 

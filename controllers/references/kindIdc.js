@@ -96,7 +96,7 @@ const getOneKindidc = async(kindidcId) => {
 }
 
 //Создать виды ИДК
-const creatKindidc = async(type, kind, kindShort) => {
+const creatKindidc = async(type, kind, kindShort, user) => {
   const newKindidc = {
     type: type,
     kind: kind,

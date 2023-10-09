@@ -1,3 +1,5 @@
+//Миграция создаёт справочник 
+//Физические лица
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
@@ -16,11 +18,11 @@ exports.up = function(knex) {
     table.string("inn", 20).comment('№ ИНН');
     table.string("organization", 255).notNullable().comment('Организация');
     table.string("department", 255).comment('Подразделение (если организация не ГХК)');
-    table.integer("departmentMCC").comment('Подразделение ГХК (если организация ГХК)');
-    table.foreign("departmentMCC").references("department.id").onDelete("restrict");
+    table.integer("departmentMCCKey").comment('Подразделение ГХК (если организация ГХК)');
+    table.foreign("departmentMCCKey").references("department.id").onDelete("restrict");
     //table.string("job", 255).notNullable().comment('Должность');
-    table.integer("jobCode", 255).notNullable().comment('Код должности');
-    table.foreign("jobCode").references("profession.id").onDelete("restrict");
+    table.integer("jobCodeKey", 255).notNullable().comment('Код должности');
+    table.foreign("jobCodeKey").references("profession.id").onDelete("restrict");
     table.string("tabNum", 20).comment('Табельный номер');
     table.string("accNum", 20).notNullable().unique().comment('номер учёта в АС');
     table.integer("id_kadr").comment('ключ.физ.лица alfa');

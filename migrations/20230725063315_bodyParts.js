@@ -14,6 +14,76 @@ exports.up = function(knex) {
     table.timestamps(true, true, true);
     table.string("createdBy").notNullable();
     table.string("updatedBy").notNullable();
+})
+.then(() => {
+  return knex("bodyPart").insert([
+    {
+      type: "Орган",
+      name: "Печень",
+      createdBy: "migrations",
+      updatedBy: "migrations"
+    },
+    {
+      type: "Орган",
+      name: "Селезёнка",
+      createdBy: "migrations",
+      updatedBy: "migrations"
+    },
+    {
+      type: "Орган",
+      name: "Левое легкое",
+      createdBy: "migrations",
+      updatedBy: "migrations"
+    },
+    {
+      type: "Орган",
+      name: "Правое легко",
+      createdBy: "migrations",
+      updatedBy: "migrations"
+    },
+    {
+      type: "Орган",
+      name: "Все органы",
+      createdBy: "migrations",
+      updatedBy: "migrations"
+    },
+    {
+      type: "Часть тела",
+      name: "Левая рука",
+      createdBy: "migrations",
+      updatedBy: "migrations"
+    },
+    {
+      type: "Часть тела",
+      name: "Левая нога",
+      createdBy: "migrations",
+      updatedBy: "migrations"
+    },
+    {
+      type: "Часть тела",
+      name: "Правая рука",
+      createdBy: "migrations",
+      updatedBy: "migrations"
+    },
+    {
+      type: "Часть тела",
+      name: "Правая нога",
+      createdBy: "migrations",
+      updatedBy: "migrations"
+    },
+    {
+      type: "Часть тела",
+      name: "Голова",
+      createdBy: "migrations",
+      updatedBy: "migrations"
+    },
+    {
+      type: "Часть тела",
+      name: "Туловище",
+      createdBy: "migrations",
+      updatedBy: "migrations"
+    },
+  ])
 });
 };
 

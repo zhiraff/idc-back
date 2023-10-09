@@ -151,7 +151,7 @@ const res = await knex('userAssignPermission')
       .where('userKey', userId)
       .leftJoin('permission', 'userAssignPermission.permKey', 'permission.id')
       for (let i = 0; i < res.length; i++){
-        ret.push(res[j].permName)
+        ret.push(res[i].permName)
       }
       return ret  
 }

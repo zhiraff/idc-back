@@ -1,3 +1,5 @@
+//Миграция создаёт 
+//таблицу учёта файлов для документов
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }

@@ -38,9 +38,9 @@ router.get("/search", (req, res) => {
        #swagger.description = 'Поиск результатов СИЧ'
     */
  
-  const {page, perpage, docKey, flKey, dateExam, typeControl, bodyPartKey, radionuclideKey, consist, sort } = req.query;
+  const {page, perpage, docKey, flKey, dateExam, typeControlKey, bodyPartKey, radionuclideKey, consist, sort } = req.query;
   //console.log(`${organization}, ${typeDocument},\n ${typeExam}, ${dateDocument}, \n ${numberDocument}, ${dateExam}`)
-      docHrsController.getByParam(page, perpage, docKey, flKey, dateExam, typeControl, bodyPartKey, radionuclideKey, consist, sort ).then((data) => {
+      docHrsController.getByParam(page, perpage, docKey, flKey, dateExam, typeControlKey, bodyPartKey, radionuclideKey, consist, sort ).then((data) => {
       let metaindex = data.findIndex(x => x.countRow)
       let metadata = data.splice(metaindex, 1)
       res.status(200).json({
@@ -89,22 +89,22 @@ router.post("/", (req, res) => {
     /* #swagger.tags = ['document']
        #swagger.description = 'Создание записи'
   */
- const { docKey, flKey, dateExam, typeControl, bodyPartKey, radionuclideKey, consist } = req.body;
+ const { docKey, flKey, dateExam, typeControlKey, bodyPartKey, radionuclideKey, consist } = req.body;
 //console.log(`symbol, name, htmlcode ${symbol}, ${name}, ${htmlcode}`)
 if (typeof docKey === 'undefined' || 
     typeof flKey === 'undefined' || 
     typeof dateExam === 'undefined' || 
-    typeof typeControl === 'undefined' || 
+    typeof typeControlKey === 'undefined' || 
     typeof bodyPartKey === 'undefined'|| 
     typeof radionuclideKey === 'undefined' || 
     typeof consist === 'undefined'
  ){
     return res.status(400).json({
     status: "error",
-    data: "Не хватает docKey, flKey, dateExam, typeControl, bodyPartKey, radionuclideKey или consist"
+    data: "Не хватает docKey, flKey, dateExam, typeControlKey, bodyPartKey, radionuclideKey или consist"
   })
 }
-docHrsController.create(docKey, flKey, dateExam, typeControl, bodyPartKey, radionuclideKey, consist, req.user)
+docHrsController.create(docKey, flKey, dateExam, typeControlKey, bodyPartKey, radionuclideKey, consist, req.user)
   .then((result) => {
     res.status(200).json({
       status: "success",
@@ -127,12 +127,12 @@ router.patch("/:id", (req, res) => {
        #swagger.description = 'Обновление записи'
   */
  const docHrsId = req.params.id
- const { docKey, flKey, dateExam, typeControl, bodyPartKey, radionuclideKey, consist } = req.body;
+ const { docKey, flKey, dateExam, typeControlKey, bodyPartKey, radionuclideKey, consist } = req.body;
 
  if (typeof docKey === 'undefined' && 
     typeof flKey === 'undefined' && 
     typeof dateExam === 'undefined' && 
-    typeof typeControl === 'undefined' && 
+    typeof typeControlKey === 'undefined' && 
     typeof bodyPartKey === 'undefined' && 
     typeof radionuclideKey === 'undefined' && 
     typeof consist === 'undefined'){
@@ -141,7 +141,7 @@ router.patch("/:id", (req, res) => {
     data: "Нечего обновлять"
   })
  }
- docHrsController.update(docHrsId, docKey, flKey, dateExam, typeControl, bodyPartKey, radionuclideKey, consist, req.user)
+ docHrsController.update(docHrsId, docKey, flKey, dateExam, typeControlKey, bodyPartKey, radionuclideKey, consist, req.user)
  .then((data)=>{
   res.status(200).json({
     status: "success",
@@ -178,6 +178,80 @@ router.delete("/:id", (req, res) => {
     data: ""
   })
  })
+
+});
+
+//создание результатов СИЧ по accnum
+router.post("/accnum", (req, res) => {
+  /* #swagger.tags = ['document']
+     #swagger.description = 'Создание записи по accNum'
+*/
+const { docKey, accNum, dateExam, typeControlKey, bodyPartKey, radionuclideKey, consist } = req.body;
+//console.log(`symbol, name, htmlcode ${symbol}, ${name}, ${htmlcode}`)
+if (typeof docKey === 'undefined' || 
+  typeof accNum === 'undefined' || 
+  typeof dateExam === 'undefined' || 
+  typeof typeControlKey === 'undefined' || 
+  typeof bodyPartKey === 'undefined'|| 
+  typeof radionuclideKey === 'undefined' || 
+  typeof consist === 'undefined'
+){
+  return res.status(400).json({
+  status: "error",
+  data: "Не хватает docKey, accNum, dateExam, typeControlKey, bodyPartKey, radionuclideKey или consist"
+})
+}
+docHrsController.createByAccNum(docKey, accNum, dateExam, typeControlKey, bodyPartKey, radionuclideKey, consist, req.user)
+.then((result) => {
+  res.status(200).json({
+    status: "success",
+    data: result
+  })
+})
+.catch((err) => {
+  console.log(err)
+  res.status(400).json({
+    status: "error",
+    data: ""
+  })
+})
+
+});
+
+//создание результатов СИЧ по snils
+router.post("/snils", (req, res) => {
+  /* #swagger.tags = ['document']
+     #swagger.description = 'Создание записи по snils'
+*/
+const { docKey, snils, dateExam, typeControlKey, bodyPartKey, radionuclideKey, consist } = req.body;
+//console.log(`symbol, name, htmlcode ${symbol}, ${name}, ${htmlcode}`)
+if (typeof docKey === 'undefined' || 
+  typeof snils === 'undefined' || 
+  typeof dateExam === 'undefined' || 
+  typeof typeControlKey === 'undefined' || 
+  typeof bodyPartKey === 'undefined'|| 
+  typeof radionuclideKey === 'undefined' || 
+  typeof consist === 'undefined'
+){
+  return res.status(400).json({
+  status: "error",
+  data: "Не хватает docKey, snils, dateExam, typeControlKey, bodyPartKey, radionuclideKey или consist"
+})
+}
+docHrsController.createBySnils(docKey, snils, dateExam, typeControlKey, bodyPartKey, radionuclideKey, consist, req.user)
+.then((result) => {
+  res.status(200).json({
+    status: "success",
+    data: result
+  })
+})
+.catch((err) => {
+  console.log(err)
+  res.status(400).json({
+    status: "error",
+    data: ""
+  })
+})
 
 });
 

@@ -1,3 +1,5 @@
+//Миграция создаёт справочник 
+//Подразделения ГХК
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }

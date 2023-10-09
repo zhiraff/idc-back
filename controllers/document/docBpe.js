@@ -24,7 +24,7 @@ const getDocBpe = async (page, perpage, sort) => {
 }
 
 //Получить результаты БФО, с постраничной пагинацией и параметрами
-const getDocBpeParam = async (page, perpage, docKey, flKey, dateExam, typeControl, dateInput, radionuclideKey, material, consist, sort) => {
+const getDocBpeParam = async (page, perpage, docKey, flKey, dateExam, typeControlKey, radionuclideKey, material, consist, sort) => {
   // 1. Поиск по числовым значениям осуществляется через where
   // 2. Поиск по текстовым значением осуществлется через like
   // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
@@ -52,22 +52,18 @@ const getDocBpeParam = async (page, perpage, docKey, flKey, dateExam, typeContro
   if (typeof dateExam !== 'undefined'){
     queryObject['dateExam'] = dateExam
   }
-  if (typeof dateInput !== 'undefined'){
-    queryObject['dateInput'] = dateInput
-  }
-  if (typeof radionuclideKey !== 'undefined'){
+   if (typeof radionuclideKey !== 'undefined'){
     queryObject['radionuclideKey'] = radionuclideKey
   }
   if (typeof consist !== 'undefined'){
     queryObject['consist'] = consist
   }
+  if (typeof typeControlKey !== 'undefined'){
+    queryObject['typeControlKey'] = typeControlKey
+  }
 
 let queryObjectString = {}
-if (typeof typeControl !== 'undefined'){
-  queryObjectString['typeControl'] = '%' + typeControl + '%'
-} else {
-  queryObjectString['typeControl'] = '%%'
-}
+
   if (typeof material !== 'undefined'){
     queryObjectString['material'] = '%' +  material + '%'
 }else {
@@ -76,7 +72,6 @@ if (typeof typeControl !== 'undefined'){
 
 let countData = await knex("docBpe")
 .where(queryObject)
-.andWhereILike("typeControl", queryObjectString.typeControl)
 .andWhereILike("material", queryObjectString.material)
 .first()
 .count('id as countRow')
@@ -86,7 +81,6 @@ countData['currentPage'] = pg
 
  let resultData = await knex("docBpe")
  .where(queryObject)
- .andWhereILike("typeControl", queryObjectString.typeControl)
  .andWhereILike("material", queryObjectString.material)
  .select()
  .orderBy(sortField, sortDirect)
@@ -104,13 +98,49 @@ const getOneDocBpe = async(docBpeId) => {
 }
 
 //Создать результаты БФО
-const creatDocBpe = async(docKey, flKey, dateExam, typeControl, dateInput, radionuclideKey, material, consist, user) => {
+const creatDocBpe = async(docKey, flKey, dateExam, typeControlKey, radionuclideKey, material, consist, user) => {
   const newDocBpe = {
     docKey: docKey,
     flKey: flKey,
     dateExam: dateExam,
-    typeControl: typeControl,
-    dateInput: dateInput,
+    typeControlKey: typeControlKey,
+    radionuclideKey: radionuclideKey,
+    material: material,
+    consist: consist,
+    createdBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+    updatedBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+  };
+   const result = await knex("docBpe").insert([newDocBpe], ["id"]);
+   newDocBpe['id'] = result[0].id
+   return newDocBpe;
+}
+
+//Создать результаты БФО по табельному номеру
+const creatDocBpeByAccNum = async(docKey, accNum, dateExam, typeControlKey, radionuclideKey, material, consist, user) => {
+  const fl = await knex("FL").first().where("accNum", accNum)
+  const newDocBpe = {
+    docKey: docKey,
+    flKey: fl.id,
+    dateExam: dateExam,
+    typeControlKey: typeControlKey,
+    radionuclideKey: radionuclideKey,
+    material: material,
+    consist: consist,
+    createdBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+    updatedBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+  };
+   const result = await knex("docBpe").insert([newDocBpe], ["id"]);
+   newDocBpe['id'] = result[0].id
+   return newDocBpe;
+}
+//Создать результаты БФО по снилс
+const creatDocBpeBySnils = async(docKey, snils, dateExam, typeControlKey, radionuclideKey, material, consist, user) => {
+  const fl = await knex("FL").first().where("snils", snils)
+  const newDocBpe = {
+    docKey: docKey,
+    flKey: fl.id,
+    dateExam: dateExam,
+    typeControlKey: typeControlKey,
     radionuclideKey: radionuclideKey,
     material: material,
     consist: consist,
@@ -123,7 +153,7 @@ const creatDocBpe = async(docKey, flKey, dateExam, typeControl, dateInput, radio
 }
 
 // обновление результаты БФО
- const updateDocBpe = async (docBpeId, docKey, flKey, dateExam, typeControl, dateInput, radionuclideKey, material, consist, user) => {
+ const updateDocBpe = async (docBpeId, docKey, flKey, dateExam, typeControlKey, radionuclideKey, material, consist, user) => {
     let updateObject = {}
     if (typeof docKey !== 'undefined'){
     updateObject['docKey'] = docKey
@@ -134,11 +164,8 @@ const creatDocBpe = async(docKey, flKey, dateExam, typeControl, dateInput, radio
   if (typeof dateExam !== 'undefined'){
     updateObject['dateExam'] = dateExam
   }
-  if (typeof typeControl !== 'undefined'){
-    updateObject['typeControl'] = typeControl
-  }
-  if (typeof dateInput !== 'undefined'){
-    updateObject['dateInput'] = dateInput
+  if (typeof typeControlKey !== 'undefined'){
+    updateObject['typeControlKey'] = typeControlKey
   }
   if (typeof radionuclideKey !== 'undefined'){
     updateObject['radionuclideKey'] = radionuclideKey
@@ -168,16 +195,12 @@ const creatDocBpe = async(docKey, flKey, dateExam, typeControl, dateInput, radio
   return knex("docBpe").where({ id: docBpeId }).del()
  }
 
-  //тест
-  /*
- const test = async (name) => {
-  console.log(`hello ${name}`)
-  return 1+1+1
- }
-*/
+
 module.exports.get = getDocBpe;
 module.exports.getByParam = getDocBpeParam;
 module.exports.getOne = getOneDocBpe;
 module.exports.create = creatDocBpe;
+module.exports.createByAccNum = creatDocBpeByAccNum;
+module.exports.createBySnils = creatDocBpeBySnils;
 module.exports.update = updateDocBpe;
 module.exports.delete = deleteDocBpe;

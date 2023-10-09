@@ -86,7 +86,14 @@ const getDocsParam = async (page, perpage, flKey, name, serial, number, dateIssu
   .andWhereILike("serial", queryObjectString.serial)
   .andWhereILike("number", queryObjectString.number)
   .andWhereILike("whoIssue", queryObjectString.whoIssue)
-  .andWhereILike("podrIssue", queryObjectString.podrIssue)
+  //.andWhereILike("podrIssue", queryObjectString.podrIssue)
+  .andWhere(qb => {
+    if (queryObjectString.podrIssue === "%%"){
+     return qb.whereILike("podrIssue", queryObjectString.podrIssue).orWhereNull("podrIssue")
+    }else{
+     return qb.whereILike("podrIssue", queryObjectString.podrIssue)
+    }
+ })
   .limit(prpg).offset((pg-1)*prpg)
 
   let countData = await knex("fl_docs")
@@ -95,7 +102,14 @@ const getDocsParam = async (page, perpage, flKey, name, serial, number, dateIssu
   .andWhereILike("serial", queryObjectString.serial)
   .andWhereILike("number", queryObjectString.number)
   .andWhereILike("whoIssue", queryObjectString.whoIssue)
-  .andWhereILike("podrIssue", queryObjectString.podrIssue)
+  //.andWhereILike("podrIssue", queryObjectString.podrIssue)
+  .andWhere(qb => {
+    if (queryObjectString.podrIssue === "%%"){
+     return qb.whereILike("podrIssue", queryObjectString.podrIssue).orWhereNull("podrIssue")
+    }else{
+     return qb.whereILike("podrIssue", queryObjectString.podrIssue)
+    }
+ })
   .first()
   .count('id as countRow')
   countData['pages'] = Math.ceil(countData.countRow/prpg)

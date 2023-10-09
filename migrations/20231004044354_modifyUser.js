@@ -1,3 +1,6 @@
+//Миграция модифицирует таблицу пользователей
+// удаляет поле role
+
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }

@@ -28,7 +28,8 @@ exports.up = function(knex) {
 
   })
   .then(() => {
-    return knex("users").insert([{
+    return knex("users").insert([
+      {
         username: "admin", 
         password: hash("1"), 
         firstName: "Тимофей", 
@@ -37,7 +38,17 @@ exports.up = function(knex) {
         role: 1,
         createdBy: "migrations",
         updatedBy: "migrations"
-     }])
+     },
+     {
+      username: "AnVlAlekseeva", 
+      password: hash("1"), 
+      firstName: "Анастасия", 
+      secondName: "Алексеева", 
+      thirdName: "Владимировна", 
+      role: 1,
+      createdBy: "migrations",
+      updatedBy: "migrations"
+   }])
   });
   
 };

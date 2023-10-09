@@ -12,6 +12,8 @@ const port = process.env.PORT || 3000;
 const cookieParser = require('cookie-parser');
 const auth = require('express-rbac');
 const cors = require('cors');
+const base_url = process.env.BASE_URL || "localhost"
+const api_url = "/api/v1"
 
 //Настройка swagger-autogen
 const swaggerFile = JSON.parse(fs.readFileSync('./swagger/output.json'))
@@ -38,6 +40,7 @@ const docHrsRouter = require("./routes/document/docHrs.js");
 const docErdRouter = require("./routes/document/docErd.js");
 const docCtcRouter = require("./routes/document/docCtc.js");
 const docFileRouter = require("./routes/document/docFile.js");
+const docIncomeRouter = require("./routes/document/docIncome.js");
 // Справочники
 const radionuclideRouter = require("./routes/references/radionuclide.js");
 const professionRouter = require("./routes/references/profession.js");
@@ -103,29 +106,30 @@ app.use(auth.authorize({
 }))
 
 //привязка маршрутов к middleware 
-app.use("/api/v1/personnel", personnelRouter);
+app.use(`${api_url}/personnel`, personnelRouter);
 //Идентификация аутентификация авторизация
-app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/permission", permissionRouter);
-app.use("/api/v1/rolepermission", roleAssignPermissionRouter);
-app.use("/api/v1/userpermission", userAssignPermissionRouter);
-app.use("/api/v1/userrole", userAssignRoleRouter);
+app.use(`${api_url}/auth`, authRouter);
+app.use(`${api_url}/permission`, permissionRouter);
+app.use(`${api_url}/rolepermission`, roleAssignPermissionRouter);
+app.use(`${api_url}/userpermission`, userAssignPermissionRouter);
+app.use(`${api_url}/userrole`, userAssignRoleRouter);
 // Заведение документов
-app.use("/api/v1/document/header", documentRouter);
-app.use("/api/v1/document/bpe", docBpeRouter);
-app.use("/api/v1/document/hrs", docHrsRouter);
-app.use("/api/v1/document/erd", docErdRouter);
-app.use("/api/v1/document/ctc", docCtcRouter);
-app.use("/api/v1/document/file", docFileRouter);
+app.use(`${api_url}/document/header`, documentRouter);
+app.use(`${api_url}/document/bpe`, docBpeRouter);
+app.use(`${api_url}/document/hrs`, docHrsRouter);
+app.use(`${api_url}/document/erd`, docErdRouter);
+app.use(`${api_url}/document/ctc`, docCtcRouter);
+app.use(`${api_url}/document/file`, docFileRouter);
+app.use(`${api_url}/document/income`, docIncomeRouter);
 // справочники
-app.use("/api/v1/references/radionuclide", radionuclideRouter);
-app.use("/api/v1/references/profession", professionRouter);
-app.use("/api/v1/references/limitvalue", limitValueRouter);
-app.use("/api/v1/references/bodypart", bodyPartRouter);
-app.use("/api/v1/references/kindidc", kindIdcRouter);
-app.use("/api/v1/references/department", departmentRouter);
-app.use("/api/v1/references/user", userRouter);
-app.use("/api/v1/references/role", roleRouter);
+app.use(`${api_url}/references/radionuclide`, radionuclideRouter);
+app.use(`${api_url}/references/profession`, professionRouter);
+app.use(`${api_url}/references/limitvalue`, limitValueRouter);
+app.use(`${api_url}/references/bodypart`, bodyPartRouter);
+app.use(`${api_url}/references/kindidc`, kindIdcRouter);
+app.use(`${api_url}/references/department`, departmentRouter);
+app.use(`${api_url}/references/user`, userRouter);
+app.use(`${api_url}/references/role`, roleRouter);
 
 
 //app.get("/", auth.isInRole('Super Admin'), async (req, res) => {
@@ -141,5 +145,5 @@ app.get("/", async (req, res) => {
 
 
 app.listen(port, () => {
-    console.log(`Server listening on http://localhost:${port}`)
+    console.log(`Server listening on http://${base_url}:${port}`)
 })

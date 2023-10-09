@@ -2,6 +2,8 @@ const auth = require('express-rbac/lib')
 const { join, dirname } = require('path')
 const { fileURLToPath } = require('url')
 const swaggerAutogen = require('swagger-autogen')(/*options*/)
+const base_url = process.env.BASE_URL || "localhost"
+const port = process.env.PORT || 3000
 
 //const _dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -72,7 +74,7 @@ const doc = {
       description: 'Работа с документами поступающими в ОРБ'
     },
   ],
-  host: 'localhost:3000',
+  host: `${base_url}:${port}`,
   schemes: ['http']
 }
 

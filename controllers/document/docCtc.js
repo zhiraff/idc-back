@@ -24,7 +24,7 @@ const getDocCtc = async (page, perpage, sort) => {
 }
 
 //Получить результаты Хелатотерапии, с постраничной пагинацией и параметрами
-const getDocCtcParam = async (page, perpage, docKey, flKey, dateExam, typeControl, dateInput, radionuclideKey, material, consist, sort) => {
+const getDocCtcParam = async (page, perpage, docKey, flKey, dateExam, typeControlKey, dateInput, radionuclideKey, material, consist, sort) => {
   // 1. Поиск по числовым значениям осуществляется через where
   // 2. Поиск по текстовым значением осуществлется через like
   // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
@@ -61,13 +61,12 @@ const getDocCtcParam = async (page, perpage, docKey, flKey, dateExam, typeContro
   if (typeof consist !== 'undefined'){
     queryObject['consist'] = consist
   }
+  if (typeof typeControlKey !== 'undefined'){
+    queryObject['typeControlKey'] = typeControlKey
+  }
 
 let queryObjectString = {}
-if (typeof typeControl !== 'undefined'){
-  queryObjectString['typeControl'] = '%' + typeControl + '%'
-} else {
-  queryObjectString['typeControl'] = '%%'
-}
+
   if (typeof material !== 'undefined'){
     queryObjectString['material'] = '%' +  material + '%'
 }else {
@@ -76,7 +75,6 @@ if (typeof typeControl !== 'undefined'){
 
 let countData = await knex("docCtc")
 .where(queryObject)
-.andWhereILike("typeControl", queryObjectString.typeControl)
 .andWhereILike("material", queryObjectString.material)
 .first()
 .count('id as countRow')
@@ -86,7 +84,6 @@ countData['currentPage'] = pg
 
  let resultData = await knex("docCtc")
  .where(queryObject)
- .andWhereILike("typeControl", queryObjectString.typeControl)
  .andWhereILike("material", queryObjectString.material)
  .select()
  .orderBy(sortField, sortDirect)
@@ -103,12 +100,52 @@ const getOneDocCtc = async(docCtcId) => {
 }
 
 //Создать результаты Хелатотерапии
-const creatDocCtc = async(docKey, flKey, dateExam, typeControl, dateInput, radionuclideKey, material, consist, user) => {
+const creatDocCtc = async(docKey, flKey, dateExam, typeControlKey, dateInput, radionuclideKey, material, consist, user) => {
   const newDocCtc = {
     docKey: docKey,
     flKey: flKey,
     dateExam: dateExam,
-    typeControl: typeControl,
+    typeControlKey: typeControlKey,
+    dateInput: dateInput,
+    radionuclideKey: radionuclideKey,
+    material: material,
+    consist: consist,
+    createdBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+    updatedBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+  };
+   const result = await knex("docCtc").insert([newDocCtc], ["id"]);
+   newDocCtc['id'] = result[0].id
+   return newDocCtc;
+}
+
+//Создать результаты Хелатотерапии по accNum
+const creatDocCtcByAccNum = async(docKey, accNum, dateExam, typeControlKey, dateInput, radionuclideKey, material, consist, user) => {
+  const fl = await knex("FL").first().where("accNum", accNum)
+  const newDocCtc = {
+    docKey: docKey,
+    flKey: fl.id,
+    dateExam: dateExam,
+    typeControlKey: typeControlKey,
+    dateInput: dateInput,
+    radionuclideKey: radionuclideKey,
+    material: material,
+    consist: consist,
+    createdBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+    updatedBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+  };
+   const result = await knex("docCtc").insert([newDocCtc], ["id"]);
+   newDocCtc['id'] = result[0].id
+   return newDocCtc;
+}
+
+//Создать результаты Хелатотерапии по снилс
+const creatDocCtcBySnils = async(docKey, snils, dateExam, typeControlKey, dateInput, radionuclideKey, material, consist, user) => {
+  const fl = await knex("FL").first().where("snils", snils)
+  const newDocCtc = {
+    docKey: docKey,
+    flKey: fl.id,
+    dateExam: dateExam,
+    typeControlKey: typeControlKey,
     dateInput: dateInput,
     radionuclideKey: radionuclideKey,
     material: material,
@@ -122,7 +159,7 @@ const creatDocCtc = async(docKey, flKey, dateExam, typeControl, dateInput, radio
 }
 
 // обновление результаты Хелатотерапии
- const updateDocCtc = async (docCtcId, docKey, flKey, dateExam, typeControl, dateInput, radionuclideKey, material, consist, user) => {
+ const updateDocCtc = async (docCtcId, docKey, flKey, dateExam, typeControlKey, dateInput, radionuclideKey, material, consist, user) => {
     let updateObject = {}
     if (typeof docKey !== 'undefined'){
     updateObject['docKey'] = docKey
@@ -133,8 +170,8 @@ const creatDocCtc = async(docKey, flKey, dateExam, typeControl, dateInput, radio
   if (typeof dateExam !== 'undefined'){
     updateObject['dateExam'] = dateExam
   }
-  if (typeof typeControl !== 'undefined'){
-    updateObject['typeControl'] = typeControl
+  if (typeof typeControlKey !== 'undefined'){
+    updateObject['typeControlKey'] = typeControlKey
   }
   if (typeof dateInput !== 'undefined'){
     updateObject['dateInput'] = dateInput
@@ -178,5 +215,7 @@ module.exports.get = getDocCtc;
 module.exports.getByParam = getDocCtcParam;
 module.exports.getOne = getOneDocCtc;
 module.exports.create = creatDocCtc;
+module.exports.createByAccNum = creatDocCtcByAccNum;
+module.exports.createBySnils = creatDocCtcBySnils;
 module.exports.update = updateDocCtc;
 module.exports.delete = deleteDocCtc;

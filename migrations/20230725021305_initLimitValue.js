@@ -12,11 +12,42 @@ exports.up = function(knex) {
     table.integer("radionuclide_id").notNullable().comment('ID радионуклида');
     table.foreign("radionuclide_id").references("radionuclide.id").onDelete("cascade");
     table.enu("indicator", ['Поступление', 'Содержание']).comment('Тип показателя');
-    table.integer("value").notNullable().comment('Контрольное значение');
-    table.integer("gister").comment('Гистерезис');
+    table.float("value").notNullable().comment('Контрольное значение');
+    table.float("gister").comment('Гистерезис');
     table.timestamps(true, true, true);
     table.string("createdBy").notNullable();
     table.string("updatedBy").notNullable();
+})
+.then( async ()=> {
+  const radionU = await knex("radionuclide").first('id').where('symbol', 'U')
+  const radionPu = await knex("radionuclide").first('id').where('symbol', 'Pu')
+  const radionAm = await knex("radionuclide").first('id').where('symbol', 'Am')
+  return knex("limitValue").insert([
+    {
+      radionuclide_id: radionU.id,
+      indicator: "Содержание",
+      value: 0.005,
+      gister: 0.003,
+      createdBy: "migrations",
+      updatedBy: "migrations"
+    },
+    {
+      radionuclide_id: radionPu.id,
+      indicator: "Содержание",
+      value: 0.005,
+      gister: 0.003,
+      createdBy: "migrations",
+      updatedBy: "migrations"
+    },
+    {
+      radionuclide_id: radionAm.id,
+      indicator: "Содержание",
+      value: 0.005,
+      gister: 0.003,
+      createdBy: "migrations",
+      updatedBy: "migrations"
+    }
+  ])
 });
 };
 

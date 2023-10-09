@@ -1,3 +1,4 @@
+require("dotenv").config();
 const auth = require('express-rbac/lib')
 const { join, dirname } = require('path')
 const { fileURLToPath } = require('url')

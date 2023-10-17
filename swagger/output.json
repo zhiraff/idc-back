@@ -59,6 +59,10 @@
     {
       "name": "document",
       "description": "Работа с документами поступающими в ОРБ"
+    },
+    {
+      "name": "monitoring",
+      "description": "Экраны учёта внутреннего облучения"
     }
   ],
   "schemes": [
@@ -1755,6 +1759,622 @@
         }
       }
     },
+    "/api/v1/monitoring/bpe/": {
+      "get": {
+        "tags": [
+          "monitoring"
+        ],
+        "description": "Показ резльтатов БФО",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/monitoring/bpe/last": {
+      "get": {
+        "tags": [
+          "monitoring"
+        ],
+        "description": "Показ только последних резльтатов БФО",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/monitoring/bpe/search": {
+      "get": {
+        "tags": [
+          "monitoring"
+        ],
+        "description": "Поиск результатов БФО",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "accNum",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "workOrganization",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "dateExam",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "radionuclide",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "docOrganization",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "docDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "docNumber",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "beginPeriod",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endPeriod",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "material",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "consist",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/monitoring/erd/": {
+      "get": {
+        "tags": [
+          "monitoring"
+        ],
+        "description": "Показ ОЭД",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/monitoring/erd/last": {
+      "get": {
+        "tags": [
+          "monitoring"
+        ],
+        "description": "Показ только последних ОЭД",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/monitoring/erd/search": {
+      "get": {
+        "tags": [
+          "monitoring"
+        ],
+        "description": "Поиск ОЭД",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "accNum",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "workOrganization",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "dateCalculate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "erd",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "docOrganization",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "docDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "docNumber",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/monitoring/hrs/": {
+      "get": {
+        "tags": [
+          "monitoring"
+        ],
+        "description": "Показ резльтатов СИЧ",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/monitoring/hrs/last": {
+      "get": {
+        "tags": [
+          "monitoring"
+        ],
+        "description": "Показ только последних резльтатов СИЧ",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/monitoring/hrs/search": {
+      "get": {
+        "tags": [
+          "monitoring"
+        ],
+        "description": "Поиск результатов СИЧ",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "accNum",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "firstName",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "secondName",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "thirdName",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "workOrganization",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "dateExam",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "radionuclide",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "kindIdc",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "docOrganization",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "docDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "docNumber",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "beginPeriod",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endPeriod",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "bodyPart",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "consist",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/monitoring/ctc/": {
+      "get": {
+        "tags": [
+          "monitoring"
+        ],
+        "description": "Показ резльтатов Хелатотерапии",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/monitoring/ctc/last": {
+      "get": {
+        "tags": [
+          "monitoring"
+        ],
+        "description": "Показ только последних резльтатов Хелатотерапии",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v1/monitoring/ctc/search": {
+      "get": {
+        "tags": [
+          "monitoring"
+        ],
+        "description": "Поиск результатов Хелатотерапии",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "perpage",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "accNum",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "workOrganization",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "dateExam",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "radionuclide",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "docOrganization",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "docDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "docNumber",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "beginPeriod",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endPeriod",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "material",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "consist",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
     "/api/v1/auth/login": {
       "post": {
         "tags": [
@@ -1836,9 +2456,6 @@
                   "example": "any"
                 },
                 "password": {
-                  "example": "any"
-                },
-                "role": {
                   "example": "any"
                 },
                 "name": {
@@ -3635,6 +4252,9 @@
                 "flKey": {
                   "example": "any"
                 },
+                "dateIncome": {
+                  "example": "any"
+                },
                 "beginPeriod": {
                   "example": "any"
                 },
@@ -3682,6 +4302,11 @@
           },
           {
             "name": "flKey",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "dateIncome",
             "in": "query",
             "type": "string"
           },
@@ -3763,6 +4388,9 @@
                 "flKey": {
                   "example": "any"
                 },
+                "dateIncome": {
+                  "example": "any"
+                },
                 "beginPeriod": {
                   "example": "any"
                 },
@@ -3827,6 +4455,9 @@
                 "accNum": {
                   "example": "any"
                 },
+                "dateIncome": {
+                  "example": "any"
+                },
                 "beginPeriod": {
                   "example": "any"
                 },
@@ -3867,6 +4498,9 @@
                   "example": "any"
                 },
                 "snils": {
+                  "example": "any"
+                },
+                "dateIncome": {
                   "example": "any"
                 },
                 "beginPeriod": {

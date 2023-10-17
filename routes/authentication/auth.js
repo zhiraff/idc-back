@@ -9,6 +9,7 @@ router.post('/login', authController.passport.authenticate('local', {
 //  successRedirect: '/',
   failureRedirect: '/api/v1/auth/errorlogin'
 }), async (req, res) => {
+  console.log("success login")
     /* #swagger.tags = ['auth']
        #swagger.description = 'Авторизация'
        #swagger.parameters['username'] ={
@@ -45,7 +46,9 @@ router.post('/login', authController.passport.authenticate('local', {
 router.get('/errorlogin', async(req, res) => {
   // #swagger.tags = ['auth']
   //#swagger.ignore = true
+  console.log("errr login")
     res.status(400).json({
+      
       'status': 'error',
       'sessionid': ''
     })
@@ -76,8 +79,8 @@ router.post("/signup", async (req, res) => {
       description: 'успешно'
   } 
   */
-  const { username, password, role, name, surname, patronym } = req.body;
-    result = await authController.createUser(username, password, role, name, surname, patronym, req.user);
+  const { username, password, name, surname, patronym } = req.body;
+    result = await authController.createUser(username, password, name, surname, patronym, req.user);
   if (result === 'err') {
     res.status(400).json({
       "status": "error",
@@ -123,8 +126,8 @@ router.get("/whoami", async (req, res) => {
         //const roleid = await authController.findUserByUsername(username)
         const usr = await authController.findUserByUsername(username)
         roles = await authController.userRoles(usr.id)
-        let perm1 = await authController.userPermission(req.user.id)
-        let perm2 = await authController.rolePermissionByUserId(req.user.id)
+        let perm1 = await authController.userPermission(usr.id)
+        let perm2 = await authController.rolePermissionByUserId(usr.id)
         permissions = Array.from(new Set(perm1.concat(perm2))) 
       }
 

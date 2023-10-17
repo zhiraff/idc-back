@@ -37,8 +37,8 @@ router.get("/search", (req, res) => {
     /* #swagger.tags = ['document']
        #swagger.description = 'Поиск ОЭД'
     */
-  const {page, perpage, docKey, flKey, beginPeriod, endPeriod, dose, sort } = req.query;
-      docErdController.getByParam(page, perpage, docKey, flKey, beginPeriod, endPeriod, dose, sort ).then((data) => {
+  const {page, perpage, docKey, flKey, dateIncome, beginPeriod, endPeriod, dose, sort } = req.query;
+      docErdController.getByParam(page, perpage, docKey, flKey, dateIncome, beginPeriod, endPeriod, dose, sort ).then((data) => {
       let metaindex = data.findIndex(x => x.countRow)
       let metadata = data.splice(metaindex, 1)
       res.status(200).json({
@@ -87,20 +87,21 @@ router.post("/", (req, res) => {
     /* #swagger.tags = ['document']
        #swagger.description = 'Создание записи'
   */
- const { docKey, flKey, beginPeriod, endPeriod, dose } = req.body;
+ const { docKey, flKey, dateIncome, beginPeriod, endPeriod, dose } = req.body;
 //console.log(`symbol, name, htmlcode ${symbol}, ${name}, ${htmlcode}`)
 if (typeof docKey === 'undefined' || 
     typeof flKey === 'undefined' || 
     typeof beginPeriod === 'undefined' || 
     typeof endPeriod === 'undefined' || 
-    typeof dose === 'undefined'
+    typeof dose === 'undefined' || 
+    typeof dateIncome === 'undefined'
  ){
     return res.status(400).json({
     status: "error",
-    data: "Не хватает docKey, flKey, beginPeriod, endPeriod, или dose"
+    data: "Не хватает docKey, flKey, beginPeriod, dateIncome, endPeriod, или dose"
   })
 }
-docErdController.create(docKey, flKey, beginPeriod, endPeriod, dose, req.user)
+docErdController.create(docKey, flKey, dateIncome, beginPeriod, endPeriod, dose, req.user)
   .then((result) => {
     res.status(200).json({
       status: "success",
@@ -123,19 +124,20 @@ router.patch("/:id", (req, res) => {
        #swagger.description = 'Обновление записи'
   */
  const docErdId = req.params.id
- const { docKey, flKey, beginPeriod, endPeriod, dose } = req.body;
+ const { docKey, flKey, dateIncome, beginPeriod, endPeriod, dose } = req.body;
 
  if (typeof docKey === 'undefined' && 
     typeof flKey === 'undefined' && 
     typeof beginPeriod === 'undefined' && 
     typeof endPeriod === 'undefined' && 
-    typeof dose === 'undefined'){
+    typeof dose === 'undefined' && 
+    typeof dateIncome === 'undefined'){
   return res.status(400).json({
     status: "error",
     data: "Нечего обновлять"
   })
  }
- docErdController.update(docErdId, docKey, flKey, beginPeriod, endPeriod, dose, req.user)
+ docErdController.update(docErdId, docKey, flKey, dateIncome, beginPeriod, endPeriod, dose, req.user)
  .then((data)=>{
   res.status(200).json({
     status: "success",
@@ -180,20 +182,21 @@ router.post("/accnum", (req, res) => {
   /* #swagger.tags = ['document']
      #swagger.description = 'Создание записи по accnum'
 */
-const { docKey, accNum, beginPeriod, endPeriod, dose } = req.body;
+const { docKey, accNum, dateIncome, beginPeriod, endPeriod, dose } = req.body;
 
 if (typeof docKey === 'undefined' || 
   typeof accNum === 'undefined' || 
   typeof beginPeriod === 'undefined' || 
   typeof endPeriod === 'undefined' || 
-  typeof dose === 'undefined'
+  typeof dose === 'undefined' || 
+  typeof dateIncome === 'undefined'
 ){
   return res.status(400).json({
   status: "error",
-  data: "Не хватает docKey, accNum, beginPeriod, endPeriod, или dose"
+  data: "Не хватает docKey, accNum, dateIncome, beginPeriod, endPeriod, или dose"
 })
 }
-docErdController.createByAccNum(docKey, accNum, beginPeriod, endPeriod, dose, req.user)
+docErdController.createByAccNum(docKey, accNum, dateIncome, beginPeriod, endPeriod, dose, req.user)
 .then((result) => {
   res.status(200).json({
     status: "success",
@@ -215,20 +218,21 @@ router.post("/snils", (req, res) => {
   /* #swagger.tags = ['document']
      #swagger.description = 'Создание записи по снилс'
 */
-const { docKey, snils, beginPeriod, endPeriod, dose } = req.body;
+const { docKey, snils, dateIncome, beginPeriod, endPeriod, dose } = req.body;
 //console.log(`symbol, name, htmlcode ${symbol}, ${name}, ${htmlcode}`)
 if (typeof docKey === 'undefined' || 
   typeof snils === 'undefined' || 
   typeof beginPeriod === 'undefined' || 
   typeof endPeriod === 'undefined' || 
-  typeof dose === 'undefined'
+  typeof dose === 'undefined' || 
+  typeof dateIncome === 'undefined'
 ){
   return res.status(400).json({
   status: "error",
-  data: "Не хватает docKey, snils, beginPeriod, endPeriod, или dose"
+  data: "Не хватает docKey, snils, dateIncome, beginPeriod, endPeriod, или dose"
 })
 }
-docErdController.createBySnils(docKey, snils, beginPeriod, endPeriod, dose, req.user)
+docErdController.createBySnils(docKey, snils, dateIncome, beginPeriod, endPeriod, dose, req.user)
 .then((result) => {
   res.status(200).json({
     status: "success",

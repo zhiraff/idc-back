@@ -12,6 +12,7 @@ exports.up = function(knex) {
     table.foreign("docKey").references("docHeader.id").onDelete("cascade");
     table.integer("flKey").notNullable().comment('ссылка на физическое лицо');
     table.foreign("flKey").references("FL.id").onDelete("restrict");
+    table.date("dateIncome").notNullable().comment('Дата поступления');
     table.date("beginPeriod").notNullable().comment('Дата начала периода');
     table.date("endPeriod").notNullable().comment('Дата окончания периода');
     table.float("dose").notNullable().comment('Доза, мЗв');

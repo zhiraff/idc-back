@@ -51,16 +51,14 @@ const findRoleById = async (RoleId) => {
 };
 
 //ф-я созадния пользователя
-const createUser = async (username, password, role, name, surname, patronym, user) => {
+const createUser = async (username, password, name, surname, patronym, user) => {
   const usr = typeof user !== 'undefined' && user !== '' ? user : 'anonymous'
   const nm = typeof  name !== 'undefined' && name !== '' ? name : 'anonymous'
   const srn = typeof  surname !== 'undefined' && surname !== '' ? surname : 'anonymous'
   const ptr = typeof  patronym !== 'undefined' && patronym !== '' ? patronym : 'anonymous'
-  const rl = typeof  role !== 'undefined' && role !== '' ? role : '3'
   const newUser = {
     username: username,
     password: hash(password),
-    role: rl,
     firstName: nm,
     secondName: srn,
     thirdName: ptr,
@@ -147,9 +145,10 @@ return ret
 const userPermission = async (userId) => {
 let ret = []
 const res = await knex('userAssignPermission')
+      .leftJoin('permission', 'userAssignPermission.permKey', 'permission.id')
       .select('permission.codeName as permName', 'userAssignPermission.*')
       .where('userKey', userId)
-      .leftJoin('permission', 'userAssignPermission.permKey', 'permission.id')
+      
       for (let i = 0; i < res.length; i++){
         ret.push(res[i].permName)
       }

@@ -26,6 +26,11 @@ app.use(
 
 //Подключение middleware для работы
 const personnelRouter = require("./routes/personnel.js");
+// Отражение информации по показателям
+const bpeRouter = require("./routes/monitoring/bpe.js");
+const erdRouter = require("./routes/monitoring/erd.js");
+const hrsRouter = require("./routes/monitoring/hrs.js");
+const ctcRouter = require("./routes/monitoring/ctc.js");
 //Идентификация аутентификация авторизация
 const authRouter = require("./routes/authentication/auth.js");
 const authController = require("./controllers/authentication/auth.js")
@@ -107,6 +112,11 @@ app.use(auth.authorize({
 
 //привязка маршрутов к middleware 
 app.use(`${api_url}/personnel`, personnelRouter);
+// Отражение информации по показателям
+app.use(`${api_url}/monitoring/bpe`, bpeRouter);
+app.use(`${api_url}/monitoring/erd`, erdRouter);
+app.use(`${api_url}/monitoring/hrs`, hrsRouter);
+app.use(`${api_url}/monitoring/ctc`, ctcRouter);
 //Идентификация аутентификация авторизация
 app.use(`${api_url}/auth`, authRouter);
 app.use(`${api_url}/permission`, permissionRouter);

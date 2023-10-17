@@ -74,6 +74,10 @@ const doc = {
       name: 'document',
       description: 'Работа с документами поступающими в ОРБ'
     },
+    {
+      name: 'monitoring',
+      description: 'Экраны учёта внутреннего облучения'
+    },
   ],
   host: `${base_url}:${port}`,
   schemes: ['http']

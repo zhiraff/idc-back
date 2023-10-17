@@ -24,7 +24,7 @@ const getDocErd = async (page, perpage, sort) => {
 }
 
 //Получить ОЭД, с постраничной пагинацией и параметрами
-const getDocErdParam = async (page, perpage, docKey, flKey, beginPeriod, endPeriod, dose, sort) => {
+const getDocErdParam = async (page, perpage, docKey, flKey, dateIncome, beginPeriod, endPeriod, dose, sort) => {
   // 1. Поиск по числовым значениям осуществляется через where
   // 2. Поиск по текстовым значением осуществлется через like
   // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
@@ -58,6 +58,9 @@ const getDocErdParam = async (page, perpage, docKey, flKey, beginPeriod, endPeri
   if (typeof dose !== 'undefined'){
     queryObject['dose'] = dose
   }
+  if (typeof dateIncome !== 'undefined'){
+    queryObject['dateIncome'] = dateIncome
+  }
 
 
 let countData = await knex("docErd")
@@ -85,10 +88,11 @@ const getOneDocErd = async(docErdId) => {
 }
 
 //Создать ОЭД
-const creatDocErd = async(docKey, flKey, beginPeriod, endPeriod, dose, user) => {
+const creatDocErd = async(docKey, flKey, dateIncome, beginPeriod, endPeriod, dose, user) => {
   const newDocErd = {
     docKey: docKey,
     flKey: flKey,
+    dateIncome: dateIncome,
     beginPeriod: beginPeriod,
     endPeriod: endPeriod,
     dose: dose,
@@ -100,11 +104,12 @@ const creatDocErd = async(docKey, flKey, beginPeriod, endPeriod, dose, user) => 
    return newDocErd;
 }
 //Создать ОЭД по табельному номеру
-const creatDocErdByAccNum = async(docKey, accNum, beginPeriod, endPeriod, dose, user) => {
+const creatDocErdByAccNum = async(docKey, accNum, dateIncome, beginPeriod, endPeriod, dose, user) => {
   const fl = await knex("FL").first().where("accNum", accNum)
   const newDocErd = {
     docKey: docKey,
     flKey: fl.id,
+    dateIncome: dateIncome,
     beginPeriod: beginPeriod,
     endPeriod: endPeriod,
     dose: dose,
@@ -117,11 +122,12 @@ const creatDocErdByAccNum = async(docKey, accNum, beginPeriod, endPeriod, dose, 
 }
 
 //Создать ОЭД по снилс
-const creatDocErdBySnils = async(docKey, snils, beginPeriod, endPeriod, dose, user) => {
+const creatDocErdBySnils = async(docKey, snils, dateIncome, beginPeriod, endPeriod, dose, user) => {
   const fl = await knex("FL").first().where("snils", snils)
   const newDocErd = {
     docKey: docKey,
     flKey: fl.id,
+    dateIncome: dateIncome,
     beginPeriod: beginPeriod,
     endPeriod: endPeriod,
     dose: dose,
@@ -134,7 +140,7 @@ const creatDocErdBySnils = async(docKey, snils, beginPeriod, endPeriod, dose, us
 }
 
 // обновление ОЭД
- const updateDocErd = async (docErdId, docKey, flKey, beginPeriod, endPeriod, dose, user) => {
+ const updateDocErd = async (docErdId, docKey, flKey, dateIncome, beginPeriod, endPeriod, dose, user) => {
     let updateObject = {}
     if (typeof docKey !== 'undefined'){
     updateObject['docKey'] = docKey
@@ -150,6 +156,9 @@ const creatDocErdBySnils = async(docKey, snils, beginPeriod, endPeriod, dose, us
   }
   if (typeof dose !== 'undefined'){
     updateObject['dose'] = dose
+  }
+  if (typeof dateIncome !== 'undefined'){
+    updateObject['dateIncome'] = dateIncome
   }
 
   updateObject['updatedAt'] = new Date()

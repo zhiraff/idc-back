@@ -27,7 +27,28 @@ const getUser = async (page, perpage, sort) => {
     }
   }
 
-  let resultData = await knex("users").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+  let resultData = await knex("users")
+//  .leftJoin('userAssignRole', 'users.id', 'userAssignRole.userKey')
+//  .leftJoin('roles', 'userAssignRole.roleKey', 'roles.id' )
+  .select(
+//    'users.id',
+//    'users.username',
+//    'users.firstName',
+//    'users.secondName',
+//    'users.thirdName',
+//    "roles.name as role"
+    )
+  .orderBy(sortField, sortDirect)
+  .limit(prpg)
+  .offset((pg-1)*prpg)
+
+  for (let i =0; i< resultData.length; i++){
+    resultData[i].roles = await knex("userAssignRole")
+    .leftJoin('roles', 'userAssignRole.roleKey', 'roles.id')
+    .select("roles.name", "roles.id")
+    .where("userAssignRole.userKey", resultData[i].id)
+  }
+
   let countData = await knex("users")
   .first()
   .count('id as countRow')
@@ -117,6 +138,13 @@ const getUserParam = async (page, perpage, username, firstName, secondName, thir
   })
   .limit(prpg).offset((pg-1)*prpg)
 
+  for (let i =0; i< resultData.length; i++){
+    resultData[i].roles = await knex("userAssignRole")
+    .leftJoin('roles', 'userAssignRole.roleKey', 'roles.id')
+    .select("roles.name", "roles.id")
+    .where("userAssignRole.userKey", resultData[i].id)
+  }
+
   let countData = await knex("users")
   .where(queryObject)
   .andWhereILike('username', queryObjectString.username)
@@ -147,6 +175,8 @@ const getUserParam = async (page, perpage, username, firstName, secondName, thir
   .first()
   .count('id as countRow')
 
+
+
   countData['pages'] = Math.ceil(countData.countRow/prpg)
   countData['currentPage'] = pg
   resultData.push(countData)
@@ -157,7 +187,14 @@ const getUserParam = async (page, perpage, username, firstName, secondName, thir
 //Показать пользователя подробно
 const getOneUser = async(UserId) => {
   //knex("sessions").first("id", "userId", "sessionId").where({ sessionId: sessionId });
-  return knex("users").first().where({ id: UserId })
+  resultData = await knex("users").first().where({ id: UserId })
+    resultData.roles = await knex("userAssignRole")
+    .leftJoin('roles', 'userAssignRole.roleKey', 'roles.id')
+    .select("roles.name", "roles.id")
+    .where("userAssignRole.userKey", resultData.id)
+  
+ //console.log(resultData)
+  return resultData
 }
 
 //Создать пользователя
@@ -180,6 +217,16 @@ const creatUser = async(username, password, firstName, secondName, thirdName, us
  
    const result = await knex("users").insert([newUser], ["id"]);
    newUser['id'] = result[0].id
+   //Добавим пользователю роль ответственного по умолчанию
+   const roleOrbResponse = await knex("roles").first().where("name_short", "orb_response")
+   const usAsRo = await knex("userAssignRole").insert([{
+    userKey: result[0].id,
+    roleKey: roleOrbResponse.id,
+    createdBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+    updatedBy: typeof user.username !== 'undefined' ? user.username : "unknown",
+   }])
+   //console.log(roleOrbResponse)
+   //console.log(usAsRo)
   return newUser;
 }
 

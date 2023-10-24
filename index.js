@@ -24,6 +24,14 @@ app.use(
   swaggerUi.setup(swaggerFile)
 );
 
+//настройка cors
+const corsOptions = {
+  origin: process.env.FRONTEND_URL,
+  optionsSuccessStatus: 200,
+  credentials: true,
+  preflightContinue: true
+}
+
 //Подключение middleware для работы
 const personnelRouter = require("./routes/personnel.js");
 // Отражение информации по показателям
@@ -65,7 +73,7 @@ const sessionStore = new KnexSessionStore({
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.use(session({
   secret: 'keyboard cat',

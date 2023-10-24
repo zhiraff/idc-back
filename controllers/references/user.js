@@ -106,7 +106,6 @@ const getUserParam = async (page, perpage, username, firstName, secondName, thir
       sortField = sort
     }
   }
-  //console.log(queryObject)
 
   let resultData = await knex("users").select()
   .orderBy(sortField, sortDirect)
@@ -175,13 +174,11 @@ const getUserParam = async (page, perpage, username, firstName, secondName, thir
   .first()
   .count('id as countRow')
 
-
-
   countData['pages'] = Math.ceil(countData.countRow/prpg)
   countData['currentPage'] = pg
   resultData.push(countData)
 
-  return 
+  return resultData
 }
 
 //Показать пользователя подробно

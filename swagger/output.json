@@ -2490,13 +2490,6 @@
           "auth"
         ],
         "description": "Кто я",
-        "parameters": [
-          {
-            "name": "sessionid",
-            "in": "header",
-            "type": "string"
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -5888,6 +5881,11 @@
           },
           {
             "name": "radionuclide_id",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "radionuclideName",
             "in": "query",
             "type": "string"
           },

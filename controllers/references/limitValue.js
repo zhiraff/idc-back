@@ -17,7 +17,8 @@ const getValue = async (page, perpage, sort) => {
   }
 
   let resultData = await knex("limitValue")
-  .select()
+  .leftJoin("radionuclide", "limitValue.radionuclide_id", "radionuclide.id")
+  .select("limitValue.*", "radionuclide.name as name")
   .orderBy(sortField, sortDirect)
   .limit(prpg)
   .offset((pg-1)*prpg)
@@ -34,7 +35,7 @@ const getValue = async (page, perpage, sort) => {
 }
 
 //Получить контрольные значения, с постраничной пагинацией и параметрами
-const getValueParam = async (page, perpage, radionuclide_id, indicator, value, gister, sort) => {
+const getValueParam = async (page, perpage, radionuclideName, radionuclide_id, indicator, value, gister, sort) => {
   // 1. Поиск по числовым значениям осуществляется через where
   // 2. Поиск по текстовым значением осуществлется через like
   // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
@@ -67,9 +68,16 @@ const getValueParam = async (page, perpage, radionuclide_id, indicator, value, g
     if (typeof gister !== 'undefined'){
     queryObject['gister'] = gister
   }
+  //параметры радионуклида
+if (typeof radionuclideName !== 'undefined'){
+  queryObjectString['radionuclideName'] = '%' + radionuclideName + '%'
+} else {
+  queryObjectString['radionuclideName'] = '%%'
+}
 
   let resultData = await knex("limitValue")
-  .select()
+  .leftJoin("radionuclide", "limitValue.radionuclide_id", "radionuclide.id")
+  .select("limitValue.*", "radionuclide.name as name")
   .orderBy(sortField, sortDirect)
   .where(queryObject)
   //.andWhereILike('indicator', queryObjectString.indicator)
@@ -79,6 +87,10 @@ const getValueParam = async (page, perpage, radionuclide_id, indicator, value, g
     }else{
      return qb.whereILike("indicator", queryObjectString.indicator)
     }
+  })
+  .whereIn('radionuclide_id', function() {
+    this.select('id').from('radionuclide')
+    .whereILike("name", queryObjectString.radionuclideName)
   })
   .limit(prpg).offset((pg-1)*prpg)
 
@@ -105,7 +117,11 @@ const getValueParam = async (page, perpage, radionuclide_id, indicator, value, g
 //Показать предельное значение подробно
 const getOneValue = async(valueId) => {
   //knex("sessions").first("id", "userId", "sessionId").where({ sessionId: sessionId });
-  return knex("limitValue").first().where({ id: valueId })
+  return knex("limitValue")
+  .leftJoin("radionuclide", "limitValue.radionuclide_id", "radionuclide.id")
+  .first("limitValue.*", "radionuclide.name as name")
+  //.first()
+  .where({ "limitValue.id": valueId })
 }
 
 //Создать предельное значение

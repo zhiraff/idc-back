@@ -41,12 +41,13 @@ router.get("/search", (req, res) => {
   const page = req.query.page;
   const perpage = req.query.perpage;
   const radionuclide_id = req.query.radionuclide_id;
+  const radionuclideName = req.query.radionuclideName;
   const value = req.query.value;
   const gister = req.query.gister;
   const indicator = req.query.indicator;
   const sort = req.query.sort;
   //console.log(req.user)
-        limitValueController.getByParam(page, perpage, radionuclide_id, indicator, value, gister, sort).then((data) => {
+        limitValueController.getByParam(page, perpage,radionuclideName, radionuclide_id, indicator, value, gister, sort).then((data) => {
           let metaindex = data.findIndex(x => x.countRow)
           let metadata = data.splice(metaindex, 1)
         res.status(200).json({

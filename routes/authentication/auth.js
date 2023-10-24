@@ -9,7 +9,7 @@ router.post('/login', authController.passport.authenticate('local', {
 //  successRedirect: '/',
   failureRedirect: '/api/v1/auth/errorlogin'
 }), async (req, res) => {
-  console.log("success login")
+  //console.log("success login")
     /* #swagger.tags = ['auth']
        #swagger.description = 'Авторизация'
        #swagger.parameters['username'] ={
@@ -37,7 +37,7 @@ router.post('/login', authController.passport.authenticate('local', {
       }
         
         */
-    res.cookie("sessionId", req.sessionID, { httpOnly: true }).status(200).json({
+      res.status(200).json({
       'status': 'success',
       'sessionId': req.sessionID
     });
@@ -61,7 +61,18 @@ router.post('/logout', function(req, res, next) {
     /* #swagger.responses[200] = {
       description: 'успешно',
   } */
-  res.clearCookie("sessionId")
+  //res.clearCookie("sessionId")
+  /*
+  req.session.destroy(function(err) {
+    if (err) { return next(err);
+      
+     }
+     res.clearCookie('connect.sid');
+    res.status(200).json({
+      'status': 'ok'
+    })
+  });
+  */
   req.logout(function(err) {
     if (err) { return next(err); }
     res.status(200).json({
@@ -103,35 +114,14 @@ router.get("/whoami", async (req, res) => {
   let roles = ''
   let permissions = []
   //let perm = new Set();
-  //console.log(req.isAuthenticated())
-  if (req.isAuthenticated()){
-    //ищем свой токен в куках
-    if (typeof req.cookies.sessionId === 'undefined'){
-    //в куках нет, ищем в заголовках
-    if (typeof req.headers.sessionid !== 'undefined'){
-      //в заголовках есть
-      username = await authController.findUserBySessionId(req.headers.sessionid)
-    }else{
-      //нигде нет
-      username = await authController.findUserBySessionId('')
-    }
-  }else{
-    //в куках есть
-    username = await authController.findUserBySessionId(req.cookies.sessionId)
-  }
-      if (username === 'Anonymous') {
-        roles = "Anonymous"
-        permissions = ["login", "whoami"]
-      }else{
-        //const roleid = await authController.findUserByUsername(username)
-        const usr = await authController.findUserByUsername(username)
+  if (typeof req.user.username !== 'undefined'){
+        const usr = await authController.findUserByUsername(req.user.username)
         roles = await authController.userRoles(usr.id)
         let perm1 = await authController.userPermission(usr.id)
         let perm2 = await authController.rolePermissionByUserId(usr.id)
         permissions = Array.from(new Set(perm1.concat(perm2))) 
-      }
-
   } else {
+    console.log(req.user.username)
     username = 'Anonymous'
     roles = "Anonymous",
     permissions = ["login", "whoami"]

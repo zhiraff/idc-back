@@ -15,7 +15,17 @@ const getRoleAssignPermission = async (page, perpage, sort) => {
     }
   }
   let countData = await knex("roleAssignPermission").first().count('id as countRow')
-  let resultData = await knex("roleAssignPermission").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+  let resultData = await knex("roleAssignPermission")
+  .leftJoin("permission", "roleAssignPermission.permKey", "permission.id")
+  .leftJoin("roles", "roleAssignPermission.roleKey", "roles.id")
+  .select("permission.name as permName",
+   "permission.codeName as permCode",
+   "roles.name as roleName",
+   "roles.name_short as roleCode",
+   "roleAssignPermission.*")
+  .orderBy(sortField, sortDirect)
+  .limit(prpg)
+  .offset((pg-1)*prpg)
   //console.log(`count: ${count}`)
   countData['pages'] = Math.ceil(countData.countRow/prpg)
   countData['currentPage'] = pg
@@ -59,8 +69,15 @@ countData['pages'] = Math.ceil(countData.countRow/prpg)
 countData['currentPage'] = pg
 
  let resultData = await knex("roleAssignPermission")
+ .leftJoin("permission", "roleAssignPermission.permKey", "permission.id")
+ .leftJoin("roles", "roleAssignPermission.roleKey", "roles.id")
+ .select("permission.name as permName",
+   "permission.codeName as permCode",
+   "roles.name as roleName",
+   "roles.name_short as roleCode",
+   "roleAssignPermission.*")
  .where(queryObject)
- .select()
+ //.select()
  .orderBy(sortField, sortDirect)
  .limit(prpg).offset((pg-1)*prpg)
   resultData.push(countData)
@@ -69,7 +86,16 @@ countData['currentPage'] = pg
 
 //Показать назначение права для ролей подробно
 const getOneRoleAssignPermission = async(RoleAssignPermissionId) => {
-  return knex("roleAssignPermission").first().where({ id: RoleAssignPermissionId })
+  return knex("roleAssignPermission")
+  .leftJoin("permission", "roleAssignPermission.permKey", "permission.id")
+  .leftJoin("roles", "roleAssignPermission.roleKey", "roles.id")
+  .first("permission.name as permName",
+   "permission.codeName as permCode",
+   "roles.name as roleName",
+   "roles.name_short as roleCode",
+   "roleAssignPermission.*")
+  //.first()
+  .where({ "roleAssignPermission.id": RoleAssignPermissionId })
 }
 
 //Создать ( назначить ) право для роли

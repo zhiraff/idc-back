@@ -15,7 +15,17 @@ const getUserAssignPermission = async (page, perpage, sort) => {
     }
   }
   let countData = await knex("userAssignPermission").first().count('id as countRow')
-  let resultData = await knex("userAssignPermission").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+  let resultData = await knex("userAssignPermission")
+  .leftJoin("permission", "userAssignPermission.permKey", "permission.id")
+  .leftJoin("users", "userAssignPermission.userKey", "users.id")
+  .select("permission.name as permName",
+   "permission.codeName as permCode",
+   "users.username as username",
+   "userAssignPermission.*")
+  //.select()
+  .orderBy(sortField, sortDirect)
+  .limit(prpg)
+  .offset((pg-1)*prpg)
   //console.log(`count: ${count}`)
   countData['pages'] = Math.ceil(countData.countRow/prpg)
   countData['currentPage'] = pg
@@ -59,8 +69,14 @@ countData['pages'] = Math.ceil(countData.countRow/prpg)
 countData['currentPage'] = pg
 
  let resultData = await knex("userAssignPermission")
+ .leftJoin("permission", "userAssignPermission.permKey", "permission.id")
+  .leftJoin("users", "userAssignPermission.userKey", "users.id")
+  .select("permission.name as permName",
+   "permission.codeName as permCode",
+   "users.username as username",
+   "userAssignPermission.*")
  .where(queryObject)
- .select()
+ //.select()
  .orderBy(sortField, sortDirect)
  .limit(prpg).offset((pg-1)*prpg)
   resultData.push(countData)
@@ -69,7 +85,15 @@ countData['currentPage'] = pg
 
 //Показать назначение права для пользователя подробно
 const getOneUserAssignPermission = async(userAssignPermissionId) => {
-  return knex("userAssignPermission").first().where({ id: userAssignPermissionId })
+  return knex("userAssignPermission")
+  .leftJoin("permission", "userAssignPermission.permKey", "permission.id")
+  .leftJoin("users", "userAssignPermission.userKey", "users.id")
+  .first("permission.name as permName",
+   "permission.codeName as permCode",
+   "users.username as username",
+   "userAssignPermission.*")
+  //.first()
+  .where({ "userAssignPermission.id": userAssignPermissionId })
 }
 
 //Создать ( назначить ) право для пользователя

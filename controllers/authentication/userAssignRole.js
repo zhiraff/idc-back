@@ -15,7 +15,16 @@ const getUserAssignRole = async (page, perpage, sort) => {
     }
   }
   let countData = await knex("userAssignRole").first().count('id as countRow')
-  let resultData = await knex("userAssignRole").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+  let resultData = await knex("userAssignRole")
+  .leftJoin("roles", "userAssignRole.roleKey", "roles.id")
+  .leftJoin("users", "userAssignRole.userKey", "users.id")
+  .select("roles.name as roleName",
+   "roles.name_short as roleCode",
+   "users.username as username",
+   "userAssignRole.*")
+  .orderBy(sortField, sortDirect)
+  .limit(prpg)
+  .offset((pg-1)*prpg)
   //console.log(`count: ${count}`)
   countData['pages'] = Math.ceil(countData.countRow/prpg)
   countData['currentPage'] = pg
@@ -59,8 +68,14 @@ countData['pages'] = Math.ceil(countData.countRow/prpg)
 countData['currentPage'] = pg
 
  let resultData = await knex("userAssignRole")
+ .leftJoin("roles", "userAssignRole.roleKey", "roles.id")
+  .leftJoin("users", "userAssignRole.userKey", "users.id")
+  .select("roles.name as roleName",
+   "roles.name_short as roleCode",
+   "users.username as username",
+   "userAssignRole.*")
  .where(queryObject)
- .select()
+ //.select()
  .orderBy(sortField, sortDirect)
  .limit(prpg).offset((pg-1)*prpg)
   resultData.push(countData)
@@ -69,7 +84,15 @@ countData['currentPage'] = pg
 
 //Показать назначение роли для пользователя подробно
 const getOneUserAssignRole = async(userAssignRoleId) => {
-  return knex("userAssignRole").first().where({ id: userAssignRoleId })
+  return knex("userAssignRole")
+  .leftJoin("roles", "userAssignRole.roleKey", "roles.id")
+  .leftJoin("users", "userAssignRole.userKey", "users.id")
+  .first("roles.name as roleName",
+   "roles.name_short as roleCode",
+   "users.username as username",
+   "userAssignRole.*")
+  //.first()
+  .where({ "userAssignRole.id": userAssignRoleId })
 }
 
 //Создать ( назначить ) роль для пользователя

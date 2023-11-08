@@ -36,8 +36,8 @@ router.get("/search", (req, res) => {
     /* #swagger.tags = ['auth']
        #swagger.description = 'Поиск назначений прав для пользователей'
   */
-  const { page, perpage, userKey, permKey, sort } = req.query;
-      userAssignPermissionController.getByParam(page, perpage, userKey, permKey, sort).then((data) => {
+  const { page, perpage, userKey, permKey, permCodeName, sort } = req.query;
+      userAssignPermissionController.getByParam(page, perpage, userKey, permKey, permCodeName, sort).then((data) => {
       let metaindex = data.findIndex(x => x.countRow)
       let metadata = data.splice(metaindex, 1)
       res.status(200).json({

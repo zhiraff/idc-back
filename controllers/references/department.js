@@ -1,6 +1,22 @@
 //require("dotenv").config();
 const knex = require("../../knex_init");
 const options = { year: 'numeric', month: 'numeric', day: 'numeric' }
+const separ = ' / ' //  Разделитель в строке предков
+
+//Ф-я возвращает строку с названиями родителей
+const getAllNamesOfParents = async (id) => {
+  let ret = ""
+  const item = await knex("department").first().where({'id': id})
+
+  if (typeof item.parent_id === "undefined" || item.parent_id === null){
+    //Базовый случай
+    return item.name
+  }
+
+  const par = await knex("department").first().where({'id': item.parent_id})
+  ret = item.name + separ + await getAllNamesOfParents(par.id)
+  return ret
+} 
 
 //Методы работы с подразделениями
 //Получить подразделения, с постраничной пагинацией
@@ -29,10 +45,19 @@ const getDepartment = async (page, perpage, sort) => {
   .first()
   .count('id as countRow')
 
+  for (let i = 0; i < resultData.length; i++){
+      let parentsString = await getAllNamesOfParents(resultData[i].id)
+      let parentsArray = parentsString.split(separ)
+      parentsArray.pop()  //  Удалим ГХК
+      parentsArray.pop()  // Удалим ГХК (ШТАТ)
+      parentsArray.reverse()  // развернули
+      parentsArray.pop()  // Удалим сам этот объект
+      resultData[i]["parent_tree"] = parentsArray.join(separ)
+  }
+
   countData['pages'] = Math.ceil(countData.countRow/prpg)
   countData['currentPage'] = pg
   resultData.push(countData)
-
   return resultData
 }
 
@@ -162,6 +187,16 @@ const getDepartmentParam = async (page, perpage, parent_id, begin, end, code, na
   .first()
   .count('id as countRow')
 
+  for (let i = 0; i < resultData.length; i++){
+    let parentsString = await getAllNamesOfParents(resultData[i].id)
+    let parentsArray = parentsString.split(separ)
+    parentsArray.pop()  //  Удалим ГХК
+    parentsArray.pop()  // Удалим ГХК (ШТАТ)
+    parentsArray.reverse()  // развернули
+    parentsArray.pop()  // Удалим сам этот объект
+    resultData[i]["parent_tree"] = parentsArray.join(separ)
+}
+
   countData['pages'] = Math.ceil(countData.countRow/prpg)
   countData['currentPage'] = pg
   
@@ -172,7 +207,15 @@ const getDepartmentParam = async (page, perpage, parent_id, begin, end, code, na
 //Показать подразделения подробно
 const getOneDepartment = async(departmentId) => {
   //knex("sessions").first("id", "userId", "sessionId").where({ sessionId: sessionId });
-  return knex("department").first().where({ id: departmentId })
+  let ret = await knex("department").first().where({ id: departmentId })
+  let parentsString = await getAllNamesOfParents(ret.id)
+  let parentsArray = parentsString.split(separ)
+  parentsArray.pop()  //  Удалим ГХК
+  parentsArray.pop()  // Удалим ГХК (ШТАТ)
+  parentsArray.reverse()  // развернули
+  parentsArray.pop()  // Удалим сам этот объект
+  ret["parent_tree"] = parentsArray.join(separ)
+  return ret
 }
 
 //Создать подразделения

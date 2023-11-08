@@ -34,7 +34,7 @@ const getRoleAssignPermission = async (page, perpage, sort) => {
 }
 
 //Получить назначение прав для ролей, с постраничной пагинацией и параметрами
-const getRoleAssignPermissionParam = async (page, perpage, roleKey, permKey, sort) => {
+const getRoleAssignPermissionParam = async (page, perpage, roleKey, permKey, permCodeName, sort) => {
   // 1. Поиск по числовым значениям осуществляется через where
   // 2. Поиск по текстовым значением осуществлется через like
   // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
@@ -53,15 +53,26 @@ const getRoleAssignPermissionParam = async (page, perpage, roleKey, permKey, sor
   }
   
   let queryObject = {}
+  let queryObjectString = {}
   if (typeof roleKey !== 'undefined'){
     queryObject['roleKey'] = roleKey
   }
     if (typeof permKey !== 'undefined'){
     queryObject['permKey'] = permKey
   }
+    //параметры права
+if (typeof permCodeName !== 'undefined'){
+  queryObjectString['permCodeName'] = '%' + permCodeName + '%'
+} else {
+  queryObjectString['permCodeName'] = '%%'
+}
 
 let countData = await knex("roleAssignPermission")
 .where(queryObject)
+.whereIn('permKey', function() {
+  this.select('id').from('permission')
+  .whereILike("codeName", queryObjectString.permCodeName)
+})
 .first()
 .count('id as countRow')
 
@@ -78,6 +89,10 @@ countData['currentPage'] = pg
    "roleAssignPermission.*")
  .where(queryObject)
  //.select()
+ .whereIn('permKey', function() {
+  this.select('id').from('permission')
+  .whereILike("codeName", queryObjectString.permCodeName)
+})
  .orderBy(sortField, sortDirect)
  .limit(prpg).offset((pg-1)*prpg)
   resultData.push(countData)

@@ -2790,6 +2790,11 @@
             "type": "string"
           },
           {
+            "name": "permCodeName",
+            "in": "query",
+            "type": "string"
+          },
+          {
             "name": "sort",
             "in": "query",
             "type": "string"
@@ -2976,6 +2981,11 @@
           },
           {
             "name": "permKey",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "permCodeName",
             "in": "query",
             "type": "string"
           },

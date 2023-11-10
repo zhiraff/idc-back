@@ -33,7 +33,7 @@ const getUserAssignRole = async (page, perpage, sort) => {
 }
 
 //Получить назначение ролей для пользователей, с постраничной пагинацией и параметрами
-const getUserAssignRoleParam = async (page, perpage, userKey, roleKey, sort) => {
+const getUserAssignRoleParam = async (page, perpage, userKey, roleKey, roleNameShort, sort) => {
   // 1. Поиск по числовым значениям осуществляется через where
   // 2. Поиск по текстовым значением осуществлется через like
   // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
@@ -52,6 +52,7 @@ const getUserAssignRoleParam = async (page, perpage, userKey, roleKey, sort) => 
   }
   
   let queryObject = {}
+  let queryObjectString = {}
   if (typeof userKey !== 'undefined'){
     queryObject['userKey'] = userKey
   }
@@ -59,8 +60,20 @@ const getUserAssignRoleParam = async (page, perpage, userKey, roleKey, sort) => 
     queryObject['roleKey'] = roleKey
   }
 
+  //параметры роли
+if (typeof roleNameShort !== 'undefined'){
+  queryObjectString['roleNameShort'] = '%' + roleNameShort + '%'
+} else {
+  queryObjectString['roleNameShort'] = '%%'
+}
+
+
 let countData = await knex("userAssignRole")
 .where(queryObject)
+.whereIn('roleKey', function() {
+  this.select('id').from('roles')
+  .whereILike("name_short", queryObjectString.roleNameShort)
+})
 .first()
 .count('id as countRow')
 
@@ -75,6 +88,10 @@ countData['currentPage'] = pg
    "users.username as username",
    "userAssignRole.*")
  .where(queryObject)
+ .whereIn('roleKey', function() {
+  this.select('id').from('roles')
+  .whereILike("name_short", queryObjectString.roleNameShort)
+})
  //.select()
  .orderBy(sortField, sortDirect)
  .limit(prpg).offset((pg-1)*prpg)

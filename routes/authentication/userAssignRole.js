@@ -36,8 +36,8 @@ router.get("/search", (req, res) => {
     /* #swagger.tags = ['auth']
        #swagger.description = 'Поиск назначений ролей для пользователей'
   */
-  const { page, perpage, userKey, roleKey, sort } = req.query;
-      userAssignRoleController.getByParam(page, perpage, userKey, roleKey, sort).then((data) => {
+  const { page, perpage, userKey, roleKey, roleNameShort, sort } = req.query;
+      userAssignRoleController.getByParam(page, perpage, userKey, roleKey, roleNameShort, sort).then((data) => {
       let metaindex = data.findIndex(x => x.countRow)
       let metadata = data.splice(metaindex, 1)
       res.status(200).json({

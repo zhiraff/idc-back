@@ -18,7 +18,7 @@ const getFl = async (page, perpage, sort) => {
   let resultData = await knex("FL")
   .leftJoin('profession', 'FL.jobCodeKey', 'profession.id')
   .leftJoin('department', 'FL.departmentMCCKey', 'department.id')
-  .select('profession.name as jobName', 'department.name as departmentMCCKeyname', 'FL.*')
+  .select('profession.name as jobName', 'department.name as departmentMCCName', 'FL.*')
   .orderBy(sortField, sortDirect)
   .limit(prpg)
   .offset((pg-1)*prpg)
@@ -84,7 +84,7 @@ const createFl = async ( signImport, firstName, secondName, thirdName, sex,
 //Получить персонал, с постраничной пагинацией и параметрами
 const getFlParam = async (page, perpage, signImport, firstName, secondName, thirdName, sex,
             family, snils, inn, organization, department, departmentMCCKey,
-            jobCodeKey, tabNum, accNum, id_kadr, sort) => {
+            jobCodeKey, tabNum, accNum, id_kadr, jobName, departmentMCCName, sort) => {
   // 1. Поиск по числовым значениям осуществляется через where
   // 2. Поиск по текстовым значением осуществлется через like
   // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
@@ -172,11 +172,21 @@ const getFlParam = async (page, perpage, signImport, firstName, secondName, thir
       if (typeof id_kadr !== 'undefined'){
     queryObject['id_kadr'] = id_kadr
   }
+  if (typeof jobName !== 'undefined'){
+    queryObjectString['jobName'] = "%"+jobName+"%"
+}else{
+queryObjectString['jobName'] = "%%"
+}
+if (typeof departmentMCCName !== 'undefined'){
+  queryObjectString['departmentMCCName'] = "%"+departmentMCCName+"%"
+}else{
+queryObjectString['departmentMCCName'] = "%%"
+}
 
   let resultData = await knex("FL")
   .leftJoin('profession', 'FL.jobCodeKey', 'profession.id')
   .leftJoin('department', 'FL.departmentMCCKey', 'department.id')
-  .select('profession.name as jobName', 'department.name as departmentMCCKeyname', 'FL.*')
+  .select('profession.name as jobName', 'department.name as departmentMCCName', 'FL.*')
   .orderBy(sortField, sortDirect)
   .where(queryObject)
   //.andWhereILike("signImport", queryObjectString.signImport)
@@ -241,6 +251,40 @@ const getFlParam = async (page, perpage, signImport, firstName, secondName, thir
   })
   .andWhereILike("tabNum", queryObjectString.tabNum)
   .andWhereILike("accNum", queryObjectString.accNum)
+  .whereIn('jobCodeKey', function() {
+    this.select('id').from('profession')
+    .whereILike("name", queryObjectString.jobName)
+  })
+  .andWhere(qb => {
+    if (queryObjectString.departmentMCCName === "%%"){
+    return qb.whereIn('departmentMCCKey', function() {
+      this.select('id').from('department')
+       .whereILike("name", queryObjectString.departmentMCCName)
+    })
+    .orWhereNull("departmentMCCKey")
+    }else{
+      return qb.whereIn('departmentMCCKey', function() {
+        this.select('id').from('department')
+         .whereILike("name", queryObjectString.departmentMCCName)
+      })
+    }
+  })
+
+  /*
+  .whereIn('departmentMCCKey', function() {
+     this.select('id').from('department')
+      .whereILike("name", queryObjectString.departmentMCCName)
+   
+  //  .whereILike("name", queryObjectString.departmentMCCName)
+  //  .andWhere(qb => {
+  //    if (queryObjectString.departmentMCCName === "%%"){
+  //    return qb.whereILike("name", queryObjectString.department).orWhereNull("name")
+  //    }else{
+   //   return qb.whereILike("name", queryObjectString.department)
+  //    }
+ //   })
+  })
+  */
   .limit(prpg)
   .offset((pg-1)*prpg)
 
@@ -308,6 +352,24 @@ const getFlParam = async (page, perpage, signImport, firstName, secondName, thir
     })
     .andWhereILike("tabNum", queryObjectString.tabNum)
     .andWhereILike("accNum", queryObjectString.accNum)
+    .whereIn('jobCodeKey', function() {
+      this.select('id').from('profession')
+      .whereILike("name", queryObjectString.jobName)
+    })
+    .andWhere(qb => {
+      if (queryObjectString.departmentMCCName === "%%"){
+      return qb.whereIn('departmentMCCKey', function() {
+        this.select('id').from('department')
+         .whereILike("name", queryObjectString.departmentMCCName)
+      })
+      .orWhereNull("departmentMCCKey")
+      }else{
+        return qb.whereIn('departmentMCCKey', function() {
+          this.select('id').from('department')
+           .whereILike("name", queryObjectString.departmentMCCName)
+        })
+      }
+    })
   .first()
   .count('id as countRow')
 
@@ -389,7 +451,11 @@ const getFlParam = async (page, perpage, signImport, firstName, secondName, thir
  //Показать персонал подробно
 const getOneFl = async(personnelId) => {
   //knex("sessions").first("id", "userId", "sessionId").where({ sessionId: sessionId });
-  return knex("FL").first().where({ id: personnelId })
+  return knex("FL")
+  .leftJoin('profession', 'FL.jobCodeKey', 'profession.id')
+  .leftJoin('department', 'FL.departmentMCCKey', 'department.id')
+  .first('profession.name as jobName', 'department.name as departmentMCCName', 'FL.*')
+  .where({ "FL.id": personnelId })
 }
 
 module.exports.get = getFl;

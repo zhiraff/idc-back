@@ -277,6 +277,16 @@
             "type": "string"
           },
           {
+            "name": "jobName",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "departmentMCCName",
+            "in": "query",
+            "type": "string"
+          },
+          {
             "name": "sort",
             "in": "query",
             "type": "string"
@@ -817,6 +827,16 @@
           },
           {
             "name": "sort",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "jobName",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "departmentMCCName",
             "in": "query",
             "type": "string"
           }
@@ -3176,6 +3196,11 @@
           },
           {
             "name": "roleKey",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "roleNameShort",
             "in": "query",
             "type": "string"
           },

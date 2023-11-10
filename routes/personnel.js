@@ -72,11 +72,11 @@ router.get("/search", (req, res) => {
   //const sort = req.query.sort;
    const { page, perpage, signImport, firstName, secondName, thirdName, sex,
             family, snils, inn, organization, department, departmentMCCKey,
-            jobCodeKey, tabNum, accNum, id_kadr, sort  } = req.query
+            jobCodeKey, tabNum, accNum, id_kadr, jobName, departmentMCCName, sort  } = req.query
 
   personnelController.getPersonnelByParam(page, perpage, signImport, firstName, secondName, thirdName, sex,
             family, snils, inn, organization, department, departmentMCCKey,
-            jobCodeKey, tabNum, accNum, id_kadr, sort).then( async (data) => {
+            jobCodeKey, tabNum, accNum, id_kadr, jobName, departmentMCCName, sort).then( async (data) => {
               let metaindex = data.findIndex(x => x.countRow)
               let metadata = data.splice(metaindex, 1)
               let mtindx
@@ -538,9 +538,11 @@ router.get("/fl/search", (req, res) => {
   const accNum = req.query.accNum;
   const id_kadr = req.query.id_kadr;
   const sort = req.query.sort;
+  const jobName = req.query.jobName; 
+  const departmentMCCName = req.query.departmentMCCName;
   personnelController.getPersonnelByParam(page, perpage, signImport, firstName, secondName, thirdName, sex,
     family, snils, inn, organization, department, departmentMCCKey,
-    jobCodeKey, tabNum, accNum, id_kadr, sort).then((data) => {
+    jobCodeKey, tabNum, accNum, id_kadr, jobName, departmentMCCName, sort).then((data) => {
       let metaindex = data.findIndex(x => x.countRow)
       let metadata = data.splice(metaindex, 1)
       res.status(200).json({

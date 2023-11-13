@@ -1,6 +1,7 @@
 //require("dotenv").config();
 const knex = require("../../knex_init");
-const options = { year: 'numeric', month: 'numeric', day: 'numeric' }
+//const options = { year: 'numeric', month: 'numeric', day: 'numeric' }
+const { options } = require("../../date_init");
 const separ = ' / ' //  Разделитель в строке предков
 
 //Ф-я возвращает строку с названиями родителей

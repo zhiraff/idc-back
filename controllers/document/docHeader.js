@@ -1,11 +1,13 @@
 const knex = require("../../knex_init");
+const { options } = require("../../date_init");
 //Методы работы с заголовками документов
 //Получить части тела, с постраничной пагинацией
-const getDocHeader = async (page, perpage, sort) => {
+const getDocHeader = async (page, perpage, startDate, endDate, sort) => {
   const pg = typeof page !== 'undefined' && page !== '' ? page : 1
   const prpg = typeof perpage !== 'undefined' && perpage !== '' ? perpage : 25
-    let sortField = 'id'
+  let sortField = 'id'
   let sortDirect = 'asc'
+  let queryObject = {}
   if (typeof sort !== 'undefined'){
     if (sort.startsWith('-')){
       sortField = sort.slice(1)
@@ -14,8 +16,28 @@ const getDocHeader = async (page, perpage, sort) => {
       sortField = sort
     }
   }
-  let countData = await knex("docHeader").first().count('id as countRow')
-  let resultData = await knex("docHeader").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+  
+  if (typeof startDate !== 'undefined'){
+    queryObject['startDate'] = new Date(startDate)
+  } else {
+    queryObject['startDate'] = new Date(90, 1)
+  }
+  if (typeof endDate !== 'undefined'){
+    queryObject['endDate'] = new Date(endDate)
+  } else {
+    queryObject['endDate'] = new Date(8640000000000000)
+  }
+ // console.log(queryObject)
+  let countData = await knex("docHeader")
+  .whereBetween('dateDocument', [queryObject.startDate, queryObject.endDate])
+  .first()
+  .count('id as countRow')
+  let resultData = await knex("docHeader")
+  .whereBetween('dateDocument', [queryObject.startDate, queryObject.endDate])
+  .select()
+  .orderBy(sortField, sortDirect)
+  .limit(prpg)
+  .offset((pg-1)*prpg)
   countData['pages'] = Math.ceil(countData.countRow/prpg)
   countData['currentPage'] = pg
   resultData.push(countData)
@@ -23,7 +45,7 @@ const getDocHeader = async (page, perpage, sort) => {
 }
 
 //Получить Заголовки документов, с постраничной пагинацией и параметрами
-const getDocHeaderParam = async (page, perpage, organization, typeDocument, typeExam, dateDocument, numberDocument, beginPeriod, endPeriod, sort) => {
+const getDocHeaderParam = async (page, perpage, organization, typeDocument, typeExam, dateDocument, numberDocument, beginPeriod, endPeriod, startDate, endDate, sort) => {
   // 1. Поиск по числовым значениям осуществляется через where
   // 2. Поиск по текстовым значением осуществлется через like
   // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
@@ -42,6 +64,7 @@ const getDocHeaderParam = async (page, perpage, organization, typeDocument, type
   }
   
   let queryObject = {}
+  let queryObjectRangeDate = {}
   if (typeof dateDocument !== 'undefined'){
     queryObject['dateDocument'] = dateDocument
   }
@@ -74,9 +97,20 @@ if (typeof numberDocument !== 'undefined'){
 }else {
   queryObjectString['numberDocument'] = '%%'
 }
-
+if (typeof startDate !== 'undefined'){
+  queryObjectRangeDate['startDate'] = new Date(startDate)
+} else {
+    queryObjectRangeDate['startDate'] = new Date(90, 1)
+  }
+if (typeof endDate !== 'undefined'){
+  queryObjectRangeDate['endDate'] = new Date(endDate)
+} else {
+  queryObjectRangeDate['endDate'] = new Date(8640000000000000)
+  }
+ // console.log(queryObjectRangeDate)
 let countData = await knex("docHeader")
 .where(queryObject)
+.whereBetween('dateDocument', [queryObjectRangeDate.startDate, queryObjectRangeDate.endDate])
 .andWhereILike("organization", queryObjectString.organization)
 .andWhereILike("typeDocument", queryObjectString.typeDocument)
 .andWhereILike("typeExam", queryObjectString.typeExam)
@@ -89,6 +123,7 @@ countData['currentPage'] = pg
 
  let resultData = await knex("docHeader")
  .where(queryObject)
+ .whereBetween('dateDocument', [queryObjectRangeDate.startDate, queryObjectRangeDate.endDate])
  .andWhereILike("organization", queryObjectString.organization)
  .andWhereILike("typeDocument", queryObjectString.typeDocument)
  .andWhereILike("typeExam", queryObjectString.typeExam)

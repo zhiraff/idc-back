@@ -88,7 +88,7 @@ router.get("/:id", (req, res) => {
 router.post("/", (req, res) => {
     /* #swagger.tags = ['document']
        #swagger.description = 'Создание записи'
-  */
+    */
  const { docKey, flKey, radionuclideKey, dateIncome, value } = req.body;
 //console.log(`symbol, name, htmlcode ${symbol}, ${name}, ${htmlcode}`)
 if (typeof docKey === 'undefined' || 

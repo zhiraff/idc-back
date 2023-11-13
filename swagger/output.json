@@ -3321,6 +3321,16 @@
             "type": "string"
           },
           {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
             "name": "sort",
             "in": "query",
             "type": "string"
@@ -3431,6 +3441,16 @@
           },
           {
             "name": "endPeriod",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
             "in": "query",
             "type": "string"
           },

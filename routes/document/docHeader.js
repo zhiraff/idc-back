@@ -10,8 +10,10 @@ router.get("/", (req, res) => {
   */
   const page = req.query.page;
   const perpage = req.query.perpage;
+  const startDate = req.query.startDate;
+  const endDate = req.query.endDate;
   const sort = req.query.sort;
-  docHeaderController.get(page, perpage, sort).then((data) => {
+  docHeaderController.get(page, perpage, startDate, endDate, sort).then((data) => {
     let metaindex = data.findIndex(x => x.countRow)
     let metadata = data.splice(metaindex, 1)
       res.status(200).json({
@@ -38,9 +40,9 @@ router.get("/search", (req, res) => {
        #swagger.description = 'Поиск заголовка документа'
   */
  
-  const {page, perpage, organization, typeDocument, typeExam, dateDocument, numberDocument, beginPeriod, endPeriod, sort } = req.query;
+  const {page, perpage, organization, typeDocument, typeExam, dateDocument, numberDocument, beginPeriod, endPeriod, startDate, endDate, sort } = req.query;
   //console.log(`${organization}, ${typeDocument},\n ${typeExam}, ${dateDocument}, \n ${numberDocument}, ${dateExam}`)
-      docHeaderController.getByParam(page, perpage, organization, typeDocument, typeExam, dateDocument, numberDocument, beginPeriod, endPeriod, sort).then((data) => {
+      docHeaderController.getByParam(page, perpage, organization, typeDocument, typeExam, dateDocument, numberDocument, beginPeriod, endPeriod, startDate, endDate, sort).then((data) => {
       let metaindex = data.findIndex(x => x.countRow)
       let metadata = data.splice(metaindex, 1)
       res.status(200).json({

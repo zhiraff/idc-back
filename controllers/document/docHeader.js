@@ -189,10 +189,10 @@ const creatDocHeader = async(organization, typeDocument, typeExam, dateDocument,
     updateObject['numberDocument'] = numberDocument
   }
 
-  if (typeof beginPeriod !== 'undefined'){
+  if (typeof beginPeriod !== 'undefined' && beginPeriod !== ''){
     updateObject['beginPeriod'] = beginPeriod
   }
-  if (typeof endPeriod !== 'undefined'){
+  if (typeof endPeriod !== 'undefined' && endPeriod !== ''){
     updateObject['endPeriod'] = endPeriod
   }
 

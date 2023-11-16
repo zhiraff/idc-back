@@ -150,11 +150,17 @@ const creatDocHeader = async(organization, typeDocument, typeExam, dateDocument,
     typeExam: typeExam,
     dateDocument: dateDocument,
     numberDocument: numberDocument,
-    beginPeriod: beginPeriod,
-    endPeriod: endPeriod,
+  //  beginPeriod: beginPeriod,
+  //  endPeriod: endPeriod,
     createdBy: typeof user.username !== 'undefined' ? user.username : "unknown",
     updatedBy: typeof user.username !== 'undefined' ? user.username : "unknown",
   };
+  if (typeof beginPeriod !== 'undefined' && beginPeriod !== ''){
+    newDocHeader['beginPeriod'] = beginPeriod
+  }
+  if (typeof endPeriod !== 'undefined' && endPeriod !== ''){
+    newDocHeader['endPeriod'] = endPeriod
+  }
    const result = await knex("docHeader").insert([newDocHeader], ["id"]);
    newDocHeader['id'] = result[0].id
    return newDocHeader;

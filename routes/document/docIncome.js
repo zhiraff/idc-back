@@ -38,9 +38,11 @@ router.get("/search", (req, res) => {
        #swagger.description = 'Поиск поступлений радионуклидов'
     */
  
-  const {page, perpage, docKey, flKey, radionuclideKey, dateIncome, value, sort } = req.query;
+  const {page, perpage, docKey, flKey, radionuclideKey, dateIncome, value,
+     radionuclideName, flAccNum, sort } = req.query;
   //console.log(`${organization}, ${typeDocument},\n ${typeExam}, ${dateDocument}, \n ${numberDocument}, ${dateExam}`)
-      docIncomeController.getByParam(page, perpage, docKey, flKey, radionuclideKey, dateIncome, value, sort ).then((data) => {
+      docIncomeController.getByParam(page, perpage, docKey, flKey, radionuclideKey, dateIncome, value,
+        radionuclideName, flAccNum, sort ).then((data) => {
       let metaindex = data.findIndex(x => x.countRow)
       let metadata = data.splice(metaindex, 1)
       res.status(200).json({

@@ -15,7 +15,17 @@ const getDocCtc = async (page, perpage, sort) => {
     }
   }
   let countData = await knex("docCtc").first().count('id as countRow')
-  let resultData = await knex("docCtc").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+  let resultData = await knex("docCtc")
+  .leftJoin("radionuclide", "docCtc.radionuclideKey", "radionuclide.id")
+  .leftJoin("FL", "docCtc.flKey", "FL.id")
+  .leftJoin("kindIdc", "docCtc.typeControlKey", "kindIdc.id")
+  .select("docCtc.*", 
+  "radionuclide.name as radionuclideName",
+  "FL.accNum as flAccNum",
+  "kindIdc.kindShort as typeControlShortName")
+  .orderBy(sortField, sortDirect)
+  .limit(prpg)
+  .offset((pg-1)*prpg)
   //console.log(`count: ${count}`)
   countData['pages'] = Math.ceil(countData.countRow/prpg)
   countData['currentPage'] = pg
@@ -24,7 +34,9 @@ const getDocCtc = async (page, perpage, sort) => {
 }
 
 //Получить результаты Хелатотерапии, с постраничной пагинацией и параметрами
-const getDocCtcParam = async (page, perpage, docKey, flKey, dateExam, typeControlKey, dateInput, radionuclideKey, material, consist, sort) => {
+const getDocCtcParam = async (page, perpage, docKey, flKey, dateExam, 
+  typeControlKey, dateInput, radionuclideKey, material, consist, 
+  flAccNum, typeControlName, radionuclideName, sort) => {
   // 1. Поиск по числовым значениям осуществляется через where
   // 2. Поиск по текстовым значением осуществлется через like
   // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
@@ -73,9 +85,42 @@ let queryObjectString = {}
   queryObjectString['material'] = '%%'
 }
 
+// параметры поиска физического лица
+if (typeof flAccNum !== 'undefined'){
+  queryObjectString['flAccNum'] = '%' +  flAccNum + '%'
+}else {
+queryObjectString['flAccNum'] = '%%'
+}
+
+// параметры поиска типа ИДК
+if (typeof typeControlName !== 'undefined'){
+  queryObjectString['typeControlName'] = '%' +  typeControlName + '%'
+}else {
+queryObjectString['typeControlName'] = '%%'
+}
+
+// параметры поиска радионуклида
+if (typeof radionuclideName !== 'undefined'){
+  queryObjectString['radionuclideName'] = '%' +  radionuclideName + '%'
+}else {
+queryObjectString['radionuclideName'] = '%%'
+}
+
 let countData = await knex("docCtc")
 .where(queryObject)
 .andWhereILike("material", queryObjectString.material)
+.whereIn('radionuclideKey', function() {
+  this.select('id').from('radionuclide')
+  .whereILike("name", queryObjectString.radionuclideName)
+})
+.whereIn('flKey', function() {
+  this.select('id').from('FL')
+  .whereILike("accNum", queryObjectString.flAccNum)
+})
+.whereIn('typeControlKey', function() {
+  this.select('id').from('kindIdc')
+  .whereILike("kindShort", queryObjectString.typeControlName)
+})
 .first()
 .count('id as countRow')
 
@@ -85,7 +130,25 @@ countData['currentPage'] = pg
  let resultData = await knex("docCtc")
  .where(queryObject)
  .andWhereILike("material", queryObjectString.material)
- .select()
+ .whereIn('radionuclideKey', function() {
+  this.select('id').from('radionuclide')
+  .whereILike("name", queryObjectString.radionuclideName)
+})
+.whereIn('flKey', function() {
+  this.select('id').from('radionuclide')
+  .whereILike("accNum", queryObjectString.flAccNum)
+})
+.whereIn('typeControlKey', function() {
+  this.select('id').from('kindIdc')
+  .whereILike("kindShort", queryObjectString.typeControlName)
+})
+ .leftJoin("radionuclide", "docCtc.radionuclideKey", "radionuclide.id")
+ .leftJoin("FL", "docCtc.flKey", "FL.id")
+ .leftJoin("kindIdc", "docCtc.typeControlKey", "kindIdc.id")
+ .select("docCtc.*", 
+ "radionuclide.name as radionuclideName",
+ "FL.accNum as flAccNum",
+ "kindIdc.kindShort as typeControlShortName")
  .orderBy(sortField, sortDirect)
  //.where(queryObject)
  .limit(prpg).offset((pg-1)*prpg)
@@ -96,7 +159,15 @@ countData['currentPage'] = pg
 //Показать результаты Хелатотерапии подробно
 const getOneDocCtc = async(docCtcId) => {
   //knex("sessions").first("id", "userId", "sessionId").where({ sessionId: sessionId });
-  return knex("docCtc").first().where({ id: docCtcId })
+  return knex("docCtc")
+  .leftJoin("radionuclide", "docCtc.radionuclideKey", "radionuclide.id")
+  .leftJoin("FL", "docCtc.flKey", "FL.id")
+  .leftJoin("kindIdc", "docCtc.typeControlKey", "kindIdc.id")
+  .first("docCtc.*", 
+  "radionuclide.name as radionuclideName",
+  "FL.accNum as flAccNum",
+  "kindIdc.kindShort as typeControlShortName")
+  .where({ "docCtc.id": docCtcId })
 }
 
 //Создать результаты Хелатотерапии

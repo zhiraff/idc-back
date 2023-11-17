@@ -3700,6 +3700,21 @@
             "type": "string"
           },
           {
+            "name": "flAccNum",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "typeControlName",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "radionuclideName",
+            "in": "query",
+            "type": "string"
+          },
+          {
             "name": "sort",
             "in": "query",
             "type": "string"
@@ -4041,6 +4056,26 @@
             "type": "string"
           },
           {
+            "name": "flAccNum",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "typeControlName",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "radionuclideName",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "bodyPartName",
+            "in": "query",
+            "type": "string"
+          },
+          {
             "name": "sort",
             "in": "query",
             "type": "string"
@@ -4370,6 +4405,11 @@
           },
           {
             "name": "dose",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "flAccNum",
             "in": "query",
             "type": "string"
           },
@@ -4710,6 +4750,21 @@
           },
           {
             "name": "consist",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "flAccNum",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "typeControlName",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "radionuclideName",
             "in": "query",
             "type": "string"
           },
@@ -5227,6 +5282,16 @@
           },
           {
             "name": "value",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "radionuclideName",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "flAccNum",
             "in": "query",
             "type": "string"
           },

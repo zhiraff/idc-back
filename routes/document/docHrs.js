@@ -38,9 +38,13 @@ router.get("/search", (req, res) => {
        #swagger.description = 'Поиск результатов СИЧ'
     */
  
-  const {page, perpage, docKey, flKey, dateExam, typeControlKey, bodyPartKey, radionuclideKey, consist, sort } = req.query;
+  const {page, perpage, docKey, flKey, dateExam, typeControlKey, 
+    bodyPartKey, radionuclideKey, consist,
+    flAccNum, typeControlName, radionuclideName, bodyPartName, sort } = req.query;
   //console.log(`${organization}, ${typeDocument},\n ${typeExam}, ${dateDocument}, \n ${numberDocument}, ${dateExam}`)
-      docHrsController.getByParam(page, perpage, docKey, flKey, dateExam, typeControlKey, bodyPartKey, radionuclideKey, consist, sort ).then((data) => {
+      docHrsController.getByParam(page, perpage, docKey, flKey, dateExam, typeControlKey, 
+        bodyPartKey, radionuclideKey, consist, 
+        flAccNum, typeControlName, radionuclideName, bodyPartName, sort ).then((data) => {
       let metaindex = data.findIndex(x => x.countRow)
       let metadata = data.splice(metaindex, 1)
       res.status(200).json({

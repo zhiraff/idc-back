@@ -15,7 +15,19 @@ const getDocHrs = async (page, perpage, sort) => {
     }
   }
   let countData = await knex("docHrs").first().count('id as countRow')
-  let resultData = await knex("docHrs").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+  let resultData = await knex("docHrs")
+  .leftJoin("radionuclide", "docHrs.radionuclideKey", "radionuclide.id")
+  .leftJoin("FL", "docHrs.flKey", "FL.id")
+  .leftJoin("kindIdc", "docHrs.typeControlKey", "kindIdc.id")
+  .leftJoin("bodyPart", "docHrs.bodyPartKey", "bodyPart.id")
+  .select("docHrs.*", 
+  "radionuclide.name as radionuclideName",
+  "FL.accNum as flAccNum",
+  "kindIdc.kindShort as typeControlShortName",
+  "bodyPart.name as bodyPartName")
+  .orderBy(sortField, sortDirect)
+  .limit(prpg)
+  .offset((pg-1)*prpg)
   //console.log(`count: ${count}`)
   countData['pages'] = Math.ceil(countData.countRow/prpg)
   countData['currentPage'] = pg
@@ -24,7 +36,9 @@ const getDocHrs = async (page, perpage, sort) => {
 }
 
 //Получить результаты СИЧ, с постраничной пагинацией и параметрами
-const getDocHrsParam = async (page, perpage, docKey, flKey, dateExam, typeControlKey, bodyPartKey, radionuclideKey,  consist, sort) => {
+const getDocHrsParam = async (page, perpage, docKey, flKey, dateExam, 
+  typeControlKey, bodyPartKey, radionuclideKey,  consist, 
+  flAccNum, typeControlName, radionuclideName, bodyPartName, sort) => {
   // 1. Поиск по числовым значениям осуществляется через where
   // 2. Поиск по текстовым значением осуществлется через like
   // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
@@ -67,9 +81,52 @@ const getDocHrsParam = async (page, perpage, docKey, flKey, dateExam, typeContro
   }
 
 let queryObjectString = {}
+// параметры поиска физического лица
+if (typeof flAccNum !== 'undefined'){
+  queryObjectString['flAccNum'] = '%' +  flAccNum + '%'
+}else {
+queryObjectString['flAccNum'] = '%%'
+}
+
+// параметры поиска типа ИДК
+if (typeof typeControlName !== 'undefined'){
+  queryObjectString['typeControlName'] = '%' +  typeControlName + '%'
+}else {
+queryObjectString['typeControlName'] = '%%'
+}
+
+// параметры поиска радионуклида
+if (typeof radionuclideName !== 'undefined'){
+  queryObjectString['radionuclideName'] = '%' +  radionuclideName + '%'
+}else {
+queryObjectString['radionuclideName'] = '%%'
+}
+
+// параметры поиска части тела
+if (typeof bodyPartName !== 'undefined'){
+  queryObjectString['bodyPartName'] = '%' +  bodyPartName + '%'
+}else {
+queryObjectString['bodyPartName'] = '%%'
+}
 
 let countData = await knex("docHrs")
 .where(queryObject)
+.whereIn('radionuclideKey', function() {
+  this.select('id').from('radionuclide')
+  .whereILike("name", queryObjectString.radionuclideName)
+})
+.whereIn('flKey', function() {
+  this.select('id').from('FL')
+  .whereILike("accNum", queryObjectString.flAccNum)
+})
+.whereIn('typeControlKey', function() {
+  this.select('id').from('kindIdc')
+  .whereILike("kindShort", queryObjectString.typeControlName)
+})
+.whereIn('bodyPartKey', function() {
+  this.select('id').from('bodyPart')
+  .whereILike("name", queryObjectString.bodyPartName)
+})
 .first()
 .count('id as countRow')
 
@@ -78,7 +135,31 @@ countData['currentPage'] = pg
 
  let resultData = await knex("docHrs")
  .where(queryObject)
- .select()
+ .whereIn('radionuclideKey', function() {
+  this.select('id').from('radionuclide')
+  .whereILike("name", queryObjectString.radionuclideName)
+})
+.whereIn('flKey', function() {
+  this.select('id').from('FL')
+  .whereILike("accNum", queryObjectString.flAccNum)
+})
+.whereIn('typeControlKey', function() {
+  this.select('id').from('kindIdc')
+  .whereILike("kindShort", queryObjectString.typeControlName)
+})
+.whereIn('bodyPartKey', function() {
+  this.select('id').from('bodyPart')
+  .whereILike("name", queryObjectString.bodyPartName)
+})
+ .leftJoin("radionuclide", "docHrs.radionuclideKey", "radionuclide.id")
+ .leftJoin("FL", "docHrs.flKey", "FL.id")
+ .leftJoin("kindIdc", "docHrs.typeControlKey", "kindIdc.id")
+ .leftJoin("bodyPart", "docHrs.bodyPartKey", "bodyPart.id")
+ .select("docHrs.*", 
+ "radionuclide.name as radionuclideName",
+ "FL.accNum as flAccNum",
+ "kindIdc.kindShort as typeControlShortName",
+ "bodyPart.name as bodyPartName")
  .orderBy(sortField, sortDirect)
  //.where(queryObject)
  .limit(prpg).offset((pg-1)*prpg)
@@ -89,7 +170,18 @@ countData['currentPage'] = pg
 //Показать результаты СИЧ подробно
 const getOneDocHrs = async(docHrsId) => {
   //knex("sessions").first("id", "userId", "sessionId").where({ sessionId: sessionId });
-  return knex("docHrs").first().where({ id: docHrsId })
+  return knex("docHrs")
+  .leftJoin("radionuclide", "docHrs.radionuclideKey", "radionuclide.id")
+  .leftJoin("FL", "docHrs.flKey", "FL.id")
+  .leftJoin("kindIdc", "docHrs.typeControlKey", "kindIdc.id")
+  .leftJoin("bodyPart", "docHrs.bodyPartKey", "bodyPart.id")
+  .first("docHrs.*", 
+  "radionuclide.name as radionuclideName",
+  "FL.accNum as flAccNum",
+  "kindIdc.kindShort as typeControlShortName",
+  "bodyPart.name as bodyPartName")
+ // .first()
+  .where({ "docHrs.id": docHrsId })
 }
 
 //Создать результаты СИЧ

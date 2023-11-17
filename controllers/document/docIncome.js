@@ -15,7 +15,15 @@ const getDocIncome = async (page, perpage, sort) => {
     }
   }
   let countData = await knex("docIncome").first().count('id as countRow')
-  let resultData = await knex("docIncome").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+  let resultData = await knex("docIncome")
+  .leftJoin("radionuclide", "docIncome.radionuclideKey", "radionuclide.id")
+  .leftJoin("FL", "docIncome.flKey", "FL.id")
+  .select("docIncome.*", 
+  "radionuclide.name as radionuclideName",
+  "FL.accNum as flAccNum")
+  .orderBy(sortField, sortDirect)
+  .limit(prpg)
+  .offset((pg-1)*prpg)
   //console.log(`count: ${count}`)
   countData['pages'] = Math.ceil(countData.countRow/prpg)
   countData['currentPage'] = pg
@@ -24,7 +32,8 @@ const getDocIncome = async (page, perpage, sort) => {
 }
 
 //Получить поступления радионуклидов, с постраничной пагинацией и параметрами
-const getDocIncomeParam = async (page, perpage, docKey, flKey, radionuclideKey, dateIncome, value, sort) => {
+const getDocIncomeParam = async (page, perpage, docKey, flKey, radionuclideKey, dateIncome, value, 
+  radionuclideName, flAccNum, sort) => {
   // 1. Поиск по числовым значениям осуществляется через where
   // 2. Поиск по текстовым значением осуществлется через like
   // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
@@ -59,8 +68,32 @@ const getDocIncomeParam = async (page, perpage, docKey, flKey, radionuclideKey, 
     queryObject['value'] = value
   }
 
+  let queryObjectString = {}
+
+// параметры поиска физического лица
+if (typeof flAccNum !== 'undefined'){
+  queryObjectString['flAccNum'] = '%' +  flAccNum + '%'
+}else {
+queryObjectString['flAccNum'] = '%%'
+}
+
+// параметры поиска радионуклида
+if (typeof radionuclideName !== 'undefined'){
+  queryObjectString['radionuclideName'] = '%' +  radionuclideName + '%'
+}else {
+queryObjectString['radionuclideName'] = '%%'
+}
+
 let countData = await knex("docIncome")
 .where(queryObject)
+.whereIn('radionuclideKey', function() {
+  this.select('id').from('radionuclide')
+  .whereILike("name", queryObjectString.radionuclideName)
+})
+.whereIn('flKey', function() {
+  this.select('id').from('FL')
+  .whereILike("accNum", queryObjectString.flAccNum)
+})
 .first()
 .count('id as countRow')
 
@@ -69,7 +102,19 @@ countData['currentPage'] = pg
 
  let resultData = await knex("docIncome")
  .where(queryObject)
- .select()
+ .whereIn('radionuclideKey', function() {
+  this.select('id').from('radionuclide')
+  .whereILike("name", queryObjectString.radionuclideName)
+})
+.whereIn('flKey', function() {
+  this.select('id').from('FL')
+  .whereILike("accNum", queryObjectString.flAccNum)
+})
+ .leftJoin("radionuclide", "docIncome.radionuclideKey", "radionuclide.id")
+ .leftJoin("FL", "docIncome.flKey", "FL.id")
+ .select("docIncome.*", 
+ "radionuclide.name as radionuclideName",
+ "FL.accNum as flAccNum")
  .orderBy(sortField, sortDirect)
  .limit(prpg).offset((pg-1)*prpg)
   resultData.push(countData)
@@ -79,7 +124,14 @@ countData['currentPage'] = pg
 
 //Показать поступление радионуклида
 const getOneDocIncome = async(docIncomeId) => {
-  return knex("docIncome").first().where({ id: docIncomeId })
+  return knex("docIncome")
+  .leftJoin("radionuclide", "docIncome.radionuclideKey", "radionuclide.id")
+  .leftJoin("FL", "docIncome.flKey", "FL.id")
+  .first("docIncome.*", 
+  "radionuclide.name as radionuclideName",
+  "FL.accNum as flAccNum")
+ // .first()
+  .where({ "docIncome.id": docIncomeId })
 }
 
 //Создать поступление радионуклида

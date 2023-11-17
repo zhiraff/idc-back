@@ -37,8 +37,8 @@ router.get("/search", (req, res) => {
     /* #swagger.tags = ['document']
        #swagger.description = 'Поиск ОЭД'
     */
-  const {page, perpage, docKey, flKey, dateIncome, beginPeriod, endPeriod, dose, sort } = req.query;
-      docErdController.getByParam(page, perpage, docKey, flKey, dateIncome, beginPeriod, endPeriod, dose, sort ).then((data) => {
+  const {page, perpage, docKey, flKey, dateIncome, beginPeriod, endPeriod, dose, flAccNum, sort } = req.query;
+      docErdController.getByParam(page, perpage, docKey, flKey, dateIncome, beginPeriod, endPeriod, dose, flAccNum, sort ).then((data) => {
       let metaindex = data.findIndex(x => x.countRow)
       let metadata = data.splice(metaindex, 1)
       res.status(200).json({

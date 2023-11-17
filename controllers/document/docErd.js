@@ -15,7 +15,13 @@ const getDocErd = async (page, perpage, sort) => {
     }
   }
   let countData = await knex("docErd").first().count('id as countRow')
-  let resultData = await knex("docErd").select().orderBy(sortField, sortDirect).limit(prpg).offset((pg-1)*prpg)
+  let resultData = await knex("docErd")
+  .leftJoin("FL", "docErd.flKey", "FL.id")
+  .select("docErd.*", 
+  "FL.accNum as flAccNum")
+  .orderBy(sortField, sortDirect)
+  .limit(prpg)
+  .offset((pg-1)*prpg)
   //console.log(`count: ${count}`)
   countData['pages'] = Math.ceil(countData.countRow/prpg)
   countData['currentPage'] = pg
@@ -24,7 +30,7 @@ const getDocErd = async (page, perpage, sort) => {
 }
 
 //Получить ОЭД, с постраничной пагинацией и параметрами
-const getDocErdParam = async (page, perpage, docKey, flKey, dateIncome, beginPeriod, endPeriod, dose, sort) => {
+const getDocErdParam = async (page, perpage, docKey, flKey, dateIncome, beginPeriod, endPeriod, dose, flAccNum, sort) => {
   // 1. Поиск по числовым значениям осуществляется через where
   // 2. Поиск по текстовым значением осуществлется через like
   // 3. Для полей, которые не обязательны для заполнения (в миграции не указано notNull() )
@@ -43,6 +49,7 @@ const getDocErdParam = async (page, perpage, docKey, flKey, dateIncome, beginPer
   }
 
   let queryObject = {}
+  let queryObjectString = {}
   if (typeof docKey !== 'undefined'){
     queryObject['docKey'] = docKey
   }
@@ -62,9 +69,20 @@ const getDocErdParam = async (page, perpage, docKey, flKey, dateIncome, beginPer
     queryObject['dateIncome'] = dateIncome
   }
 
+// параметры поиска физического лица
+if (typeof flAccNum !== 'undefined'){
+  queryObjectString['flAccNum'] = '%' +  flAccNum + '%'
+}else {
+queryObjectString['flAccNum'] = '%%'
+}
+
 
 let countData = await knex("docErd")
 .where(queryObject)
+.whereIn('flKey', function() {
+  this.select('id').from('FL')
+  .whereILike("accNum", queryObjectString.flAccNum)
+})
 .first()
 .count('id as countRow')
 
@@ -73,7 +91,13 @@ countData['currentPage'] = pg
 
  let resultData = await knex("docErd")
  .where(queryObject)
- .select()
+ .whereIn('flKey', function() {
+  this.select('id').from('FL')
+  .whereILike("accNum", queryObjectString.flAccNum)
+})
+ .leftJoin("FL", "docErd.flKey", "FL.id")
+  .select("docErd.*", 
+  "FL.accNum as flAccNum")
  .orderBy(sortField, sortDirect)
  //.where(queryObject)
  .limit(prpg).offset((pg-1)*prpg)
@@ -84,7 +108,12 @@ countData['currentPage'] = pg
 //Показать ОЭД подробно
 const getOneDocErd = async(docErdId) => {
   //knex("sessions").first("id", "userId", "sessionId").where({ sessionId: sessionId });
-  return knex("docErd").first().where({ id: docErdId })
+  return knex("docErd")
+  .leftJoin("FL", "docErd.flKey", "FL.id")
+  .first("docErd.*", 
+  "FL.accNum as flAccNum")
+  //.first()
+  .where({ "docErd.id": docErdId })
 }
 
 //Создать ОЭД

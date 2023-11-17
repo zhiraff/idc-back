@@ -38,9 +38,11 @@ router.get("/search", (req, res) => {
        #swagger.description = 'Поиск результатов хелатотерапии'
     */
  
-  const {page, perpage, docKey, flKey, dateExam, typeControlKey, dateInput, radionuclideKey, material, consist, sort } = req.query;
+  const {page, perpage, docKey, flKey, dateExam, typeControlKey, 
+    dateInput, radionuclideKey, material, consist, 
+    flAccNum, typeControlName, radionuclideName, sort } = req.query;
   //console.log(`${organization}, ${typeDocument},\n ${typeExam}, ${dateDocument}, \n ${numberDocument}, ${dateExam}`)
-      docCtcController.getByParam(page, perpage, docKey, flKey, dateExam, typeControlKey, dateInput, radionuclideKey, material, consist, sort ).then((data) => {
+      docCtcController.getByParam(page, perpage, docKey, flKey, dateExam, typeControlKey, dateInput, radionuclideKey, material, consist, flAccNum, typeControlName, radionuclideName, sort ).then((data) => {
       let metaindex = data.findIndex(x => x.countRow)
       let metadata = data.splice(metaindex, 1)
       res.status(200).json({

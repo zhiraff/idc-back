@@ -112,7 +112,8 @@ docFileController.download(docFileId)
 router.get("/preview/:id", (req, res) => {
   /* #swagger.tags = ['document']
      #swagger.description = 'Получение содержимого файла для превью. (Осторожно swagger может крашнуться!)'
-*/
+     #swagger.produces = ['application/pdf']
+  */
 const docFileId = req.params.id;
 docFileController.download(docFileId)
 .then((data) => {
@@ -128,10 +129,20 @@ docFileController.download(docFileId)
       dotfiles: 'deny',
       headers: {
         'x-timestamp': Date.now(),
-        'x-sent': true
+        'x-sent': true,
+        'Content-Type': data.mimetype
       }
     }
-    res.sendFile(data.pathSave, options)
+    //console.log(options)
+    //console.log(data)
+    res.sendFile(data.pathSave, options, (err)=>{
+      if (err) {
+        console.log('error preview file')
+        next(err)
+      } else {
+        console.log('Sent:', data.originalName)
+      }
+    })
   }
 
 })

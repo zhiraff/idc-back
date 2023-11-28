@@ -5104,6 +5104,9 @@
           "document"
         ],
         "description": "Получение содержимого файла для превью. (Осторожно swagger может крашнуться!)",
+        "produces": [
+          "application/pdf"
+        ],
         "parameters": [
           {
             "name": "id",

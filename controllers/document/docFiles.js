@@ -118,10 +118,33 @@ if (typeof saveFolder === 'undefined'){
 
   //удаление Файла по id file
   const deleteDocFile = async (docFileId) => {
+    const fileInfo = await knex("docFile").where({ id: docFileId }).first()
+    fs.unlink(fileInfo.pathSave, (err) => {
+        if (err){
+          console.error(err)
+        }else{
+          console.log(` File ${fileInfo.originalName} deleted`)
+          //return knex("docFile").where({ id: docFileId }).del()
+        }
+    })
+
   return knex("docFile").where({ id: docFileId }).del()
   }
   //удаление всех файлов по id doc header
   const deleteDocFileByHeader = async (docHeaderId) => {
+    const filesInfo = await knex("docFile").where({ docKey: docHeaderId }).select()
+    for(let i=0; i<filesInfo.length; i++)
+    {
+      fs.unlink(filesInfo[i].pathSave, (err) => {
+        if (err){
+          console.error(err)
+        }else{
+          console.log(` File ${filesInfo[i].originalName} deleted`)
+         // knex("docFile").where({ id: docFileId }).del()
+        }
+    })
+    }
+
   return knex("docFile").where({ docKey: docHeaderId }).del()
   }
 

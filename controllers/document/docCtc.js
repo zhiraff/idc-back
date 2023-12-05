@@ -135,7 +135,7 @@ countData['currentPage'] = pg
   .whereILike("name", queryObjectString.radionuclideName)
 })
 .whereIn('flKey', function() {
-  this.select('id').from('radionuclide')
+  this.select('id').from('FL')
   .whereILike("accNum", queryObjectString.flAccNum)
 })
 .whereIn('typeControlKey', function() {

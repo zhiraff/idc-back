@@ -115,6 +115,7 @@ router.get("/whoami", async (req, res) => {
   let permissions = []
   //let perm = new Set();
   if (typeof req.user.username !== 'undefined'){
+        username = req.user.username
         const usr = await authController.findUserByUsername(req.user.username)
         roles = await authController.userRoles(usr.id)
         let perm1 = await authController.userPermission(usr.id)

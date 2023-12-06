@@ -71,7 +71,7 @@ const getUserParam = async (page, perpage, username, firstName, secondName, thir
   let queryObject = {}
   let queryObjectString = {}
   if (typeof username !== 'undefined'){
-    queryObjectString['username'] = "%"+username+"%"
+    queryObjectString['username'] = "%"+username.toUpperCase()+"%"
   } else {
     queryObjectString['username'] = "%%"
   }
@@ -197,7 +197,7 @@ const getOneUser = async(UserId) => {
 //Создать пользователя
 const creatUser = async(username, password, firstName, secondName, thirdName, user) => {
   let newUser = {
-    username: username,
+    username: username.toUpperCase(),
     password: hash(password),
     createdBy: typeof user.username !== 'undefined' ? user.username : "unknown",
     updatedBy: typeof user.username !== 'undefined' ? user.username : "unknown",
@@ -231,7 +231,7 @@ const creatUser = async(username, password, firstName, secondName, thirdName, us
  const updateUser = async (UserId, username, password, firstName, secondName, thirdName, user) => {
     let updateObject = {}
     if (typeof username !== 'undefined'){
-    updateObject['username'] = username
+    updateObject['username'] = username.toUpperCase()
   }
   if (typeof password !== 'undefined'){
     updateObject['password'] = hash(password)

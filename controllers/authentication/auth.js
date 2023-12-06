@@ -15,7 +15,7 @@ const hash = (d) => {
 
 //ф-я поиска пользователя по username
 const findUserByUsername = async (username) => {
-  return knex("users").first("id", "username", "password").where({ username: username });
+  return knex("users").first("id", "username", "password").where({ username: username.toUpperCase() });
 };
 
 //ф-я поиска пользователя по sessionId
@@ -57,7 +57,7 @@ const createUser = async (username, password, name, surname, patronym, user) => 
   const srn = typeof  surname !== 'undefined' && surname !== '' ? surname : 'anonymous'
   const ptr = typeof  patronym !== 'undefined' && patronym !== '' ? patronym : 'anonymous'
   const newUser = {
-    username: username,
+    username: username.toUpperCase(),
     password: hash(password),
     firstName: nm,
     secondName: srn,

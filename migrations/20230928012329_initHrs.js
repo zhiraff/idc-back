@@ -15,9 +15,9 @@ exports.up = function(knex) {
     table.date("dateExam").notNullable().comment('Дата взятия пробы');
     table.integer("typeControlKey", 255).notNullable().comment('Вид контроля');
     table.foreign("typeControlKey").references("kindIdc.id").onDelete("restrict");
-    table.integer("bodyPartKey").notNullable().comment('ссылка на часть тела');
+    table.integer("bodyPartKey").comment('ссылка на часть тела');
     table.foreign("bodyPartKey").references("bodyPart.id").onDelete("restrict");
-    table.integer("radionuclideKey").notNullable().comment('ссылка на радионуклид');
+    table.integer("radionuclideKey").comment('ссылка на радионуклид');
     table.foreign("radionuclideKey").references("radionuclide.id").onDelete("restrict");
     table.float("consist").notNullable().comment('содержание');
     table.timestamps(true, true, true);

@@ -42,12 +42,6 @@ exports.up = function(knex) {
       updatedBy: "migrations"
     },
     {
-      type: "Орган",
-      name: "Все органы",
-      createdBy: "migrations",
-      updatedBy: "migrations"
-    },
-    {
       type: "Часть тела",
       name: "Левая рука",
       createdBy: "migrations",
@@ -55,7 +49,7 @@ exports.up = function(knex) {
     },
     {
       type: "Часть тела",
-      name: "Левая нога",
+      name: "Левое колено",
       createdBy: "migrations",
       updatedBy: "migrations"
     },
@@ -67,19 +61,13 @@ exports.up = function(knex) {
     },
     {
       type: "Часть тела",
-      name: "Правая нога",
+      name: "Правое колено",
       createdBy: "migrations",
       updatedBy: "migrations"
     },
     {
       type: "Часть тела",
       name: "Голова",
-      createdBy: "migrations",
-      updatedBy: "migrations"
-    },
-    {
-      type: "Часть тела",
-      name: "Туловище",
       createdBy: "migrations",
       updatedBy: "migrations"
     },

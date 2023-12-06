@@ -36,8 +36,7 @@ const getDocHrs = async (page, perpage, sort) => {
 }
 
 //Получить результаты СИЧ, с постраничной пагинацией и параметрами
-const getDocHrsParam = async (page, perpage, docKey, flKey, dateExam, 
-  typeControlKey, bodyPartKey, radionuclideKey,  consist, 
+const getDocHrsParam = async (page, perpage, docKey, flKey, dateExam, typeControlKey, consist, 
   flAccNum, typeControlName, radionuclideName, bodyPartName, sort) => {
   // 1. Поиск по числовым значениям осуществляется через where
   // 2. Поиск по текстовым значением осуществлется через like
@@ -66,13 +65,7 @@ const getDocHrsParam = async (page, perpage, docKey, flKey, dateExam,
   if (typeof dateExam !== 'undefined'){
     queryObject['dateExam'] = dateExam
   }
-  if (typeof bodyPartKey !== 'undefined'){
-    queryObject['bodyPartKey'] = bodyPartKey
-  }
-  if (typeof radionuclideKey !== 'undefined'){
-    queryObject['radionuclideKey'] = radionuclideKey
-  }
-  if (typeof consist !== 'undefined'){
+   if (typeof consist !== 'undefined'){
     queryObject['consist'] = consist
   }
 
@@ -191,12 +184,18 @@ const creatDocHrs = async(docKey, flKey, dateExam, typeControlKey, bodyPartKey, 
     flKey: flKey,
     dateExam: dateExam,
     typeControlKey: typeControlKey,
-    bodyPartKey: bodyPartKey,
-    radionuclideKey: radionuclideKey,
+  //  bodyPartKey: bodyPartKey,
+  //  radionuclideKey: radionuclideKey,
     consist: consist,
     createdBy: typeof user.username !== 'undefined' ? user.username : "unknown",
     updatedBy: typeof user.username !== 'undefined' ? user.username : "unknown",
   };
+  if (typeof bodyPartKey !== 'undefined' && bodyPartKey !== ''){
+    newDocHrs.bodyPartKey = bodyPartKey
+  }
+  if (typeof radionuclideKey !== 'undefined' && radionuclideKey !== ''){
+    newDocHrs.radionuclideKey = radionuclideKey
+  }
    const result = await knex("docHrs").insert([newDocHrs], ["id"]);
    newDocHrs['id'] = result[0].id
    return newDocHrs;
@@ -210,12 +209,18 @@ const creatDocHrsByAccNum = async(docKey, accNum, dateExam, typeControlKey, body
     flKey: fl.id,
     dateExam: dateExam,
     typeControlKey: typeControlKey,
-    bodyPartKey: bodyPartKey,
-    radionuclideKey: radionuclideKey,
+  //  bodyPartKey: bodyPartKey,
+  //  radionuclideKey: radionuclideKey,
     consist: consist,
     createdBy: typeof user.username !== 'undefined' ? user.username : "unknown",
     updatedBy: typeof user.username !== 'undefined' ? user.username : "unknown",
   };
+  if (typeof bodyPartKey !== 'undefined'){
+    newDocHrs.bodyPartKey = bodyPartKey
+  }
+  if (typeof radionuclideKey !== 'undefined'){
+    newDocHrs.radionuclideKey = radionuclideKey
+  }
    const result = await knex("docHrs").insert([newDocHrs], ["id"]);
    newDocHrs['id'] = result[0].id
    return newDocHrs;
@@ -229,12 +234,18 @@ const creatDocHrsBySnils = async(docKey, snils, dateExam, typeControlKey, bodyPa
     flKey: fl.id,
     dateExam: dateExam,
     typeControlKey: typeControlKey,
-    bodyPartKey: bodyPartKey,
-    radionuclideKey: radionuclideKey,
+  //  bodyPartKey: bodyPartKey,
+  //  radionuclideKey: radionuclideKey,
     consist: consist,
     createdBy: typeof user.username !== 'undefined' ? user.username : "unknown",
     updatedBy: typeof user.username !== 'undefined' ? user.username : "unknown",
   };
+  if (typeof bodyPartKey !== 'undefined'){
+    newDocHrs.bodyPartKey = bodyPartKey
+  }
+  if (typeof radionuclideKey !== 'undefined'){
+    newDocHrs.radionuclideKey = radionuclideKey
+  }
    const result = await knex("docHrs").insert([newDocHrs], ["id"]);
    newDocHrs['id'] = result[0].id
    return newDocHrs;

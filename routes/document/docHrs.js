@@ -38,13 +38,11 @@ router.get("/search", (req, res) => {
        #swagger.description = 'Поиск результатов СИЧ'
     */
  
-  const {page, perpage, docKey, flKey, dateExam, typeControlKey, 
-    bodyPartKey, radionuclideKey, consist,
+  const {page, perpage, docKey, flKey, dateExam, typeControlKey, consist,
     flAccNum, typeControlName, radionuclideName, bodyPartName, sort } = req.query;
   //console.log(`${organization}, ${typeDocument},\n ${typeExam}, ${dateDocument}, \n ${numberDocument}, ${dateExam}`)
-      docHrsController.getByParam(page, perpage, docKey, flKey, dateExam, typeControlKey, 
-        bodyPartKey, radionuclideKey, consist, 
-        flAccNum, typeControlName, radionuclideName, bodyPartName, sort ).then((data) => {
+    docHrsController.getByParam(page, perpage, docKey, flKey, dateExam, typeControlKey, consist, 
+    flAccNum, typeControlName, radionuclideName, bodyPartName, sort ).then((data) => {
       let metaindex = data.findIndex(x => x.countRow)
       let metadata = data.splice(metaindex, 1)
       res.status(200).json({
@@ -99,13 +97,13 @@ if (typeof docKey === 'undefined' ||
     typeof flKey === 'undefined' || 
     typeof dateExam === 'undefined' || 
     typeof typeControlKey === 'undefined' || 
-    typeof bodyPartKey === 'undefined'|| 
-    typeof radionuclideKey === 'undefined' || 
+  //  typeof bodyPartKey === 'undefined'|| 
+  //  typeof radionuclideKey === 'undefined' || 
     typeof consist === 'undefined'
  ){
     return res.status(400).json({
     status: "error",
-    data: "Не хватает docKey, flKey, dateExam, typeControlKey, bodyPartKey, radionuclideKey или consist"
+    data: "Не хватает docKey, flKey, dateExam, typeControlKey или consist"
   })
 }
 docHrsController.create(docKey, flKey, dateExam, typeControlKey, bodyPartKey, radionuclideKey, consist, req.user)
@@ -196,13 +194,13 @@ if (typeof docKey === 'undefined' ||
   typeof accNum === 'undefined' || 
   typeof dateExam === 'undefined' || 
   typeof typeControlKey === 'undefined' || 
-  typeof bodyPartKey === 'undefined'|| 
-  typeof radionuclideKey === 'undefined' || 
+//  typeof bodyPartKey === 'undefined'|| 
+//  typeof radionuclideKey === 'undefined' || 
   typeof consist === 'undefined'
 ){
   return res.status(400).json({
   status: "error",
-  data: "Не хватает docKey, accNum, dateExam, typeControlKey, bodyPartKey, radionuclideKey или consist"
+  data: "Не хватает docKey, accNum, dateExam, typeControlKey или consist"
 })
 }
 docHrsController.createByAccNum(docKey, accNum, dateExam, typeControlKey, bodyPartKey, radionuclideKey, consist, req.user)
@@ -233,13 +231,13 @@ if (typeof docKey === 'undefined' ||
   typeof snils === 'undefined' || 
   typeof dateExam === 'undefined' || 
   typeof typeControlKey === 'undefined' || 
-  typeof bodyPartKey === 'undefined'|| 
-  typeof radionuclideKey === 'undefined' || 
+//  typeof bodyPartKey === 'undefined'|| 
+//  typeof radionuclideKey === 'undefined' || 
   typeof consist === 'undefined'
 ){
   return res.status(400).json({
   status: "error",
-  data: "Не хватает docKey, snils, dateExam, typeControlKey, bodyPartKey, radionuclideKey или consist"
+  data: "Не хватает docKey, snils, dateExam, typeControlKey или consist"
 })
 }
 docHrsController.createBySnils(docKey, snils, dateExam, typeControlKey, bodyPartKey, radionuclideKey, consist, req.user)

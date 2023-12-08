@@ -104,9 +104,24 @@ queryObjectString['bodyPartName'] = '%%'
 
 let countData = await knex("docHrs")
 .where(queryObject)
+/*
 .whereIn('radionuclideKey', function() {
   this.select('id').from('radionuclide')
   .whereILike("name", queryObjectString.radionuclideName)
+})
+*/
+.andWhere(qb => {
+  if (queryObjectString.radionuclideName === "%%"){
+   return qb.whereIn('radionuclideKey', function() {
+    this.select('id').from('radionuclide')
+    .whereILike("name", queryObjectString.radionuclideName)
+  }).orWhereNull("radionuclideKey")
+  }else{
+   return qb.whereIn('radionuclideKey', function() {
+    this.select('id').from('radionuclide')
+    .whereILike("name", queryObjectString.radionuclideName)
+  })
+  }
 })
 .whereIn('flKey', function() {
   this.select('id').from('FL')
@@ -116,9 +131,24 @@ let countData = await knex("docHrs")
   this.select('id').from('kindIdc')
   .whereILike("kindShort", queryObjectString.typeControlName)
 })
+/*
 .whereIn('bodyPartKey', function() {
   this.select('id').from('bodyPart')
   .whereILike("name", queryObjectString.bodyPartName)
+})
+*/
+.andWhere(qb => {
+  if (queryObjectString.bodyPartName === "%%"){
+   return qb.whereIn('bodyPartKey', function() {
+    this.select('id').from('bodyPart')
+    .whereILike("name", queryObjectString.bodyPartName)
+  }).orWhereNull("bodyPartKey")
+  }else{
+   return qb.whereIn('bodyPartKey', function() {
+    this.select('id').from('bodyPart')
+    .whereILike("name", queryObjectString.bodyPartName)
+  })
+  }
 })
 .first()
 .count('id as countRow')
@@ -128,10 +158,25 @@ countData['currentPage'] = pg
 
  let resultData = await knex("docHrs")
  .where(queryObject)
+ .andWhere(qb => {
+  if (queryObjectString.radionuclideName === "%%"){
+   return qb.whereIn('radionuclideKey', function() {
+    this.select('id').from('radionuclide')
+    .whereILike("name", queryObjectString.radionuclideName)
+  }).orWhereNull("radionuclideKey")
+  }else{
+   return qb.whereIn('radionuclideKey', function() {
+    this.select('id').from('radionuclide')
+    .whereILike("name", queryObjectString.radionuclideName)
+  })
+  }
+})
+/*
  .whereIn('radionuclideKey', function() {
   this.select('id').from('radionuclide')
   .whereILike("name", queryObjectString.radionuclideName)
 })
+*/
 .whereIn('flKey', function() {
   this.select('id').from('FL')
   .whereILike("accNum", queryObjectString.flAccNum)
@@ -140,9 +185,24 @@ countData['currentPage'] = pg
   this.select('id').from('kindIdc')
   .whereILike("kindShort", queryObjectString.typeControlName)
 })
+/*
 .whereIn('bodyPartKey', function() {
   this.select('id').from('bodyPart')
   .whereILike("name", queryObjectString.bodyPartName)
+})
+*/
+.andWhere(qb => {
+  if (queryObjectString.bodyPartName === "%%"){
+   return qb.whereIn('bodyPartKey', function() {
+    this.select('id').from('bodyPart')
+    .whereILike("name", queryObjectString.bodyPartName)
+  }).orWhereNull("bodyPartKey")
+  }else{
+   return qb.whereIn('bodyPartKey', function() {
+    this.select('id').from('bodyPart')
+    .whereILike("name", queryObjectString.bodyPartName)
+  })
+  }
 })
  .leftJoin("radionuclide", "docHrs.radionuclideKey", "radionuclide.id")
  .leftJoin("FL", "docHrs.flKey", "FL.id")
